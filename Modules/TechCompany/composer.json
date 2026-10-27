@@ -1,0 +1,23 @@
+{
+    "name": "nwidart/techcompany",
+    "description": "",
+    "authors": [],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\TechCompany\\": "",
+            "Modules\\TechCompany\\Database\\Factories\\": "database/factories/",
+            "Modules\\TechCompany\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\TechCompany\\Tests\\": "tests/"
+        }
+    }
+}

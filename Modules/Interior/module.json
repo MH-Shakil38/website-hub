@@ -1,0 +1,11 @@
+{
+    "name": "Interior",
+    "alias": "interior",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Interior\\App\\Providers\\InteriorServiceProvider"
+    ],
+    "files": []
+}

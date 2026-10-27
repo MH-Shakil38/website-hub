@@ -1,0 +1,11 @@
+{
+    "name": "TechCompany",
+    "alias": "techcompany",
+    "description": "Tech / Software Company agency website (static frontend converted from agency-template).",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\TechCompany\\App\\Providers\\TechCompanyServiceProvider"
+    ],
+    "files": []
+}
