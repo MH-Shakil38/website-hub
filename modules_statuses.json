@@ -2,5 +2,7 @@
     "Interior": true,
     "RealEstate": true,
     "Pharmacy": true,
-    "TechCompany": true
+    "TechCompany": true,
+    "Clinic": true,
+    "Portfolio": true
 }

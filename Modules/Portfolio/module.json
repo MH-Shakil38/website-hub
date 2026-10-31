@@ -1,0 +1,11 @@
+{
+    "name": "Portfolio",
+    "alias": "portfolio",
+    "description": "Premium Web Developer Personal Portfolio Website Module (Light & Dark Theme).",
+    "keywords": ["portfolio", "developer", "laravel", "web-developer"],
+    "priority": 0,
+    "providers": [
+        "Modules\\Portfolio\\App\\Providers\\PortfolioServiceProvider"
+    ],
+    "files": []
+}

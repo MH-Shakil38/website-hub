@@ -29,6 +29,18 @@ class ModuleCmsResolver
             'slug' => 'pharmacy',
             'badge' => 'green',
         ],
+        'Clinic' => [
+            'label' => 'Fertility Clinic',
+            'prefix' => 'clinic_',
+            'slug' => 'fertility-clinic',
+            'badge' => 'green',
+        ],
+        'Portfolio' => [
+            'label' => 'Developer Portfolio',
+            'prefix' => 'port_',
+            'slug' => 'developer-portfolio',
+            'badge' => 'blue',
+        ],
     ];
 
     /**
@@ -62,6 +74,10 @@ class ModuleCmsResolver
         if ($request->routeIs('admin.pharmacy.*')) {
             session(['admin_cms_module' => 'Pharmacy']);
             return 'Pharmacy';
+        }
+        if ($request->routeIs('admin.portfolio.*')) {
+            session(['admin_cms_module' => 'Portfolio']);
+            return 'Portfolio';
         }
 
         // 2. If ONLY 1 module is active in Manage Websites, always lock to that 1 module

@@ -207,6 +207,8 @@
                                 <option value="Real Estate">Real Estate</option>
                                 <option value="Interior Design">Interior Design</option>
                                 <option value="Pharmacy">Pharmacy</option>
+                                <option value="Fertility Clinic">Fertility Clinic</option>
+                                <option value="Developer Portfolio">Developer Portfolio</option>
                                 <option value="Booking">Booking</option>
                                 <option value="Software">Software</option>
                             </select>

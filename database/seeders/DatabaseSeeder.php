@@ -192,6 +192,36 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => Carbon::parse('2025-03-15 14:00:00'),
                 'created_at' => Carbon::parse('2025-03-12 10:00:00'),
             ],
+            [
+                'name' => 'FertilityClinic.com',
+                'domain' => 'fertilityclinic.com',
+                'thumbnail' => '/module-media/Clinic/theme/hero-couple.jpg',
+                'module' => 'Fertility Clinic',
+                'module_name' => 'Clinic',
+                'slug' => 'fertility-clinic',
+                'admin_route' => 'admin.pages',
+                'description' => 'Advanced fertility care, IVF/IUI treatments, specialist doctors, and appointment booking.',
+                'module_badge' => 'green',
+                'status' => 'Published',
+                'is_active' => true,
+                'updated_at' => Carbon::parse('2025-03-31 16:00:00'),
+                'created_at' => Carbon::parse('2025-03-14 10:00:00'),
+            ],
+            [
+                'name' => 'AlexMorgan.dev',
+                'domain' => 'alexmorgan.dev',
+                'thumbnail' => '/module-media/Portfolio/theme/about-workspace.jpg',
+                'module' => 'Developer Portfolio',
+                'module_name' => 'Portfolio',
+                'slug' => 'developer-portfolio',
+                'admin_route' => 'admin.portfolio.projects.index',
+                'description' => 'Premium Web Developer Portfolio with Light & Dark Theme, Projects, Skills, Services, Career Timeline & Blog.',
+                'module_badge' => 'blue',
+                'status' => 'Published',
+                'is_active' => true,
+                'updated_at' => Carbon::parse('2025-03-31 18:00:00'),
+                'created_at' => Carbon::parse('2025-03-15 10:00:00'),
+            ],
         ];
 
         foreach ($websites as $site) {
@@ -328,6 +358,10 @@ class DatabaseSeeder extends Seeder
 
         // 9. Seed Isolated Per-Module CMS Data (int_*, re_*, pharma_*)
         $this->seedIsolatedModuleData();
+
+        if (class_exists(\Modules\Portfolio\App\Services\PortfolioDataService::class)) {
+            app(\Modules\Portfolio\App\Services\PortfolioDataService::class)->ensureSeeded();
+        }
     }
 
     protected function seedIsolatedModuleData(): void

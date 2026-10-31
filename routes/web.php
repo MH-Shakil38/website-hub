@@ -13,10 +13,10 @@ Route::get('/module-media/{module}/{folder}/{filename}', [ModuleCmsController::c
 // Dynamic Frontend Hub Routes (Single Active Module at '/' OR Multi-Module Showcase Hub + '/{slug}')
 Route::get('/', [FrontendHubController::class, 'index'])->name('hub.home');
 Route::get('/{subpage}', [FrontendHubController::class, 'singleModuleSubpage'])
-    ->where('subpage', 'portfolio|properties|catalog|contact|about|services|pricing|faq|service-[a-z\-]+')
+    ->where('subpage', 'portfolio|projects|blog|properties|catalog|contact|about|services|pricing|faq|sitemap\.xml|service-[a-z0-9\-]+|project-[a-z0-9\-]+|article-[a-z0-9\-]+')
     ->name('hub.single.subpage');
 Route::get('/{slug}/{subpage?}', [FrontendHubController::class, 'moduleRoute'])
-    ->whereIn('slug', ['interior-design', 'real-estate', 'pharmacy', 'software-company'])
+    ->whereIn('slug', ['interior-design', 'real-estate', 'pharmacy', 'software-company', 'fertility-clinic', 'clinic', 'developer-portfolio', 'portfolio'])
     ->name('hub.module');
 
 // Global Authentication Routes

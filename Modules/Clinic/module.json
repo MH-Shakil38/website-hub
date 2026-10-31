@@ -1,0 +1,11 @@
+{
+    "name": "Clinic",
+    "alias": "clinic",
+    "description": "Fertility Clinic & Reproductive Care Website Module (FertilityClinic.com).",
+    "keywords": ["clinic", "fertility", "medical", "ivf"],
+    "priority": 0,
+    "providers": [
+        "Modules\\Clinic\\App\\Providers\\ClinicServiceProvider"
+    ],
+    "files": []
+}

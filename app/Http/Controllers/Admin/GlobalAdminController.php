@@ -120,6 +120,10 @@ class GlobalAdminController extends Controller
             'Booking' => 'blue',
             'Software' => 'green',
             'Pharmacy' => 'green',
+            'Fertility Clinic' => 'green',
+            'Clinic' => 'green',
+            'Developer Portfolio' => 'blue',
+            'Portfolio' => 'blue',
         ];
         $moduleMapping = [
             'Real Estate' => ['module_name' => 'RealEstate', 'slug' => 'real-estate', 'admin_route' => 'admin.realestate.properties.index'],
@@ -127,6 +131,10 @@ class GlobalAdminController extends Controller
             'Pharmacy' => ['module_name' => 'Pharmacy', 'slug' => 'pharmacy', 'admin_route' => 'admin.pharmacy.medicines.index'],
             'Booking' => ['module_name' => null, 'slug' => 'booking', 'admin_route' => 'admin.transactions'],
             'Software' => ['module_name' => 'TechCompany', 'slug' => 'software-company', 'admin_route' => 'admin.websites'],
+            'Fertility Clinic' => ['module_name' => 'Clinic', 'slug' => 'fertility-clinic', 'admin_route' => 'admin.pages'],
+            'Clinic' => ['module_name' => 'Clinic', 'slug' => 'fertility-clinic', 'admin_route' => 'admin.pages'],
+            'Developer Portfolio' => ['module_name' => 'Portfolio', 'slug' => 'developer-portfolio', 'admin_route' => 'admin.portfolio.projects.index'],
+            'Portfolio' => ['module_name' => 'Portfolio', 'slug' => 'developer-portfolio', 'admin_route' => 'admin.portfolio.projects.index'],
         ];
 
         $map = $moduleMapping[$validated['module']] ?? ['module_name' => null, 'slug' => Str::slug($validated['name']), 'admin_route' => 'admin.websites'];

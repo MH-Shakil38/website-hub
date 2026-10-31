@@ -59,6 +59,8 @@
                     'interior' => 'bi bi-house-door-fill',
                     'pharmacy' => 'bi bi-capsule-pill',
                     'realestate' => 'bi bi-buildings-fill',
+                    'portfolio' => 'bi bi-code-slash',
+                    'clinic' => 'bi bi-heart-pulse-fill',
                     default => 'bi bi-box-fill',
                 };
 

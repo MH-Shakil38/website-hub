@@ -34,6 +34,13 @@ class ModuleManagerService
             $prefix . 'sliders',
             $prefix . 'menus',
             $prefix . 'projects',
+            $prefix . 'skills',
+            $prefix . 'services',
+            $prefix . 'experiences',
+            $prefix . 'educations',
+            $prefix . 'testimonials',
+            $prefix . 'blogs',
+            $prefix . 'faqs',
             $prefix . 'media',
             $prefix . 'videos',
             $prefix . 'themes',
@@ -43,6 +50,10 @@ class ModuleManagerService
             if (Schema::hasTable($table)) {
                 DB::table($table)->truncate();
             }
+        }
+
+        if ($module === 'Portfolio' && class_exists(\Modules\Portfolio\App\Services\PortfolioDataService::class)) {
+            app(\Modules\Portfolio\App\Services\PortfolioDataService::class)->ensureSeeded();
         }
 
         // 2. Remove custom uploaded files from Modules/{Module}/Public/uploads/

@@ -1,0 +1,16 @@
+{
+    "name": "nwidart/clinic",
+    "description": "Fertility Clinic website module",
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Clinic\\": "",
+            "Modules\\Clinic\\App\\": "App/"
+        }
+    }
+}

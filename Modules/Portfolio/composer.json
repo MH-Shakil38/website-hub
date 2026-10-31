@@ -1,0 +1,16 @@
+{
+    "name": "nwidart/portfolio",
+    "description": "Premium Web Developer Portfolio website module",
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Portfolio\\": "",
+            "Modules\\Portfolio\\App\\": "App/"
+        }
+    }
+}
