@@ -82,12 +82,12 @@
 
                 <!-- Right Actions: Light / Dark Theme Toggle + Let's Talk Button -->
                 <div class="pf-header-actions">
-                    <button type="button" class="pf-theme-toggle" id="pfThemeToggle" title="Switch Light / Dark Theme">
+                    <button type="button" class="pf-theme-toggle" id="pfThemeToggle" title="Switch Theme: Dark Wave / Light Mode / Full Dark">
                         <i class="fa-solid fa-circle-half-stroke" id="pfThemeIcon"></i>
                         <span id="pfThemeLabel">Dark Wave</span>
                     </button>
 
-                    <a href="{{ $homeUrl }}{{ $t['header']['cta_url'] ?? '#contact' }}" class="pf-btn-talk">
+                    <a href="{{ $homeUrl }}{{ $t['header']['cta_url'] ?? '#contact' }}" class="pf-btn-talk" data-open-contact-modal="true">
                         <span>{{ $t['header']['cta_text'] ?? "Let's Talk" }}</span>
                         <i class="fa-solid fa-arrow-right" style="font-size: 11px;"></i>
                     </a>
@@ -174,6 +174,50 @@
             </div>
         </div>
     </footer>
+
+    <!-- Interactive 3D Contact Modal Popup -->
+    <div id="pfContactModal" style="display: none; position: fixed; inset: 0; background: rgba(2, 8, 23, 0.82); backdrop-filter: blur(10px); z-index: 9990; align-items: center; justify-content: center; padding: 20px;">
+        <div class="pf-form-card" style="width: 100%; max-width: 580px; position: relative; background: #06152B; border: 1px solid rgba(53, 182, 255, 0.35); color: #FFFFFF;">
+            <button type="button" id="pfCloseContactModal" style="position: absolute; top: 18px; right: 18px; width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.06); color: #FFFFFF; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="pf-sec-tag" style="margin-bottom: 6px;">LET'S WORK TOGETHER</div>
+            <h3 style="font-family: var(--pf-font-serif); font-size: 28px; font-weight: 700; color: #FFFFFF; margin-bottom: 8px;">{{ $t['cta']['heading'] ?? 'Have a Project in Mind?' }}</h3>
+            <p style="font-size: 13.5px; color: #94A3B8; margin-bottom: 20px;">{{ $t['cta']['description'] ?? "Let's discuss your requirements and build a fast, modern, and scalable web application." }}</p>
+
+            <form action="{{ route('portfolio.contact.submit') }}" method="POST">
+                @csrf
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+                    <div>
+                        <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: #E2E8F0;">Your Name *</label>
+                        <input type="text" name="name" required class="pf-input" placeholder="John Doe" style="background: rgba(2, 8, 23, 0.75); border-color: rgba(53, 182, 255, 0.28); color: #FFFFFF;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: #E2E8F0;">Email Address *</label>
+                        <input type="email" name="email" required class="pf-input" placeholder="john@company.com" style="background: rgba(2, 8, 23, 0.75); border-color: rgba(53, 182, 255, 0.28); color: #FFFFFF;">
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+                    <div>
+                        <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: #E2E8F0;">Phone Number</label>
+                        <input type="text" name="phone" class="pf-input" placeholder="+880 17XX-XXXXXX" style="background: rgba(2, 8, 23, 0.75); border-color: rgba(53, 182, 255, 0.28); color: #FFFFFF;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: #E2E8F0;">Subject</label>
+                        <input type="text" name="subject" class="pf-input" placeholder="Laravel / Next.js Project" style="background: rgba(2, 8, 23, 0.75); border-color: rgba(53, 182, 255, 0.28); color: #FFFFFF;">
+                    </div>
+                </div>
+                <div style="margin-bottom: 18px;">
+                    <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: #E2E8F0;">Project Details / Message *</label>
+                    <textarea name="message" rows="3" required class="pf-textarea" placeholder="Tell me about your project goals, timeline, and budget..." style="background: rgba(2, 8, 23, 0.75); border-color: rgba(53, 182, 255, 0.28); color: #FFFFFF;"></textarea>
+                </div>
+                <button type="submit" class="pf-btn-primary" style="width: 100%; justify-content: center; border: none; cursor: pointer;">
+                    <span>Send Message</span>
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
 
     <!-- Back To Top Button -->
     <button type="button" class="pf-back-top" id="pfBackTop" title="Back to top">

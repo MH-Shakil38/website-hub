@@ -45,41 +45,6 @@
                                     </div>
                                 </td>
                             </tr>
-
-                            <div class="modal fade" id="editExp{{ $exp->id }}" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <form action="{{ route('admin.portfolio.experience.update', $exp->id) }}" method="POST" class="modal-content border-0 shadow" style="border-radius: 16px;">
-                                        @csrf
-                                        @method('PUT')
-                                        <div class="modal-header">
-                                            <h5 class="modal-title fw-bold">Edit Experience</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-semibold small">Period *</label>
-                                                <input type="text" name="period" value="{{ $exp->period }}" class="form-control" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label fw-semibold small">Job Title *</label>
-                                                <input type="text" name="job_title" value="{{ $exp->job_title }}" class="form-control" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label fw-semibold small">Company Name</label>
-                                                <input type="text" name="company_name" value="{{ $exp->company_name }}" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label fw-semibold small">Short Description</label>
-                                                <textarea name="description" rows="2" class="form-control">{{ $exp->description }}</textarea>
-                                            </div>
-                                            <input type="hidden" name="is_active" value="1">
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="submit" class="btn btn-primary fw-bold">Save Changes</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
                         @endforeach
                     </tbody>
                 </table>
@@ -131,78 +96,125 @@
         </div>
     </div>
 
+    <!-- Edit Experience Modals (Outside table) -->
+    @foreach($experiences as $exp)
+        <div class="modal fade" id="editExp{{ $exp->id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-white border-0 shadow" style="border-radius: 16px;">
+                    <form action="{{ route('admin.portfolio.experience.update', $exp->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-header border-bottom px-4 py-3">
+                            <h5 class="modal-title fw-bold">Edit Experience</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body p-4">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold small">Period *</label>
+                                <input type="text" name="period" value="{{ $exp->period }}" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold small">Job Title *</label>
+                                <input type="text" name="job_title" value="{{ $exp->job_title }}" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold small">Company Name</label>
+                                <input type="text" name="company_name" value="{{ $exp->company_name }}" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold small">Short Description</label>
+                                <textarea name="description" rows="2" class="form-control">{{ $exp->description }}</textarea>
+                            </div>
+                            <input type="hidden" name="is_active" value="1">
+                        </div>
+                        <div class="modal-footer border-top px-4 py-3">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary fw-bold">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endforeach
+
     <!-- Add Experience Modal -->
     <div class="modal fade" id="addExpModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <form action="{{ route('admin.portfolio.experience.store') }}" method="POST" class="modal-content border-0 shadow" style="border-radius: 16px;">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold">Add Career Experience</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold small">Period (e.g. 2024 - Present) *</label>
-                        <input type="text" name="period" class="form-control" required>
+            <div class="modal-content bg-white border-0 shadow" style="border-radius: 16px;">
+                <form action="{{ route('admin.portfolio.experience.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-header border-bottom px-4 py-3">
+                        <h5 class="modal-title fw-bold">Add Career Experience</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold small">Job Title *</label>
-                        <input type="text" name="job_title" class="form-control" required>
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Period (e.g. 2024 - Present) *</label>
+                            <input type="text" name="period" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Job Title *</label>
+                            <input type="text" name="job_title" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Company Name</label>
+                            <input type="text" name="company_name" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Description</label>
+                            <textarea name="description" rows="2" class="form-control"></textarea>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold small">Company Name</label>
-                        <input type="text" name="company_name" class="form-control">
+                    <div class="modal-footer border-top px-4 py-3">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary fw-bold">Add Experience</button>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold small">Description</label>
-                        <textarea name="description" rows="2" class="form-control"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary fw-bold">Add Experience</button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 
     <!-- Add Education Modal -->
     <div class="modal fade" id="addEduModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <form action="{{ route('admin.portfolio.education.store') }}" method="POST" class="modal-content border-0 shadow" style="border-radius: 16px;">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold">Add Education or Certification</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold small">Type *</label>
-                        <select name="type" class="form-select">
-                            <option value="Education">Education</option>
-                            <option value="Certification">Certification</option>
-                        </select>
+            <div class="modal-content bg-white border-0 shadow" style="border-radius: 16px;">
+                <form action="{{ route('admin.portfolio.education.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-header border-bottom px-4 py-3">
+                        <h5 class="modal-title fw-bold">Add Education or Certification</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold small">Degree / Course Name *</label>
-                        <input type="text" name="title" class="form-control" required>
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Type *</label>
+                            <select name="type" class="form-select">
+                                <option value="Education">Education</option>
+                                <option value="Certification">Certification</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Degree / Course Name *</label>
+                            <input type="text" name="title" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Institution *</label>
+                            <input type="text" name="institution" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Completion Year</label>
+                            <input type="text" name="completion_date" class="form-control" value="2025">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Description</label>
+                            <textarea name="description" rows="2" class="form-control"></textarea>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold small">Institution *</label>
-                        <input type="text" name="institution" class="form-control" required>
+                    <div class="modal-footer border-top px-4 py-3">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary fw-bold">Add Record</button>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold small">Completion Year</label>
-                        <input type="text" name="completion_date" class="form-control" value="2025">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold small">Description</label>
-                        <textarea name="description" rows="2" class="form-control"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary fw-bold">Add Record</button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 @endsection

@@ -481,6 +481,217 @@
             border-color: #1D4ED8;
             color: #FFFFFF;
         }
+
+        .modal-content {
+            background-color: #FFFFFF !important;
+            display: flex !important;
+            flex-direction: column !important;
+            width: 100% !important;
+            border-radius: 16px;
+        }
+
+        /* ==================================================================
+           GLOBAL FULL-FEATURED RICH TEXT EDITOR (.sb-rte-wrap)
+           ================================================================== */
+        .sb-rte-wrap {
+            border: 1px solid #CBD5E1;
+            border-radius: 12px;
+            background: #FFFFFF;
+            overflow: hidden;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .sb-rte-wrap:focus-within {
+            border-color: #2563EB;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        .sb-rte-wrap.sb-rte-fullscreen {
+            position: fixed !important;
+            inset: 16px !important;
+            z-index: 99999 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            box-shadow: 0 25px 60px rgba(15, 23, 42, 0.35) !important;
+        }
+
+        .sb-rte-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 10px;
+            background: #F8FAFC;
+            border-bottom: 1px solid #E2E8F0;
+            user-select: none;
+        }
+
+        .sb-rte-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            padding-right: 6px;
+            margin-right: 2px;
+            border-right: 1px solid #E2E8F0;
+        }
+
+        .sb-rte-group:last-child {
+            border-right: none;
+            padding-right: 0;
+        }
+
+        .sb-rte-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            background: transparent;
+            color: #334155;
+            font-size: 13.5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 0;
+            transition: all 0.15s;
+        }
+
+        .sb-rte-btn:hover {
+            background: #E2E8F0;
+            color: #0F172A;
+        }
+
+        .sb-rte-btn.active {
+            background: #DBEAFE;
+            color: #1D4ED8;
+            border-color: #BFDBFE;
+        }
+
+        .sb-rte-select {
+            height: 30px;
+            border: 1px solid #CBD5E1;
+            border-radius: 6px;
+            background: #FFFFFF;
+            color: #1E293B;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 0 8px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .sb-rte-color-label {
+            position: relative;
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 13px;
+            color: #334155;
+        }
+
+        .sb-rte-color-label:hover {
+            background: #E2E8F0;
+        }
+
+        .sb-rte-color-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            cursor: pointer;
+        }
+
+        .sb-rte-editor {
+            min-height: 210px;
+            max-height: 420px;
+            overflow-y: auto;
+            padding: 14px 16px;
+            font-size: 14px;
+            line-height: 1.7;
+            color: #0F172A;
+            outline: none;
+        }
+
+        .sb-rte-wrap.sb-rte-fullscreen .sb-rte-editor {
+            flex: 1;
+            max-height: none;
+        }
+
+        .sb-rte-editor h1, .sb-rte-editor h2, .sb-rte-editor h3, .sb-rte-editor h4 {
+            font-weight: 800;
+            color: #0F172A;
+            margin-top: 12px;
+            margin-bottom: 8px;
+        }
+
+        .sb-rte-editor blockquote {
+            border-left: 4px solid #2563EB;
+            background: #F8FAFC;
+            padding: 10px 16px;
+            margin: 10px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+            color: #334155;
+        }
+
+        .sb-rte-editor pre {
+            background: #0F172A;
+            color: #38BDF8;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 13px;
+            overflow-x: auto;
+        }
+
+        .sb-rte-editor table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+        }
+
+        .sb-rte-editor table td, .sb-rte-editor table th {
+            border: 1px solid #CBD5E1;
+            padding: 8px 12px;
+        }
+
+        .sb-rte-editor img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 8px 0;
+        }
+
+        .sb-rte-source {
+            display: none;
+            width: 100%;
+            min-height: 210px;
+            border: none;
+            padding: 14px 16px;
+            font-family: monospace;
+            font-size: 13px;
+            background: #0F172A;
+            color: #E2E8F0;
+            outline: none;
+            resize: vertical;
+        }
+
+        .sb-rte-statusbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 12px;
+            background: #F8FAFC;
+            border-top: 1px solid #E2E8F0;
+            font-size: 11px;
+            color: #64748B;
+        }
     </style>
     @stack('module_styles')
 </head>
@@ -570,6 +781,299 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const targetTextareas = document.querySelectorAll('textarea.sb-rich-editor, textarea[name="description"], textarea[name="content"]');
+
+            targetTextareas.forEach(function (textarea) {
+                if (textarea.dataset.rteInitialized === 'true') return;
+                textarea.dataset.rteInitialized = 'true';
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'sb-rte-wrap';
+
+                // Build Full-Featured Toolbar
+                const toolbar = document.createElement('div');
+                toolbar.className = 'sb-rte-toolbar';
+                toolbar.innerHTML = `
+                    <!-- Group 1: Undo / Redo -->
+                    <div class="sb-rte-group">
+                        <button type="button" class="sb-rte-btn" data-cmd="undo" title="Undo (Ctrl+Z)"><i class="bi bi-arrow-counterclockwise"></i></button>
+                        <button type="button" class="sb-rte-btn" data-cmd="redo" title="Redo (Ctrl+Y)"><i class="bi bi-arrow-clockwise"></i></button>
+                    </div>
+
+                    <!-- Group 2: Format Block & Font Size -->
+                    <div class="sb-rte-group">
+                        <select class="sb-rte-select" data-cmd-select="formatBlock" title="Paragraph / Heading Format">
+                            <option value="P">Paragraph</option>
+                            <option value="H1">Heading 1 (H1)</option>
+                            <option value="H2">Heading 2 (H2)</option>
+                            <option value="H3">Heading 3 (H3)</option>
+                            <option value="H4">Heading 4 (H4)</option>
+                            <option value="BLOCKQUOTE">Blockquote</option>
+                            <option value="PRE">Code Block</option>
+                        </select>
+                        <select class="sb-rte-select" data-cmd-select="fontSize" title="Font Size">
+                            <option value="3">Normal Size</option>
+                            <option value="1">Small (12px)</option>
+                            <option value="2">Compact (13px)</option>
+                            <option value="4">Medium (18px)</option>
+                            <option value="5">Large (24px)</option>
+                            <option value="6">X-Large (32px)</option>
+                        </select>
+                    </div>
+
+                    <!-- Group 3: Bold, Italic, Underline, Strike, Sub/Sup -->
+                    <div class="sb-rte-group">
+                        <button type="button" class="sb-rte-btn" data-cmd="bold" title="Bold (Ctrl+B)"><i class="bi bi-type-bold"></i></button>
+                        <button type="button" class="sb-rte-btn" data-cmd="italic" title="Italic (Ctrl+I)"><i class="bi bi-type-italic"></i></button>
+                        <button type="button" class="sb-rte-btn" data-cmd="underline" title="Underline (Ctrl+U)"><i class="bi bi-type-underline"></i></button>
+                        <button type="button" class="sb-rte-btn" data-cmd="strikeThrough" title="Strikethrough"><i class="bi bi-type-strikethrough"></i></button>
+                        <button type="button" class="sb-rte-btn" data-cmd="subscript" title="Subscript"><i class="bi bi-subscript"></i></button>
+                        <button type="button" class="sb-rte-btn" data-cmd="superscript" title="Superscript"><i class="bi bi-superscript"></i></button>
+                    </div>
+
+                    <!-- Group 4: Text Color & Background Highlight -->
+                    <div class="sb-rte-group">
+                        <label class="sb-rte-color-label" title="Text Color">
+                            <i class="bi bi-palette"></i>
+                            <input type="color" class="sb-rte-color-input" data-cmd-color="foreColor" value="#078BFF">
+                        </label>
+                        <label class="sb-rte-color-label" title="Highlight Background Color">
+                            <i class="bi bi-highlighter"></i>
+                            <input type="color" class="sb-rte-color-input" data-cmd-color="hiliteColor" value="#FEF08A">
+                        </label>
+                    </div>
+
+                    <!-- Group 5: Alignment -->
+                    <div class="sb-rte-group">
+                        <button type="button" class="sb-rte-btn" data-cmd="justifyLeft" title="Align Left"><i class="bi bi-text-left"></i></button>
+                        <button type="button" class="sb-rte-btn" data-cmd="justifyCenter" title="Align Center"><i class="bi bi-text-center"></i></button>
+                        <button type="button" class="sb-rte-btn" data-cmd="justifyRight" title="Align Right"><i class="bi bi-text-right"></i></button>
+                        <button type="button" class="sb-rte-btn" data-cmd="justifyFull" title="Justify Full"><i class="bi bi-justify"></i></button>
+                    </div>
+
+                    <!-- Group 6: Lists & Indent -->
+                    <div class="sb-rte-group">
+                        <button type="button" class="sb-rte-btn" data-cmd="insertUnorderedList" title="Bullet List"><i class="bi bi-list-ul"></i></button>
+                        <button type="button" class="sb-rte-btn" data-cmd="insertOrderedList" title="Numbered List"><i class="bi bi-list-ol"></i></button>
+                        <button type="button" class="sb-rte-btn" data-custom="checklist" title="Insert Feature Checklist"><i class="bi bi-check2-square"></i></button>
+                        <button type="button" class="sb-rte-btn" data-cmd="outdent" title="Outdent"><i class="bi bi-text-indent-right"></i></button>
+                        <button type="button" class="sb-rte-btn" data-cmd="indent" title="Indent"><i class="bi bi-text-indent-left"></i></button>
+                    </div>
+
+                    <!-- Group 7: Links, Images, Tables, Callout, Divider -->
+                    <div class="sb-rte-group">
+                        <button type="button" class="sb-rte-btn" data-custom="link" title="Insert Hyperlink"><i class="bi bi-link-45deg"></i></button>
+                        <button type="button" class="sb-rte-btn" data-cmd="unlink" title="Remove Hyperlink"><i class="bi bi-link"></i></button>
+                        <button type="button" class="sb-rte-btn" data-custom="imageUrl" title="Insert Image by URL"><i class="bi bi-image"></i></button>
+                        <label class="sb-rte-color-label" title="Upload Image from Computer">
+                            <i class="bi bi-cloud-arrow-up"></i>
+                            <input type="file" accept="image/*" class="sb-rte-color-input" data-custom-upload="image">
+                        </label>
+                        <button type="button" class="sb-rte-btn" data-custom="table" title="Insert 3x3 Table"><i class="bi bi-table"></i></button>
+                        <button type="button" class="sb-rte-btn" data-custom="callout" title="Insert Highlight Callout Box"><i class="bi bi-card-text"></i></button>
+                        <button type="button" class="sb-rte-btn" data-cmd="insertHorizontalRule" title="Insert Horizontal Divider"><i class="bi bi-hr"></i></button>
+                    </div>
+
+                    <!-- Group 8: Clear Format, Source Code & Fullscreen -->
+                    <div class="sb-rte-group">
+                        <button type="button" class="sb-rte-btn" data-cmd="removeFormat" title="Clear Formatting"><i class="bi bi-eraser"></i></button>
+                        <button type="button" class="sb-rte-btn" data-custom="source" title="Toggle HTML Source Code"><i class="bi bi-code-slash"></i></button>
+                        <button type="button" class="sb-rte-btn" data-custom="fullscreen" title="Toggle Fullscreen Editor"><i class="bi bi-arrows-fullscreen"></i></button>
+                    </div>
+                `;
+
+                // Editable Visual Area
+                const editor = document.createElement('div');
+                editor.className = 'sb-rte-editor';
+                editor.contentEditable = 'true';
+
+                // Convert plain text newlines to paragraphs if not already HTML
+                const initialVal = textarea.value.trim();
+                if (initialVal !== '' && !/<[a-z][\s\S]*>/i.test(initialVal)) {
+                    editor.innerHTML = initialVal.split(/\n\n+/).map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+                } else {
+                    editor.innerHTML = initialVal || '<p><br></p>';
+                }
+
+                // Bottom Status Bar (Word & Character Count)
+                const statusbar = document.createElement('div');
+                statusbar.className = 'sb-rte-statusbar';
+                statusbar.innerHTML = `
+                    <span><i class="bi bi-stars text-primary me-1"></i> Rich Text Editor (Visual &amp; HTML)</span>
+                    <span class="sb-rte-counts">0 words • 0 chars</span>
+                `;
+                const countEl = statusbar.querySelector('.sb-rte-counts');
+
+                // Hide original textarea and use it as the synced form field (+ HTML source view)
+                textarea.classList.add('sb-rte-source');
+                textarea.parentNode.insertBefore(wrapper, textarea);
+                wrapper.appendChild(toolbar);
+                wrapper.appendChild(editor);
+                wrapper.appendChild(textarea);
+                wrapper.appendChild(statusbar);
+
+                let isSourceMode = false;
+
+                function syncToTextarea() {
+                    if (!isSourceMode) {
+                        textarea.value = editor.innerHTML;
+                    }
+                    const textOnly = editor.innerText.trim();
+                    const words = textOnly ? textOnly.split(/\s+/).length : 0;
+                    countEl.textContent = `${words} words • ${textOnly.length} chars`;
+                }
+
+                syncToTextarea();
+                editor.addEventListener('input', syncToTextarea);
+                editor.addEventListener('blur', syncToTextarea);
+                textarea.addEventListener('input', function () {
+                    if (isSourceMode) {
+                        editor.innerHTML = textarea.value;
+                    }
+                });
+
+                // Ensure form submission always has latest synced HTML
+                const parentForm = textarea.closest('form');
+                if (parentForm) {
+                    parentForm.addEventListener('submit', function () {
+                        if (isSourceMode) {
+                            editor.innerHTML = textarea.value;
+                        } else {
+                            textarea.value = editor.innerHTML;
+                        }
+                    });
+                }
+
+                // Standard execCommand buttons
+                toolbar.querySelectorAll('[data-cmd]').forEach(function (btn) {
+                    btn.addEventListener('mousedown', function (e) {
+                        e.preventDefault();
+                        const cmd = this.getAttribute('data-cmd');
+                        editor.focus();
+                        document.execCommand(cmd, false, null);
+                        syncToTextarea();
+                    });
+                });
+
+                // Select dropdown commands (formatBlock, fontSize)
+                toolbar.querySelectorAll('[data-cmd-select]').forEach(function (sel) {
+                    sel.addEventListener('change', function () {
+                        const cmd = this.getAttribute('data-cmd-select');
+                        const val = this.value;
+                        editor.focus();
+                        if (cmd === 'formatBlock') {
+                            document.execCommand(cmd, false, '<' + val + '>');
+                        } else {
+                            document.execCommand(cmd, false, val);
+                        }
+                        syncToTextarea();
+                    });
+                });
+
+                // Color pickers
+                toolbar.querySelectorAll('[data-cmd-color]').forEach(function (input) {
+                    input.addEventListener('input', function () {
+                        const cmd = this.getAttribute('data-cmd-color');
+                        editor.focus();
+                        document.execCommand(cmd, false, this.value);
+                        syncToTextarea();
+                    });
+                });
+
+                // Local Image Upload -> Base64 inline insert
+                const fileInput = toolbar.querySelector('[data-custom-upload="image"]');
+                if (fileInput) {
+                    fileInput.addEventListener('change', function () {
+                        const file = this.files && this.files[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = function (ev) {
+                            editor.focus();
+                            document.execCommand('insertHTML', false, `<img src="${ev.target.result}" alt="${file.name}" style="max-width:100%; border-radius:10px; margin:10px 0;">`);
+                            syncToTextarea();
+                        };
+                        reader.readAsDataURL(file);
+                        this.value = '';
+                    });
+                }
+
+                // Custom Actions (Link, Image URL, Table, Checklist, Callout, Source, Fullscreen)
+                toolbar.querySelectorAll('[data-custom]').forEach(function (btn) {
+                    btn.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const action = this.getAttribute('data-custom');
+
+                        if (action === 'link') {
+                            const url = prompt('Enter URL (e.g. https://example.com):', 'https://');
+                            if (url && url !== 'https://') {
+                                editor.focus();
+                                document.execCommand('createLink', false, url);
+                                syncToTextarea();
+                            }
+                        } else if (action === 'imageUrl') {
+                            const url = prompt('Enter Image URL:', 'https://');
+                            if (url && url !== 'https://') {
+                                editor.focus();
+                                document.execCommand('insertHTML', false, `<img src="${url}" alt="Project Image" style="max-width:100%; border-radius:10px; margin:10px 0;">`);
+                                syncToTextarea();
+                            }
+                        } else if (action === 'table') {
+                            editor.focus();
+                            const tableHtml = `
+                                <table>
+                                    <thead>
+                                        <tr><th>Feature / Module</th><th>Technology Stack</th><th>Impact / Result</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>Core Architecture</td><td>Laravel 12, MySQL</td><td>99.9% Uptime &amp; Fast Response</td></tr>
+                                        <tr><td>Frontend UI</td><td>Next.js, Tailwind CSS</td><td>100/100 Lighthouse Score</td></tr>
+                                    </tbody>
+                                </table><p><br></p>`;
+                            document.execCommand('insertHTML', false, tableHtml);
+                            syncToTextarea();
+                        } else if (action === 'checklist') {
+                            editor.focus();
+                            const listHtml = `
+                                <ul style="list-style:none; padding-left:0;">
+                                    <li>✅ Clean modular architecture &amp; scalable database design</li>
+                                    <li>✅ Responsive UI/UX with fast API integration</li>
+                                    <li>✅ Automated testing, security hardening &amp; CI/CD deployment</li>
+                                </ul><p><br></p>`;
+                            document.execCommand('insertHTML', false, listHtml);
+                            syncToTextarea();
+                        } else if (action === 'callout') {
+                            editor.focus();
+                            const calloutHtml = `
+                                <blockquote>
+                                    <strong>💡 Key Project Highlight:</strong> Built with high-performance caching, role-based access control, and real-time analytics dashboard.
+                                </blockquote><p><br></p>`;
+                            document.execCommand('insertHTML', false, calloutHtml);
+                            syncToTextarea();
+                        } else if (action === 'source') {
+                            isSourceMode = !isSourceMode;
+                            this.classList.toggle('active', isSourceMode);
+                            if (isSourceMode) {
+                                textarea.value = editor.innerHTML;
+                                editor.style.display = 'none';
+                                textarea.style.display = 'block';
+                                textarea.focus();
+                            } else {
+                                editor.innerHTML = textarea.value;
+                                textarea.style.display = 'none';
+                                editor.style.display = 'block';
+                                editor.focus();
+                            }
+                        } else if (action === 'fullscreen') {
+                            wrapper.classList.toggle('sb-rte-fullscreen');
+                            this.classList.toggle('active', wrapper.classList.contains('sb-rte-fullscreen'));
+                        }
+                    });
+                });
+            });
+        });
+    </script>
     @stack('module_scripts')
 </body>
 </html>

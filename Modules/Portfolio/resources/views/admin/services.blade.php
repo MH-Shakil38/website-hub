@@ -51,108 +51,115 @@
                                 </div>
                             </td>
                         </tr>
-
-                        <div class="modal fade" id="editSrv{{ $srv->id }}" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <form action="{{ route('admin.portfolio.services.update', $srv->id) }}" method="POST" class="modal-content border-0 shadow" style="border-radius: 16px;">
-                                    @csrf
-                                    @method('PUT')
-                                    <div class="modal-header">
-                                        <h5 class="modal-title fw-bold">Edit Service: {{ $srv->title }}</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="row g-3">
-                                            <div class="col-md-6">
-                                                <label class="form-label fw-semibold small">Service Title *</label>
-                                                <input type="text" name="title" value="{{ $srv->title }}" class="form-control" required>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label fw-semibold small">Card Subtitle</label>
-                                                <input type="text" name="subtitle" value="{{ $srv->subtitle }}" class="form-control">
-                                            </div>
-                                            <div class="col-md-8">
-                                                <label class="form-label fw-semibold small">FontAwesome Icon</label>
-                                                <input type="text" name="icon_class" value="{{ $srv->icon_class }}" class="form-control">
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label class="form-label fw-semibold small">Sort Order</label>
-                                                <input type="number" name="sort_order" value="{{ $srv->sort_order }}" class="form-control">
-                                            </div>
-                                            <div class="col-12">
-                                                <label class="form-label fw-semibold small">Short Description</label>
-                                                <input type="text" name="short_description" value="{{ $srv->short_description }}" class="form-control">
-                                            </div>
-                                            <div class="col-12">
-                                                <label class="form-label fw-semibold small">Full Description</label>
-                                                <textarea name="description" rows="3" class="form-control">{{ $srv->description }}</textarea>
-                                            </div>
-                                            <div class="col-12">
-                                                <label class="form-label fw-semibold small">Key Features (Comma separated)</label>
-                                                <input type="text" name="features_raw" value="{{ implode(', ', $srv->features ?? []) }}" class="form-control">
-                                            </div>
-                                            <div class="col-12">
-                                                <div class="form-check">
-                                                    <input type="checkbox" name="is_active" value="1" class="form-check-input" id="srvAct{{ $srv->id }}" {{ $srv->is_active ? 'checked' : '' }}>
-                                                    <label class="form-check-label small fw-semibold" for="srvAct{{ $srv->id }}">Active</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                                        <button type="submit" class="btn btn-primary fw-bold">Update Service</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
                     @endforeach
                 </tbody>
             </table>
         </div>
     </div>
 
+    <!-- Edit Service Modals (Outside table) -->
+    @foreach($services as $srv)
+        <div class="modal fade" id="editSrv{{ $srv->id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-white border-0 shadow" style="border-radius: 16px;">
+                    <form action="{{ route('admin.portfolio.services.update', $srv->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-header border-bottom px-4 py-3">
+                            <h5 class="modal-title fw-bold">Edit Service: {{ $srv->title }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body p-4">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">Service Title *</label>
+                                    <input type="text" name="title" value="{{ $srv->title }}" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">Card Subtitle</label>
+                                    <input type="text" name="subtitle" value="{{ $srv->subtitle }}" class="form-control">
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="form-label fw-semibold small">FontAwesome Icon</label>
+                                    <input type="text" name="icon_class" value="{{ $srv->icon_class }}" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold small">Sort Order</label>
+                                    <input type="number" name="sort_order" value="{{ $srv->sort_order }}" class="form-control">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold small">Short Description</label>
+                                    <input type="text" name="short_description" value="{{ $srv->short_description }}" class="form-control">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold small">Full Description</label>
+                                    <textarea name="description" rows="3" class="form-control">{{ $srv->description }}</textarea>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold small">Key Features (Comma separated)</label>
+                                    <input type="text" name="features_raw" value="{{ implode(', ', $srv->features ?? []) }}" class="form-control">
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input type="checkbox" name="is_active" value="1" class="form-check-input" id="srvAct{{ $srv->id }}" {{ $srv->is_active ? 'checked' : '' }}>
+                                        <label class="form-check-label small fw-semibold" for="srvAct{{ $srv->id }}">Active</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-top px-4 py-3">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary fw-bold">Update Service</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endforeach
+
     <div class="modal fade" id="addServiceModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <form action="{{ route('admin.portfolio.services.store') }}" method="POST" class="modal-content border-0 shadow" style="border-radius: 16px;">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold">Add New Service</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold small">Service Title *</label>
-                            <input type="text" name="title" class="form-control" placeholder="e.g. Cloud DevOps" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold small">Card Subtitle</label>
-                            <input type="text" name="subtitle" class="form-control" placeholder="e.g. AWS & Docker CI/CD">
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label fw-semibold small">FontAwesome Icon</label>
-                            <input type="text" name="icon_class" class="form-control" value="fa-solid fa-code">
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label fw-semibold small">Short Description</label>
-                            <input type="text" name="short_description" class="form-control">
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label fw-semibold small">Full Description</label>
-                            <textarea name="description" rows="3" class="form-control"></textarea>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label fw-semibold small">Included Features (Comma separated)</label>
-                            <input type="text" name="features_raw" class="form-control" value="Clean Architecture, Fast Delivery, Ongoing Support">
+            <div class="modal-content bg-white border-0 shadow" style="border-radius: 16px;">
+                <form action="{{ route('admin.portfolio.services.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-header border-bottom px-4 py-3">
+                        <h5 class="modal-title fw-bold">Add New Service</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Service Title *</label>
+                                <input type="text" name="title" class="form-control" placeholder="e.g. Cloud DevOps" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Card Subtitle</label>
+                                <input type="text" name="subtitle" class="form-control" placeholder="e.g. AWS & Docker CI/CD">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold small">FontAwesome Icon</label>
+                                <input type="text" name="icon_class" class="form-control" value="fa-solid fa-code">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold small">Short Description</label>
+                                <input type="text" name="short_description" class="form-control">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold small">Full Description</label>
+                                <textarea name="description" rows="3" class="form-control"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold small">Included Features (Comma separated)</label>
+                                <input type="text" name="features_raw" class="form-control" value="Clean Architecture, Fast Delivery, Ongoing Support">
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary fw-bold">Create Service</button>
-                </div>
-            </form>
+                    <div class="modal-footer border-top px-4 py-3">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary fw-bold">Create Service</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 @endsection

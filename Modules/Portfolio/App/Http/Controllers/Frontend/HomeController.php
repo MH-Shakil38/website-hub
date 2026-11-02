@@ -43,7 +43,7 @@ class HomeController extends Controller
         $experiences = PortfolioExperience::where('is_active', true)->orderBy('sort_order')->orderBy('id')->get();
         $educations = PortfolioEducation::where('is_active', true)->orderBy('sort_order')->orderBy('id')->get();
         $testimonials = PortfolioTestimonial::where('is_active', true)->orderBy('sort_order')->orderBy('id')->get();
-        $blogs = PortfolioBlog::where('is_active', true)->latest('id')->take(6)->get();
+        $blogs = PortfolioBlog::where('is_active', true)->orderBy('id')->take(6)->get();
         $faqs = PortfolioFaq::where('is_active', true)->orderBy('sort_order')->orderBy('id')->get();
 
         $projectCategories = $projects->pluck('category')->filter()->unique()->values();

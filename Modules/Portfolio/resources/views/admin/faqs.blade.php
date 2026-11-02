@@ -40,68 +40,77 @@
                             </div>
                         </td>
                     </tr>
-
-                    <div class="modal fade" id="editFaq{{ $faq->id }}" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <form action="{{ route('admin.portfolio.faqs.update', $faq->id) }}" method="POST" class="modal-content border-0 shadow" style="border-radius: 16px;">
-                                @csrf
-                                @method('PUT')
-                                <div class="modal-header">
-                                    <h5 class="modal-title fw-bold">Edit FAQ</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-semibold small">Question *</label>
-                                        <input type="text" name="question" value="{{ $faq->question }}" class="form-control" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label fw-semibold small">Category</label>
-                                        <input type="text" name="category" value="{{ $faq->category }}" class="form-control">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label fw-semibold small">Answer *</label>
-                                        <textarea name="answer" rows="3" class="form-control" required>{{ $faq->answer }}</textarea>
-                                    </div>
-                                    <input type="hidden" name="is_active" value="1">
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary fw-bold">Update FAQ</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
                 @endforeach
             </tbody>
         </table>
     </div>
 
+    <!-- Edit FAQ Modals (Outside table) -->
+    @foreach($faqs as $faq)
+        <div class="modal fade" id="editFaq{{ $faq->id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-white border-0 shadow" style="border-radius: 16px;">
+                    <form action="{{ route('admin.portfolio.faqs.update', $faq->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-header border-bottom px-4 py-3">
+                            <h5 class="modal-title fw-bold">Edit FAQ</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body p-4">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold small">Question *</label>
+                                <input type="text" name="question" value="{{ $faq->question }}" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold small">Category</label>
+                                <input type="text" name="category" value="{{ $faq->category }}" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold small">Answer *</label>
+                                <textarea name="answer" rows="3" class="form-control" required>{{ $faq->answer }}</textarea>
+                            </div>
+                            <input type="hidden" name="is_active" value="1">
+                        </div>
+                        <div class="modal-footer border-top px-4 py-3">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary fw-bold">Update FAQ</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endforeach
+
     <div class="modal fade" id="addFaqModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <form action="{{ route('admin.portfolio.faqs.store') }}" method="POST" class="modal-content border-0 shadow" style="border-radius: 16px;">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold">Add New FAQ</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold small">Question *</label>
-                        <input type="text" name="question" class="form-control" required>
+            <div class="modal-content bg-white border-0 shadow" style="border-radius: 16px;">
+                <form action="{{ route('admin.portfolio.faqs.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-header border-bottom px-4 py-3">
+                        <h5 class="modal-title fw-bold">Add New FAQ</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold small">Category</label>
-                        <input type="text" name="category" value="General" class="form-control">
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Question *</label>
+                            <input type="text" name="question" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Category</label>
+                            <input type="text" name="category" value="General" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Answer *</label>
+                            <textarea name="answer" rows="3" class="form-control" required></textarea>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold small">Answer *</label>
-                        <textarea name="answer" rows="3" class="form-control" required></textarea>
+                    <div class="modal-footer border-top px-4 py-3">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary fw-bold">Save FAQ</button>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary fw-bold">Save FAQ</button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 @endsection
