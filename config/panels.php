@@ -80,6 +80,18 @@ return [
                     'route' => 'admin.transactions',
                     'active' => 'admin.transactions*',
                 ],
+                [
+                    'title' => 'DB Backups & Restore',
+                    'icon' => 'bi bi-cloud-arrow-down-fill',
+                    'route' => 'admin.backups.index',
+                    'active' => 'admin.backups.*',
+                ],
+                [
+                    'title' => 'Support Tickets',
+                    'icon' => 'bi bi-life-preserver',
+                    'route' => 'admin.support.tickets',
+                    'active' => 'admin.support.*',
+                ],
             ],
         ],
 
@@ -131,6 +143,18 @@ return [
                     'route' => 'admin.reseller.hub',
                     'active' => 'admin.reseller.*',
                 ],
+                [
+                    'title' => 'DB Backups & Restore',
+                    'icon' => 'bi bi-cloud-arrow-down-fill',
+                    'route' => 'admin.backups.index',
+                    'active' => 'admin.backups.*',
+                ],
+                [
+                    'title' => 'Support Tickets',
+                    'icon' => 'bi bi-life-preserver',
+                    'route' => 'admin.support.tickets',
+                    'active' => 'admin.support.*',
+                ],
             ],
         ],
 
@@ -169,6 +193,18 @@ return [
                     'icon' => 'bi bi-receipt',
                     'route' => 'admin.billing.index',
                     'active' => 'admin.billing.*',
+                ],
+                [
+                    'title' => 'Website Backups',
+                    'icon' => 'bi bi-cloud-arrow-down-fill',
+                    'route' => 'admin.backups.index',
+                    'active' => 'admin.backups.*',
+                ],
+                [
+                    'title' => 'Support Tickets',
+                    'icon' => 'bi bi-life-preserver',
+                    'route' => 'admin.support.tickets',
+                    'active' => 'admin.support.*',
                 ],
             ],
         ],

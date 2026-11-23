@@ -64,6 +64,9 @@ class TenantDatabaseManager
 
         $this->activeTenant = $tenant;
         app()->instance('tenant', $tenant);
+
+        // Phase 7: Scope cache prefix to current tenant so cached values never leak between tenants
+        config(['cache.prefix' => 'hub_t' . $tenant->id . '_']);
     }
 
     /**
@@ -75,6 +78,7 @@ class TenantDatabaseManager
 
         config([
             'database.connections.tenant.database' => $centralDb,
+            'cache.prefix' => env('CACHE_PREFIX', 'laravel_cache_'),
         ]);
 
         DB::purge('tenant');

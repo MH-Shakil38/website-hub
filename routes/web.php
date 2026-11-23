@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\GlobalAdminController;
 use App\Http\Controllers\Admin\ModuleCmsController;
 use App\Http\Controllers\Admin\SaasBillingController;
 use App\Http\Controllers\Admin\SaasManagementController;
+use App\Http\Controllers\Admin\SaasOperationsController;
 use App\Http\Controllers\Admin\SaasResellerController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FrontendHubController;
@@ -15,10 +16,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/internal/domain-check', [SaasManagementController::class, 'caddyDomainCheck'])
     ->name('saas.caddy.domain-check');
 
-// Public Step-by-Step Theme Installation Wizard & Email Verification Onboarding (Phase 6)
+// Public Step-by-Step Theme Installation Wizard & Email Verification Onboarding (Phase 6 + Phase 7 Rate Limiting)
 Route::get('/install/check-subdomain', [SaasOnboardingController::class, 'checkSubdomain'])
+    ->middleware('throttle:60,1')
     ->name('saas.install.check-subdomain');
 Route::post('/install/register', [SaasOnboardingController::class, 'registerPendingInstall'])
+    ->middleware('throttle:20,1')
     ->name('saas.install.register');
 Route::get('/install/verify/{uuid}', [SaasOnboardingController::class, 'showVerifyNotice'])
     ->name('saas.install.verify.notice');
@@ -103,6 +106,18 @@ Route::prefix('admin')->name('admin.')->middleware([EnsureDashboardAccess::class
     Route::post('/reseller-hub/commissions/{commission}/approve', [SaasResellerController::class, 'approveCommission'])->name('reseller.commissions.approve');
     Route::post('/reseller-hub/resellers/{reseller}/kyc', [SaasResellerController::class, 'updateKycStatus'])->name('reseller.kyc.update');
     Route::post('/reseller-hub/tenants/{tenant}/renew', [SaasResellerController::class, 'renewClientTenant'])->name('reseller.tenants.renew');
+
+    // SaaS Per-Tenant Database Backups & One-Click Restore + Support Tickets (Phase 7)
+    Route::get('/backups', [SaasOperationsController::class, 'backups'])->name('backups.index');
+    Route::post('/backups', [SaasOperationsController::class, 'createBackup'])->name('backups.store');
+    Route::post('/backups/{backup}/restore', [SaasOperationsController::class, 'restoreBackup'])->name('backups.restore');
+    Route::get('/backups/{backup}/download', [SaasOperationsController::class, 'downloadBackup'])->name('backups.download');
+    Route::delete('/backups/{backup}', [SaasOperationsController::class, 'destroyBackup'])->name('backups.destroy');
+
+    Route::get('/support-tickets', [SaasOperationsController::class, 'tickets'])->name('support.tickets');
+    Route::post('/support-tickets', [SaasOperationsController::class, 'storeTicket'])->name('support.tickets.store');
+    Route::post('/support-tickets/{ticket}/reply', [SaasOperationsController::class, 'replyTicket'])->name('support.tickets.reply');
+    Route::post('/support-tickets/{ticket}/close', [SaasOperationsController::class, 'closeTicket'])->name('support.tickets.close');
 
     // SaaS Resellers & Clients Management + One-Click Impersonation (Phase 2)
     Route::get('/accounts', [SaasManagementController::class, 'accounts'])->name('saas.accounts');

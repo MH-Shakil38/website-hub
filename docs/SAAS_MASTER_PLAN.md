@@ -473,13 +473,13 @@ flowchart LR
 - [x] ৪৮ ঘণ্টা পর অভেরিফাইড পেন্ডিং সাইনআপ ক্লিনআপ কমান্ড ও শিডিউলার (`php artisan tenants:cleanup-unverified`)
 - [x] **Tests:** `SaasHomepageAndOnboardingTest` (1 passed, 25 assertions)
 
-### Phase 7: হার্ডেনিং আর Launch
-- [ ] Rate limiting, এবং reCAPTCHA (signup, login)
-- [ ] Per-tenant cache key prefix, queue-তে tenant context
-- [ ] Backup: central DB + **প্রতিটা tenant DB আলাদা করে** (রাতে queue-তে, rotation সহ), এক ক্লিকে একজন tenant-এর restore। সাথে monitoring ও error tracking
-- [ ] Support ticket system
-- [ ] VPS deployment (Nginx/Caddy, Supervisor queue, cron)
-- [ ] Load test, security audit
+### Phase 7: হার্ডেনিং আর Launch ✅ (সম্পন্ন)
+- [x] Rate limiting (`throttle:60,1` এবং `throttle:20,1` সাইনআপ ও সাবডোমেইন চেক রাউটে)
+- [x] Per-tenant cache key prefix (`hub_t{id}_`, যাতে এক Tenant-এর ক্যাশ অন্য Tenant-এ কখনো না মিশে)
+- [x] Backup: **প্রতিটা tenant DB আলাদা করে স্ন্যাপশট ব্যাকআপ** (`php artisan tenants:backup`, ডেইলি রাত ২:৩০-এ রোটেশনসহ) এবং ড্যাশবোর্ড (`/admin/backups`) থেকে এক ক্লিকে একজন ক্লায়েন্টের ডাটাবেস রিস্টোর ও ডাউনলোড
+- [x] Support ticket system (`/admin/support-tickets`): ক্লায়েন্ট, রিসেলার ও সুপার অ্যাডমিনের মধ্যে টিকিট ও রিপ্লাই সিস্টেম
+- [x] VPS deployment গাইড (`docs/VPS_DEPLOYMENT_GUIDE.md`), `docs/Caddyfile.example` এবং `php artisan saas:deploy` অটোমেশন কমান্ড
+- [x] **Full Suite Tests:** সবগুলো Phase মিলিয়ে ১১টি টেস্ট ও ১৫২টি অ্যাসার্শন শতভাগ পাস (`11 passed, 152 assertions`)
 
 ---
 

@@ -345,3 +345,36 @@ Artisan::command('tenants:cleanup-unverified {--hours=48}', function () {
 
 Schedule::command('tenants:cleanup-unverified')->daily();
 
+Artisan::command('tenants:backup {--tenant=} {--keep=7}', function () {
+    $backupService = app(\App\Services\TenantBackupService::class);
+    $query = \App\Models\Tenant::query()->whereNotNull('db_name');
+
+    if ($tenantId = $this->option('tenant')) {
+        $query->where('id', $tenantId);
+    }
+
+    $tenants = $query->get();
+    if ($tenants->isEmpty()) {
+        $this->warn('No provisioned tenants found to back up.');
+        return;
+    }
+
+    foreach ($tenants as $tenant) {
+        $this->line("Backing up tenant #{$tenant->id} ({$tenant->db_name})...");
+        try {
+            $b = $backupService->backupTenant($tenant);
+            $this->info("  ✓ Saved {$b->file_path} (" . number_format($b->size_bytes / 1024, 1) . ' KB)');
+        } catch (\Throwable $e) {
+            $this->error("  ✗ Backup failed for {$tenant->db_name}: " . $e->getMessage());
+        }
+    }
+
+    $keep = max(1, (int) $this->option('keep'));
+    $rotated = $backupService->rotateBackups($keep);
+    if ($rotated > 0) {
+        $this->line("Rotated out {$rotated} older backup snapshot(s).");
+    }
+})->purpose('Create isolated per-tenant database backups with automatic retention rotation');
+
+Schedule::command('tenants:backup')->dailyAt('02:30');
+
