@@ -717,13 +717,72 @@
             @php
                 $currentUser = auth()->user() ?? \App\Models\User::with('role')->first();
                 $notifLogs = \App\Models\ActivityLog::latest('id')->take(3)->get();
+                $headerTenant = function_exists('current_tenant') ? current_tenant() : (app()->bound('tenant') ? app('tenant') : null);
+                $headerAccessibleTenants = $currentUser
+                    ? $currentUser->accessibleTenantsQuery()->orderByDesc('is_demo')->orderBy('id')->get()
+                    : collect();
+                $impersonatorUser = session()->has('impersonator_id')
+                    ? \App\Models\User::find(session('impersonator_id'))
+                    : null;
             @endphp
+
+            @if($impersonatorUser)
+                <div class="px-4 py-2 d-flex align-items-center justify-content-between" style="background: #0F172A; color: #FFFFFF; font-size: 12.5px;">
+                    <div>
+                        <i class="bi bi-person-badge-fill text-warning me-2"></i>
+                        Impersonating <strong>{{ $currentUser?->name }}</strong>
+                        <span class="badge bg-warning text-dark ms-1">{{ strtoupper($currentUser?->panelType() ?? 'CLIENT') }} PANEL</span>
+                        @if($headerTenant)
+                            <span class="ms-2 text-white-50">• Active DB: <code class="text-info">{{ $headerTenant->db_name }}</code></span>
+                        @endif
+                    </div>
+                    <form action="{{ route('admin.impersonate.leave') }}" method="POST" class="m-0">
+                        @csrf
+                        <button type="submit" class="btn btn-sm btn-warning fw-bold py-0 px-3" style="font-size: 11.5px; border-radius: 6px;">
+                            <i class="bi bi-box-arrow-left me-1"></i> Return to {{ $impersonatorUser->name }}
+                        </button>
+                    </form>
+                </div>
+            @endif
+
             <!-- Top Header Bar -->
             <header class="sb-topbar">
-                <form action="{{ route('admin.transactions') }}" method="GET" class="sb-search-box">
-                    <i class="bi bi-search"></i>
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search anything...">
-                </form>
+                <div class="d-flex align-items-center gap-3">
+                    <form action="{{ route('admin.transactions') }}" method="GET" class="sb-search-box">
+                        <i class="bi bi-search"></i>
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search anything...">
+                    </form>
+
+                    @if($headerAccessibleTenants->isNotEmpty())
+                        <div class="dropdown d-none d-md-block">
+                            <button class="btn btn-sm btn-light border d-flex align-items-center gap-2 px-3 py-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 9px; font-size: 12.5px;">
+                                <i class="bi bi-hdd-network text-danger"></i>
+                                <span class="fw-semibold text-dark">{{ $headerTenant ? $headerTenant->name : 'Select Website' }}</span>
+                                @if($headerTenant)
+                                    <code class="small px-1 rounded" style="background: #DCFCE7; color: #166534; font-size: 10.5px;">{{ $headerTenant->db_name }}</code>
+                                @endif
+                                <i class="bi bi-chevron-down text-muted" style="font-size: 10px;"></i>
+                            </button>
+                            <ul class="dropdown-menu shadow-sm border-0 mt-2 p-2" style="border-radius: 12px; min-width: 280px; max-height: 360px; overflow-y: auto;">
+                                <li class="px-2 py-1 small fw-bold text-muted border-bottom mb-1">Switch Active Website (Tenant DB)</li>
+                                @foreach($headerAccessibleTenants as $hTenant)
+                                    <li>
+                                        <a class="dropdown-item rounded py-2 d-flex align-items-center justify-content-between {{ ($headerTenant && $headerTenant->id === $hTenant->id) ? 'bg-danger-subtle text-danger fw-bold' : '' }}"
+                                           href="{{ route('admin.tenants.switch', ['tenant' => $hTenant->id, 'redirect_to' => request()->fullUrl()]) }}">
+                                            <div class="text-truncate me-2">
+                                                <div style="font-size: 12.5px;">{{ $hTenant->name }}</div>
+                                                <div class="text-muted" style="font-size: 10.5px;">{{ $hTenant->theme_module }} • {{ $hTenant->db_name }}</div>
+                                            </div>
+                                            <span class="badge {{ $hTenant->is_demo ? 'bg-secondary-subtle text-secondary' : 'bg-success-subtle text-success' }}" style="font-size: 10px;">
+                                                {{ $hTenant->is_demo ? 'DEMO' : strtoupper($hTenant->status) }}
+                                            </span>
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                </div>
 
                 <div class="sb-topbar-right">
                     <div class="dropdown">

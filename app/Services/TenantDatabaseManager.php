@@ -49,6 +49,16 @@ class TenantDatabaseManager
             'database.connections.tenant.password' => $dbPass,
         ]);
 
+        // Ensure physical database exists before reconnecting (auto-heals if missing)
+        try {
+            if (preg_match('/^[a-zA-Z0-9_]+$/', $dbName)) {
+                DB::connection('central')->statement(
+                    "CREATE DATABASE IF NOT EXISTS `{$dbName}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+                );
+            }
+        } catch (Throwable) {
+        }
+
         DB::purge('tenant');
         DB::reconnect('tenant');
 

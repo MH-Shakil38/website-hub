@@ -429,14 +429,15 @@ flowchart LR
 - [x] Tenant-wise upload path (`ModuleStorageService` ও `ModuleCmsResolver` আপডেট: `uploads/t{tenant_id}/`)
 - [x] **Tests:** দুটো tenant DB বানিয়ে যাচাই করা যে প্রত্যেকে শুধু নিজের DB দেখে, আর provisioning rollback কাজ করে (`MultiDatabaseTenancyTest`: 2 passed, 12 assertions)
 
-### Phase 2: Roles আর Unified Dashboard
-- [ ] `users.type` + `reseller_id`, বিদ্যমান `Role`/`Permission` সাজানো
-- [ ] `config/panels.php`: role অনুযায়ী sidebar definition
-- [ ] `sidebar.blade.php` আপগ্রেড: panel + current website context
-- [ ] Website Context Switcher (`module-switcher.blade.php` আপগ্রেড)
-- [ ] Policies: `TenantPolicy`, `ResellerPolicy`, `ClientPolicy`
-- [ ] Impersonation (Super Admin → Reseller/Client, Reseller → Client)
-- [ ] `auth` middleware সব admin route-এ (এখন অনেক route-এ নেই)
+### Phase 2: Roles আর Unified Dashboard ✅ (সম্পন্ন)
+- [x] `users.type` + `reseller_id` + `referred_via`, `User` মডেলে role ও tenant scoping মেথড (`panelType()`, `accessibleTenantsQuery()`, `canAccessTenant()`)
+- [x] `config/panels.php`: role অনুযায়ী (`super_admin`, `reseller`, `client`) sidebar definition
+- [x] `sidebar.blade.php` আপগ্রেড: একই ডিজাইনে role badge, role-conditional platform menus + current website context অনুযায়ী মডিউল মেনু ফিল্টার
+- [x] Website Context Switcher (`module-switcher.blade.php` ও topbar dropdown আপগ্রেড: এক ক্লিকে যেকোনো Tenant ও তার আলাদা DB-তে সুইচ)
+- [x] Policies ও CRUD: `TenantPolicy`, `ClientPolicy`, `SaasManagementController` (`admin/tenants`, `admin/accounts`)
+- [x] Impersonation (Super Admin → Reseller/Client, Reseller → নিজের Client + Topbar "Return to account" ব্যানার)
+- [x] `EnsureDashboardAccess` middleware সব `/admin/*` route-এ যুক্ত করা এবং Git-safe VPS deploy কমান্ড (`php artisan saas:deploy`) তৈরি
+- [x] **Tests:** `UnifiedDashboardRolesAndImpersonationTest` (2 passed, 24 assertions)
 
 ### Phase 3: Domain Management
 - [ ] Wildcard subdomain resolution

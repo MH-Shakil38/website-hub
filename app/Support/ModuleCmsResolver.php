@@ -86,6 +86,17 @@ class ModuleCmsResolver
     {
         $request = $request ?? request();
 
+        // 0. If a specific SaaS Tenant is connected and user is a Client/Reseller, lock to that tenant's theme module
+        if (app()->bound('tenant')) {
+            /** @var \App\Models\Tenant $tenant */
+            $tenant = app('tenant');
+            $user = auth()->user();
+            if (($user && !$user->isSuperAdmin()) || $request->filled('tenant_id')) {
+                session(['admin_cms_module' => $tenant->theme_module]);
+                return $tenant->theme_module;
+            }
+        }
+
         $activeWebsites = Website::activeModules();
         $activeModNames = $activeWebsites->pluck('module_name')->filter()->values()->all();
 

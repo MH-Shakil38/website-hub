@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\Admin\GlobalAdminController;
 use App\Http\Controllers\Admin\ModuleCmsController;
+use App\Http\Controllers\Admin\SaasManagementController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FrontendHubController;
+use App\Http\Middleware\EnsureDashboardAccess;
 use Illuminate\Support\Facades\Route;
 
 // Serve Isolated Module Uploaded Media directly from Modules/{Module}/Public/uploads/{t{id}/}{folder}/{filename}
@@ -35,12 +37,25 @@ Route::post('/confirm-password', [AuthController::class, 'confirmPassword'])->na
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/logout', [AuthController::class, 'logout']);
 
-// Global Admin Core Routes
-Route::prefix('admin')->name('admin.')->group(function () {
+// Global Admin Core Routes (Unified SaaS Dashboard for Super Admin, Reseller, and Client)
+Route::prefix('admin')->name('admin.')->middleware([EnsureDashboardAccess::class])->group(function () {
     Route::get('/', fn () => redirect()->route('admin.dashboard'));
     Route::get('/dashboard', [GlobalAdminController::class, 'dashboard'])->name('dashboard');
 
-    // Websites Management
+    // SaaS Multi-Database Tenants & Website Context Switcher (Phase 2)
+    Route::get('/tenants', [SaasManagementController::class, 'tenants'])->name('tenants.index');
+    Route::post('/tenants', [SaasManagementController::class, 'storeTenant'])->name('tenants.store');
+    Route::match(['get', 'post'], '/tenants/{tenant}/switch', [SaasManagementController::class, 'switchTenant'])->name('tenants.switch');
+    Route::post('/tenants/{tenant}/toggle-status', [SaasManagementController::class, 'toggleTenantStatus'])->name('tenants.toggle-status');
+    Route::delete('/tenants/{tenant}', [SaasManagementController::class, 'destroyTenant'])->name('tenants.destroy');
+
+    // SaaS Resellers & Clients Management + One-Click Impersonation (Phase 2)
+    Route::get('/accounts', [SaasManagementController::class, 'accounts'])->name('saas.accounts');
+    Route::post('/accounts', [SaasManagementController::class, 'storeAccount'])->name('saas.accounts.store');
+    Route::post('/impersonate/leave', [SaasManagementController::class, 'leaveImpersonation'])->name('impersonate.leave');
+    Route::post('/impersonate/{targetUser}', [SaasManagementController::class, 'impersonate'])->name('impersonate.start');
+
+    // Websites / Themes Management (Super Admin only)
     Route::get('/websites', [GlobalAdminController::class, 'websites'])->name('websites');
     Route::post('/websites', [GlobalAdminController::class, 'storeWebsite'])->name('websites.store');
     Route::post('/websites/{website}/toggle', [GlobalAdminController::class, 'toggleWebsite'])->name('websites.toggle');

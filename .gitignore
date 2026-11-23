@@ -19,6 +19,7 @@
 /public/hot
 /public/storage
 /public/module-assets
+/public/themes
 /storage/*.key
 /storage/pail
 /vendor

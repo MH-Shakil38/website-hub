@@ -51,6 +51,86 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
+    public function reseller(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'reseller_id');
+    }
+
+    public function clients(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(self::class, 'reseller_id');
+    }
+
+    public function tenants(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Tenant::class, 'owner_id');
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->type === 'super_admin' || ($this->role && $this->role->slug === 'administrator' && empty($this->type));
+    }
+
+    public function isReseller(): bool
+    {
+        return $this->type === 'reseller';
+    }
+
+    public function isClient(): bool
+    {
+        return $this->type === 'client' || !$this->isSuperAdmin() && !$this->isReseller();
+    }
+
+    public function panelType(): string
+    {
+        if ($this->isSuperAdmin()) {
+            return 'super_admin';
+        }
+        if ($this->isReseller()) {
+            return 'reseller';
+        }
+
+        return 'client';
+    }
+
+    /**
+     * Query builder for Tenants accessible to this user depending on role (Super Admin, Reseller, or Client).
+     */
+    public function accessibleTenantsQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        if ($this->isSuperAdmin()) {
+            return Tenant::query();
+        }
+
+        if ($this->isReseller()) {
+            $clientIds = $this->clients()->pluck('id')->all();
+            return Tenant::query()->where(function ($q) use ($clientIds) {
+                $q->where('reseller_id', $this->id)
+                    ->orWhere('owner_id', $this->id);
+                if (!empty($clientIds)) {
+                    $q->orWhereIn('owner_id', $clientIds);
+                }
+            });
+        }
+
+        return Tenant::query()->where('owner_id', $this->id);
+    }
+
+    public function canAccessTenant(Tenant $tenant): bool
+    {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+
+        if ($this->isReseller()) {
+            return (int) $tenant->reseller_id === (int) $this->id
+                || (int) $tenant->owner_id === (int) $this->id
+                || ($tenant->owner && (int) $tenant->owner->reseller_id === (int) $this->id);
+        }
+
+        return (int) $tenant->owner_id === (int) $this->id;
+    }
+
     public function hasPermission(string $permissionSlug): bool
     {
         if (!$this->role) {

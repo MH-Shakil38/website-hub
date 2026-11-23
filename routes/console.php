@@ -278,3 +278,32 @@ Artisan::command('themes:link', function () {
     $this->info('Per-module theme asset links checked!');
 })->purpose('Create per-module asset symlinks under public/themes/{module}');
 
+Artisan::command('saas:deploy {--sync-demos}', function () {
+    $this->info('Starting SaaS VPS Deployment Pipeline...');
+
+    // 1. Run Central Database Migrations
+    $this->line('1. Running Central Database Migrations...');
+    Artisan::call('migrate', ['--force' => true]);
+    $this->info(trim(Artisan::output()) ?: '  ✓ Central migrations up to date.');
+
+    // 2. Link Per-Module Theme Assets (Linux/Windows compatible)
+    $this->line('2. Linking Theme Assets (public/themes/*)...');
+    Artisan::call('themes:link');
+    $this->info('  ✓ Theme assets linked.');
+
+    // 3. Optionally sync demo tenants or migrate all existing tenant DBs
+    if ($this->option('sync-demos')) {
+        $this->line('3. Synchronizing Demo Tenant Databases...');
+        Artisan::call('tenants:sync-demos');
+    } else {
+        $this->line('3. Running Module Migrations across existing Tenant Databases...');
+        Artisan::call('tenants:migrate');
+    }
+
+    // 4. Clear & optimize caches
+    $this->line('4. Clearing application caches...');
+    Artisan::call('optimize:clear');
+
+    $this->info('SaaS Deployment Completed Successfully!');
+})->purpose('Deploy SaaS changes on VPS after git pull (central migrate, theme links, tenant DB migrate)');
+

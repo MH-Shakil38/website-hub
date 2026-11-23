@@ -1,0 +1,117 @@
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Unified SaaS Dashboard Role Panels (Super Admin, Reseller, Client)
+    |--------------------------------------------------------------------------
+    |
+    | All three panels render inside the exact same master layout
+    | (resources/views/admin/layouts/master.blade.php) while dynamically
+    | adjusting the sidebar navigation and data scope based on user->panelType().
+    |
+    */
+
+    'roles' => [
+        'super_admin' => [
+            'label' => 'Super Admin Panel',
+            'badge_bg' => '#FFE4EC',
+            'badge_color' => '#EC134A',
+            'show_all_theme_modules' => true,
+            'platform_menus' => [
+                [
+                    'title' => 'Dashboard',
+                    'icon' => 'bi bi-grid-fill',
+                    'route' => 'admin.dashboard',
+                    'active' => 'admin.dashboard',
+                ],
+                [
+                    'title' => 'Tenants (Client Sites)',
+                    'icon' => 'bi bi-hdd-network-fill',
+                    'route' => 'admin.tenants.index',
+                    'active' => 'admin.tenants.*',
+                ],
+                [
+                    'title' => 'Resellers & Clients',
+                    'icon' => 'bi bi-people-fill',
+                    'route' => 'admin.saas.accounts',
+                    'active' => 'admin.saas.accounts*',
+                ],
+                [
+                    'title' => 'Themes & Modules',
+                    'icon' => 'bi bi-globe2',
+                    'route' => 'admin.websites',
+                    'active' => 'admin.websites*',
+                ],
+                [
+                    'title' => 'Transactions & Billing',
+                    'icon' => 'bi bi-credit-card-2-front-fill',
+                    'route' => 'admin.transactions',
+                    'active' => 'admin.transactions*',
+                ],
+            ],
+        ],
+
+        'reseller' => [
+            'label' => 'Reseller Partner Panel',
+            'badge_bg' => '#DBEAFE',
+            'badge_color' => '#2563EB',
+            'show_all_theme_modules' => false,
+            'platform_menus' => [
+                [
+                    'title' => 'Reseller Dashboard',
+                    'icon' => 'bi bi-grid-fill',
+                    'route' => 'admin.dashboard',
+                    'active' => 'admin.dashboard',
+                ],
+                [
+                    'title' => 'My Clients',
+                    'icon' => 'bi bi-people-fill',
+                    'route' => 'admin.saas.accounts',
+                    'active' => 'admin.saas.accounts*',
+                ],
+                [
+                    'title' => 'Client Websites',
+                    'icon' => 'bi bi-hdd-network-fill',
+                    'route' => 'admin.tenants.index',
+                    'active' => 'admin.tenants.*',
+                ],
+                [
+                    'title' => 'Wallet & Commissions',
+                    'icon' => 'bi bi-wallet2',
+                    'route' => 'admin.transactions',
+                    'active' => 'admin.transactions*',
+                ],
+            ],
+        ],
+
+        'client' => [
+            'label' => 'Client Website Panel',
+            'badge_bg' => '#DCFCE7',
+            'badge_color' => '#10B981',
+            'show_all_theme_modules' => false,
+            'platform_menus' => [
+                [
+                    'title' => 'Overview',
+                    'icon' => 'bi bi-grid-fill',
+                    'route' => 'admin.dashboard',
+                    'active' => 'admin.dashboard',
+                ],
+                [
+                    'title' => 'My Websites & Domains',
+                    'icon' => 'bi bi-globe2',
+                    'route' => 'admin.tenants.index',
+                    'active' => 'admin.tenants.*',
+                ],
+                [
+                    'title' => 'Billing & Subscription',
+                    'icon' => 'bi bi-receipt',
+                    'route' => 'admin.transactions',
+                    'active' => 'admin.transactions*',
+                ],
+            ],
+        ],
+    ],
+
+];

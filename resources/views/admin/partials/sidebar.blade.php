@@ -1,7 +1,29 @@
 @php
+    /** @var \App\Models\User|null $authUser */
+    $authUser = auth()->user() ?? \App\Models\User::first();
+    $panelType = $authUser ? $authUser->panelType() : 'super_admin';
+    $panelConfig = config("panels.roles.{$panelType}", config('panels.roles.super_admin'));
+
+    $activeTenant = function_exists('current_tenant') ? current_tenant() : (app()->bound('tenant') ? app('tenant') : null);
+    $accessibleTenants = $authUser
+        ? $authUser->accessibleTenantsQuery()->orderByDesc('is_demo')->orderBy('id')->get()
+        : collect();
+
     $activeWebsitesList = isset($activeModuleWebsites)
         ? $activeModuleWebsites
         : \App\Models\Website::where('is_active', true)->orderBy('id')->get();
+
+    // For Resellers and Clients, scope the sidebar module accordions to their currently selected Tenant's theme (or their accessible themes)
+    if ($panelType !== 'super_admin') {
+        $allowedModules = $activeTenant
+            ? [$activeTenant->theme_module]
+            : $accessibleTenants->pluck('theme_module')->unique()->values()->all();
+
+        $activeWebsitesList = $activeWebsitesList->filter(
+            fn ($site) => in_array($site->module_name, $allowedModules, true)
+        )->values();
+    }
+
     $currentCmsMod = \App\Support\ModuleCmsResolver::currentModule();
     $currentTabParam = request()->query('tab', 'hero');
     $isMultiModule = $activeWebsitesList->count() > 1;
@@ -9,7 +31,7 @@
 <aside class="sb-sidebar">
     <div>
         <!-- Brand Logo -->
-        <a href="{{ route('admin.dashboard') }}" class="sb-brand">
+        <a href="{{ route('admin.dashboard') }}" class="sb-brand" style="padding-bottom: 12px;">
             @if(!empty($globalSiteLogo))
                 <img src="{{ $globalSiteLogo }}" alt="{{ $globalSiteName ?? 'SiteBuilder' }}" style="width: 34px; height: 34px; object-fit: contain; border-radius: 7px;">
             @else
@@ -23,24 +45,29 @@
             <span>{{ $globalSiteName ?? 'SiteBuilder' }}</span>
         </a>
 
-        <!-- Root Global Menu Items (ONLY Dashboard & Websites) -->
+        <!-- Role Panel Badge & Active Tenant Quick Indicator -->
+        <div class="px-2 mb-3">
+            <div class="d-flex align-items-center justify-content-between px-2 py-1 rounded-3"
+                 style="background: {{ $panelConfig['badge_bg'] ?? '#FFE4EC' }}; color: {{ $panelConfig['badge_color'] ?? '#EC134A' }}; font-size: 11px; font-weight: 700;">
+                <span><i class="bi bi-shield-check me-1"></i> {{ $panelConfig['label'] ?? 'SaaS Panel' }}</span>
+                <span class="text-uppercase" style="font-size: 10px;">{{ strtoupper(config('app.mode', 'saas')) }}</span>
+            </div>
+        </div>
+
+        <!-- Role-Conditional Platform Menu Items (from config/panels.php) -->
         <ul class="sb-nav">
-            <li>
-                <a href="{{ route('admin.dashboard') }}" class="sb-nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                    <span class="link-left">
-                        <i class="bi bi-grid-fill nav-icon"></i>
-                        <span>Dashboard</span>
-                    </span>
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('admin.websites') }}" class="sb-nav-link {{ request()->routeIs('admin.websites') ? 'active' : '' }}">
-                    <span class="link-left">
-                        <i class="bi bi-globe2 nav-icon"></i>
-                        <span>Websites</span>
-                    </span>
-                </a>
-            </li>
+            @foreach($panelConfig['platform_menus'] ?? [] as $pMenu)
+                @if(Route::has($pMenu['route']))
+                    <li>
+                        <a href="{{ route($pMenu['route']) }}" class="sb-nav-link {{ request()->routeIs($pMenu['active'] ?? $pMenu['route']) ? 'active' : '' }}">
+                            <span class="link-left">
+                                <i class="{{ $pMenu['icon'] ?? 'bi bi-circle' }} nav-icon"></i>
+                                <span>{{ $pMenu['title'] }}</span>
+                            </span>
+                        </a>
+                    </li>
+                @endif
+            @endforeach
         </ul>
 
         @if($isMultiModule)

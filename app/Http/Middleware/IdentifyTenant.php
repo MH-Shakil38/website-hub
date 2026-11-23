@@ -84,10 +84,13 @@ class IdentifyTenant
 
     protected function connectAdminTenantContext(Request $request): void
     {
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+
         $requestedTenantId = $request->input('tenant_id');
         if ($requestedTenantId) {
             $tenant = Tenant::find($requestedTenantId);
-            if ($tenant) {
+            if ($tenant && (!$user || $user->canAccessTenant($tenant))) {
                 session([
                     'admin_tenant_id' => $tenant->id,
                     'admin_cms_module' => $tenant->theme_module,
@@ -99,7 +102,8 @@ class IdentifyTenant
 
         $requestedModule = $request->input('cms_module');
         if ($requestedModule) {
-            $demoTenant = Tenant::where('theme_module', $requestedModule)
+            $query = $user ? $user->accessibleTenantsQuery() : Tenant::query();
+            $demoTenant = (clone $query)->where('theme_module', $requestedModule)
                 ->orderByDesc('is_demo')
                 ->first();
             if ($demoTenant) {
@@ -115,20 +119,26 @@ class IdentifyTenant
         $sessionTenantId = session('admin_tenant_id');
         if ($sessionTenantId) {
             $tenant = Tenant::find($sessionTenantId);
-            if ($tenant) {
+            if ($tenant && (!$user || $user->canAccessTenant($tenant))) {
+                session(['admin_cms_module' => $tenant->theme_module]);
                 $this->tenantDb->connect($tenant);
                 return;
             }
         }
 
-        // Fallback: connect to the demo tenant for the current CMS module
+        // Fallback: connect to the first accessible tenant for the user (or demo tenant for Super Admin)
+        $query = $user ? $user->accessibleTenantsQuery() : Tenant::query();
         $currentMod = \App\Support\ModuleCmsResolver::currentModule($request);
-        $fallbackTenant = Tenant::where('theme_module', $currentMod)
+
+        $fallbackTenant = (clone $query)->where('theme_module', $currentMod)
             ->orderByDesc('is_demo')
-            ->first() ?? Tenant::first();
+            ->first() ?? (clone $query)->first();
 
         if ($fallbackTenant) {
-            session(['admin_tenant_id' => $fallbackTenant->id]);
+            session([
+                'admin_tenant_id' => $fallbackTenant->id,
+                'admin_cms_module' => $fallbackTenant->theme_module,
+            ]);
             $this->tenantDb->connect($fallbackTenant);
         }
     }
