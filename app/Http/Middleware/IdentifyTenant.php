@@ -22,7 +22,7 @@ class IdentifyTenant
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (config('app.mode', 'saas') === 'single') {
+        if (config('app.mode', 'saas') === 'single' || $request->is('internal/*')) {
             return $next($request);
         }
 
@@ -53,6 +53,21 @@ class IdentifyTenant
                     return response()->view('frontend.tenant-suspended', ['tenant' => $tenant], 403);
                 }
 
+                // 2b. Primary Domain 301 Redirect (only on safe GET/HEAD requests when primary domain is verified & different)
+                if ($request->isMethodSafe()) {
+                    $normalizedHost = preg_replace('/^www\./i', '', $host);
+                    $primaryDomain = $tenant->domains()
+                        ->where('is_primary', true)
+                        ->whereNotNull('verified_at')
+                        ->first();
+
+                    if ($primaryDomain && strtolower($primaryDomain->domain) !== $host && strtolower($primaryDomain->domain) !== $normalizedHost) {
+                        $scheme = $request->getScheme();
+                        $uri = $request->getRequestUri();
+                        return redirect()->to("{$scheme}://{$primaryDomain->domain}{$uri}", 301);
+                    }
+                }
+
                 $this->tenantDb->connect($tenant);
             }
         }
@@ -62,9 +77,15 @@ class IdentifyTenant
 
     protected function resolveTenantByHost(string $host, array $centralDomains): ?Tenant
     {
-        // A. Direct match in core_domains
-        $domainRecord = Domain::where('domain', $host)->with('tenant')->first();
+        $cleanHost = preg_replace('/^www\./i', '', $host);
+
+        // A. Direct match in core_domains (supports both root and www)
+        $domainRecord = Domain::whereIn('domain', [$host, $cleanHost])->with('tenant')->first();
         if ($domainRecord && $domainRecord->tenant) {
+            // Custom domains must be verified before serving public traffic
+            if ($domainRecord->type === 'custom' && $domainRecord->verified_at === null) {
+                return null;
+            }
             return $domainRecord->tenant;
         }
 

@@ -33,6 +33,12 @@ return [
                     'active' => 'admin.tenants.*',
                 ],
                 [
+                    'title' => 'Domains & SSL',
+                    'icon' => 'bi bi-link-45deg',
+                    'route' => 'admin.domains.index',
+                    'active' => 'admin.domains.*',
+                ],
+                [
                     'title' => 'Resellers & Clients',
                     'icon' => 'bi bi-people-fill',
                     'route' => 'admin.saas.accounts',
@@ -78,6 +84,12 @@ return [
                     'active' => 'admin.tenants.*',
                 ],
                 [
+                    'title' => 'Domains & SSL',
+                    'icon' => 'bi bi-link-45deg',
+                    'route' => 'admin.domains.index',
+                    'active' => 'admin.domains.*',
+                ],
+                [
                     'title' => 'Wallet & Commissions',
                     'icon' => 'bi bi-wallet2',
                     'route' => 'admin.transactions',
@@ -103,6 +115,12 @@ return [
                     'icon' => 'bi bi-globe2',
                     'route' => 'admin.tenants.index',
                     'active' => 'admin.tenants.*',
+                ],
+                [
+                    'title' => 'Custom Domains & SSL',
+                    'icon' => 'bi bi-link-45deg',
+                    'route' => 'admin.domains.index',
+                    'active' => 'admin.domains.*',
                 ],
                 [
                     'title' => 'Billing & Subscription',

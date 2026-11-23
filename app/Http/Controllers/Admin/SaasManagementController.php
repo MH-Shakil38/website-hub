@@ -9,6 +9,7 @@ use App\Models\Role;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Policies\ClientPolicy;
+use App\Services\DomainVerificationService;
 use App\Services\TenantDatabaseManager;
 use App\Support\ModuleCmsResolver;
 use Illuminate\Http\Request;
@@ -19,7 +20,8 @@ use Illuminate\Support\Str;
 class SaasManagementController extends Controller
 {
     public function __construct(
-        protected TenantDatabaseManager $tenantDb
+        protected TenantDatabaseManager $tenantDb,
+        protected DomainVerificationService $domainVerifier
     ) {}
 
     /**
@@ -351,5 +353,222 @@ class SaasManagementController extends Controller
 
         return redirect()->route('admin.dashboard')
             ->with('success', 'Returned to your original account.');
+    }
+
+    // =========================================================================
+    // PHASE 3: DOMAIN MANAGEMENT, DNS VERIFICATION & CADDY ON-DEMAND SSL
+    // =========================================================================
+
+    /**
+     * List all Domains (Free Subdomains & Custom Domains) for the user's accessible tenants.
+     */
+    public function domains(Request $request)
+    {
+        /** @var User $user */
+        $user = Auth::user() ?? User::first();
+        $accessibleTenants = $user->accessibleTenantsQuery()->orderByDesc('is_demo')->orderBy('name')->get();
+        $tenantIds = $accessibleTenants->pluck('id')->all();
+
+        $selectedTenantId = $request->query('tenant_id');
+        $search = trim((string) $request->query('search', ''));
+
+        $domainsQuery = Domain::with('tenant')->whereIn('tenant_id', $tenantIds);
+
+        if ($selectedTenantId && in_array((int) $selectedTenantId, $tenantIds, true)) {
+            $domainsQuery->where('tenant_id', $selectedTenantId);
+        }
+
+        if ($search !== '') {
+            $domainsQuery->where('domain', 'like', "%{$search}%");
+        }
+
+        $domains = $domainsQuery->orderByDesc('is_primary')->latest('id')->paginate(12)->withQueryString();
+
+        return view('admin.domains', compact('domains', 'accessibleTenants', 'selectedTenantId', 'search', 'user'));
+    }
+
+    /**
+     * Add a Custom Domain to an accessible Tenant Website.
+     */
+    public function storeDomain(Request $request)
+    {
+        /** @var User $user */
+        $user = Auth::user() ?? User::first();
+
+        $validated = $request->validate([
+            'tenant_id' => 'required|exists:core_tenants,id',
+            'domain' => 'required|string|max:190',
+        ]);
+
+        $tenant = Tenant::findOrFail($validated['tenant_id']);
+        if (!$user->canAccessTenant($tenant)) {
+            abort(403, 'You do not have permission to add a domain to this website.');
+        }
+
+        $cleanDomain = $this->domainVerifier->normalizeHostname($validated['domain']);
+        if (!preg_match('/^([a-z0-9\-]+\.)+[a-z]{2,}$/', $cleanDomain)) {
+            return back()->withErrors(['domain' => "Invalid domain format [{$cleanDomain}]. Enter a valid domain like example.com or shop.example.com."])->withInput();
+        }
+
+        $centralDomains = array_map('strtolower', config('app.central_domains', ['localhost', 'multi-website-hub.test']));
+        $dashboardDomain = strtolower((string) config('app.dashboard_domain', 'app.multi-website-hub.test'));
+
+        if (in_array($cleanDomain, $centralDomains, true) || $cleanDomain === $dashboardDomain) {
+            return back()->withErrors(['domain' => 'Cannot use a reserved central platform domain as a custom domain.'])->withInput();
+        }
+
+        if (Domain::where('domain', $cleanDomain)->exists()) {
+            return back()->withErrors(['domain' => "The domain [{$cleanDomain}] is already connected to a website."])->withInput();
+        }
+
+        $token = $this->domainVerifier->generateToken($tenant->id, $cleanDomain);
+
+        $domainRecord = Domain::create([
+            'tenant_id' => $tenant->id,
+            'domain' => $cleanDomain,
+            'type' => 'custom',
+            'is_primary' => false,
+            'verification_token' => $token,
+            'verified_at' => null,
+            'ssl_status' => 'pending',
+        ]);
+
+        ActivityLog::record(
+            'Custom Domain Added',
+            "{$cleanDomain} -> {$tenant->name} (Pending DNS Verification)",
+            'bi-link-45deg',
+            '#DBEAFE',
+            '#2563EB'
+        );
+
+        return back()->with('success', "Custom domain [{$domainRecord->domain}] added! Configure the DNS records shown below and click Verify DNS.");
+    }
+
+    /**
+     * Trigger DNS Verification (TXT / A / CNAME check) for a Custom Domain.
+     */
+    public function verifyDomain(Request $request, Domain $domain)
+    {
+        /** @var User $user */
+        $user = Auth::user() ?? User::first();
+
+        if (!$domain->tenant || !$user->canAccessTenant($domain->tenant)) {
+            abort(403);
+        }
+
+        $forceLocal = $request->boolean('simulate_local') || $user->isSuperAdmin();
+        $result = $this->domainVerifier->verifyDomain($domain, $forceLocal);
+
+        if ($result['verified']) {
+            ActivityLog::record(
+                'Custom Domain Verified & SSL Activated',
+                "{$domain->domain} ({$result['method']})",
+                'bi-patch-check-fill',
+                '#DCFCE7',
+                '#10B981'
+            );
+
+            return back()->with('success', $result['message']);
+        }
+
+        return back()->withErrors(['domain' => $result['message']]);
+    }
+
+    /**
+     * Set a verified Domain as the Primary Domain for its Tenant (enables 301 redirect from secondary domains).
+     */
+    public function setPrimaryDomain(Domain $domain)
+    {
+        /** @var User $user */
+        $user = Auth::user() ?? User::first();
+
+        if (!$domain->tenant || !$user->canAccessTenant($domain->tenant)) {
+            abort(403);
+        }
+
+        if ($domain->type === 'custom' && $domain->verified_at === null) {
+            return back()->withErrors(['domain' => 'Please verify DNS ownership of this custom domain before setting it as Primary.']);
+        }
+
+        Domain::where('tenant_id', $domain->tenant_id)->update(['is_primary' => false]);
+        $domain->update(['is_primary' => true]);
+
+        return back()->with('success', "[{$domain->domain}] is now the Primary Domain for [{$domain->tenant->name}]. All other domains will 301 redirect to it.");
+    }
+
+    /**
+     * Remove a Custom Domain from a Tenant.
+     */
+    public function destroyDomain(Domain $domain)
+    {
+        /** @var User $user */
+        $user = Auth::user() ?? User::first();
+
+        if (!$domain->tenant || !$user->canAccessTenant($domain->tenant)) {
+            abort(403);
+        }
+
+        if ($domain->type === 'subdomain') {
+            return back()->withErrors(['domain' => 'The default platform subdomain cannot be deleted.']);
+        }
+
+        $wasPrimary = $domain->is_primary;
+        $tenantId = $domain->tenant_id;
+        $host = $domain->domain;
+        $domain->delete();
+
+        // If the deleted custom domain was primary, promote the default subdomain back to primary
+        if ($wasPrimary) {
+            $fallbackSubdomain = Domain::where('tenant_id', $tenantId)->orderBy('id')->first();
+            $fallbackSubdomain?->update(['is_primary' => true]);
+        }
+
+        return back()->with('success', "Custom domain [{$host}] removed.");
+    }
+
+    /**
+     * Caddy On-Demand TLS Ask Endpoint: GET /internal/domain-check?domain=example.com
+     * Returns HTTP 200 if Caddy is allowed to issue a Let's Encrypt certificate for this domain, or 404 otherwise.
+     */
+    public function caddyDomainCheck(Request $request)
+    {
+        $rawDomain = (string) $request->query('domain', '');
+        if ($rawDomain === '') {
+            return response('Missing domain parameter', 400);
+        }
+
+        $host = strtolower(trim($rawDomain));
+        $cleanHost = preg_replace('/^www\./i', '', $host);
+
+        $centralDomains = array_map('strtolower', config('app.central_domains', ['localhost', 'multi-website-hub.test']));
+        $dashboardDomain = strtolower((string) config('app.dashboard_domain', 'app.multi-website-hub.test'));
+
+        // 1. Central domain or Dashboard domain
+        if (in_array($host, $centralDomains, true) || in_array($cleanHost, $centralDomains, true) || $host === $dashboardDomain) {
+            return response('Authorized central domain', 200);
+        }
+
+        // 2. Verified domain in core_domains attached to an accessible tenant
+        $domainRecord = Domain::whereIn('domain', [$host, $cleanHost])
+            ->whereNotNull('verified_at')
+            ->with('tenant')
+            ->first();
+
+        if ($domainRecord && $domainRecord->tenant && $domainRecord->tenant->isAccessible()) {
+            return response('Authorized verified tenant domain', 200);
+        }
+
+        // 3. Valid active tenant subdomain under any central domain
+        foreach ($centralDomains as $baseDomain) {
+            $suffix = '.' . $baseDomain;
+            if (str_ends_with($host, $suffix)) {
+                $sub = substr($host, 0, -strlen($suffix));
+                if ($sub !== '' && Tenant::where('subdomain', $sub)->whereIn('status', ['trial', 'active'])->exists()) {
+                    return response('Authorized active tenant subdomain', 200);
+                }
+            }
+        }
+
+        return response('Unauthorized domain', 404);
     }
 }

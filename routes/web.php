@@ -8,6 +8,10 @@ use App\Http\Controllers\FrontendHubController;
 use App\Http\Middleware\EnsureDashboardAccess;
 use Illuminate\Support\Facades\Route;
 
+// Caddy On-Demand TLS Domain Verification Endpoint (Phase 3: returns 200 if domain is verified & active, 404 otherwise)
+Route::get('/internal/domain-check', [SaasManagementController::class, 'caddyDomainCheck'])
+    ->name('saas.caddy.domain-check');
+
 // Serve Isolated Module Uploaded Media directly from Modules/{Module}/Public/uploads/{t{id}/}{folder}/{filename}
 Route::get('/module-media/{module}/{folder}/{filename}/{subfilename?}', [ModuleCmsController::class, 'serveModuleMedia'])
     ->name('module.media.serve');
@@ -48,6 +52,13 @@ Route::prefix('admin')->name('admin.')->middleware([EnsureDashboardAccess::class
     Route::match(['get', 'post'], '/tenants/{tenant}/switch', [SaasManagementController::class, 'switchTenant'])->name('tenants.switch');
     Route::post('/tenants/{tenant}/toggle-status', [SaasManagementController::class, 'toggleTenantStatus'])->name('tenants.toggle-status');
     Route::delete('/tenants/{tenant}', [SaasManagementController::class, 'destroyTenant'])->name('tenants.destroy');
+
+    // SaaS Custom Domains, DNS Verification & Primary Domain Routing (Phase 3)
+    Route::get('/domains', [SaasManagementController::class, 'domains'])->name('domains.index');
+    Route::post('/domains', [SaasManagementController::class, 'storeDomain'])->name('domains.store');
+    Route::post('/domains/{domain}/verify', [SaasManagementController::class, 'verifyDomain'])->name('domains.verify');
+    Route::post('/domains/{domain}/primary', [SaasManagementController::class, 'setPrimaryDomain'])->name('domains.primary');
+    Route::delete('/domains/{domain}', [SaasManagementController::class, 'destroyDomain'])->name('domains.destroy');
 
     // SaaS Resellers & Clients Management + One-Click Impersonation (Phase 2)
     Route::get('/accounts', [SaasManagementController::class, 'accounts'])->name('saas.accounts');

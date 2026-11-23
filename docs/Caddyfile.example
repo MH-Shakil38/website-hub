@@ -1,0 +1,39 @@
+# ==============================================================================
+# Caddyfile for Laravel Modular Multi-Website SaaS Hub (Phase 3)
+# Supports:
+# 1. Central Domain (yourhub.com) & Unified Dashboard (app.yourhub.com)
+# 2. Wildcard Client Subdomains (*.yourhub.com)
+# 3. Unlimited Client Custom Domains (clientshop.com) via On-Demand TLS
+# ==============================================================================
+
+{
+    on_demand_tls {
+        # Caddy asks Laravel before issuing any Let's Encrypt SSL certificate
+        ask http://127.0.0.1/internal/domain-check
+    }
+}
+
+# Catch-all HTTPS server block for Central, Subdomains, and Verified Custom Domains
+https:// {
+    tls {
+        on_demand
+    }
+
+    root * /var/www/multi-website-hub/public
+    encode zstd gzip
+
+    php_fastcgi unix//run/php/php8.3-fpm.sock
+    file_server
+
+    header {
+        X-Frame-Options "SAMEORIGIN"
+        X-Content-Type-Options "nosniff"
+        Referrer-Policy "strict-origin-when-cross-origin"
+    }
+}
+
+# Local HTTP listener so Caddy's internal ask endpoint can reach Laravel on 127.0.0.1
+http://127.0.0.1 {
+    root * /var/www/multi-website-hub/public
+    php_fastcgi unix//run/php/php8.3-fpm.sock
+}

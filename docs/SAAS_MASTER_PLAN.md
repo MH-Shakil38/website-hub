@@ -439,11 +439,12 @@ flowchart LR
 - [x] `EnsureDashboardAccess` middleware সব `/admin/*` route-এ যুক্ত করা এবং Git-safe VPS deploy কমান্ড (`php artisan saas:deploy`) তৈরি
 - [x] **Tests:** `UnifiedDashboardRolesAndImpersonationTest` (2 passed, 24 assertions)
 
-### Phase 3: Domain Management
-- [ ] Wildcard subdomain resolution
-- [ ] Custom domain যোগ করা → DNS নির্দেশনা দেখানো → TXT/A record verify (`dns_get_record`) → queue job
-- [ ] SSL integration (Cloudflare for SaaS **অথবা** Caddy on-demand `/api/domain-check`)
-- [ ] Primary domain redirect (subdomain → custom domain, 301)
+### Phase 3: Domain Management ✅ (সম্পন্ন)
+- [x] Wildcard subdomain resolution (`*.yourhub.com` ও `www.` সমর্থনসহ)
+- [x] Custom domain যোগ করা (`/admin/domains` UI) → DNS নির্দেশনা দেখানো (A Record, CNAME ও TXT Token) → `DomainVerificationService` দিয়ে ভেরিফাই (`dns_get_record`)
+- [x] SSL integration: Caddy On-Demand TLS এন্ডপয়েন্ট (`GET /internal/domain-check?domain=x`) ও রেডিমেড `docs/Caddyfile.example`
+- [x] Primary domain redirect (সাবডোমেইন থেকে ভেরিফাইড Primary Custom Domain-এ অটো `301 Redirect`)
+- [x] **Tests:** `DomainManagementAndSslTest` (1 passed, 21 assertions)
 
 ### Phase 4: Plans আর Billing
 - [ ] `core_plans`, `core_subscriptions`, `core_invoices`, `core_payments`

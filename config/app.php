@@ -21,6 +21,10 @@ return [
 
     'dashboard_domain' => env('DASHBOARD_DOMAIN', 'app.multi-website-hub.test'),
 
+    'server_ip' => env('SAAS_SERVER_IP', '127.0.0.1'),
+
+    'cname_target' => env('SAAS_CNAME_TARGET', 'sites.multi-website-hub.test'),
+
     'active_module' => env('ACTIVE_MODULE', 'Interior'),
 
     /*
