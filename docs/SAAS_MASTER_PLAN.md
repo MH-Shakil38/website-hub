@@ -446,12 +446,13 @@ flowchart LR
 - [x] Primary domain redirect (সাবডোমেইন থেকে ভেরিফাইড Primary Custom Domain-এ অটো `301 Redirect`)
 - [x] **Tests:** `DomainManagementAndSslTest` (1 passed, 21 assertions)
 
-### Phase 4: Plans আর Billing
-- [ ] `core_plans`, `core_subscriptions`, `core_invoices`, `core_payments`
-- [ ] Plan limit enforcement middleware
-- [ ] SSLCommerz / bKash integration + manual payment approval
-- [ ] Scheduler: renewal reminder, auto-suspend, trial expiry
-- [ ] PDF invoice
+### Phase 4: Plans আর Billing ✅ (সম্পন্ন)
+- [x] `core_plans`, `core_subscriptions`, `core_invoices`, `core_payments` মাইগ্রেশন ও মডেল + ৬টি ডিফল্ট Client ও Reseller প্যাকেজ সিডার
+- [x] Plan limit enforcement (ওয়েবসাইটের সংখ্যা, থিমের অনুমতি এবং কাস্টম ডোমেইন কানেকশন লিমিট যাচাই)
+- [x] `PaymentGatewayInterface` + **SSLCommerz** অনলাইন গেটওয়ে ড্রাইভার ও চেকআউট + **Manual Payment** (bKash/Nagad/Rocket/Bank Txn ID জমা ও Super Admin Approve/Reject)
+- [x] Scheduler (`php artisan billing:check-expirations`, daily): ট্রায়াল ও সাবস্ক্রিপশনের মেয়াদ + ৩ দিন গ্রেস পিরিয়ড শেষে অটো-সাসপেন্ড
+- [x] প্রিন্টেবল/PDF ইনভয়েস ভিউ (`/admin/billing/invoices/{invoice}/print`)
+- [x] **Tests:** `PlansAndBillingTest` (1 passed, 27 assertions)
 
 ### Phase 5: Reseller System
 - [ ] `core_resellers` (referral_code, billing_mode, commission_rate), `core_wallet_transactions`, `core_commissions`, `core_payout_requests`

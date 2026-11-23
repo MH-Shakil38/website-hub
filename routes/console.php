@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schedule;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
@@ -306,4 +307,12 @@ Artisan::command('saas:deploy {--sync-demos}', function () {
 
     $this->info('SaaS Deployment Completed Successfully!');
 })->purpose('Deploy SaaS changes on VPS after git pull (central migrate, theme links, tenant DB migrate)');
+
+Artisan::command('billing:check-expirations', function () {
+    $billing = app(\App\Services\Billing\BillingService::class);
+    $stats = $billing->processExpirations();
+    $this->info("Billing check complete! Expired trials: {$stats['expired_trials']}, Suspended tenants: {$stats['suspended_tenants']}");
+})->purpose('Check expired free trials and past-due subscriptions and auto-suspend tenants after grace period');
+
+Schedule::command('billing:check-expirations')->daily();
 

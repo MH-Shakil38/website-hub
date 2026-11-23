@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\GlobalAdminController;
 use App\Http\Controllers\Admin\ModuleCmsController;
+use App\Http\Controllers\Admin\SaasBillingController;
 use App\Http\Controllers\Admin\SaasManagementController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FrontendHubController;
@@ -59,6 +60,21 @@ Route::prefix('admin')->name('admin.')->middleware([EnsureDashboardAccess::class
     Route::post('/domains/{domain}/verify', [SaasManagementController::class, 'verifyDomain'])->name('domains.verify');
     Route::post('/domains/{domain}/primary', [SaasManagementController::class, 'setPrimaryDomain'])->name('domains.primary');
     Route::delete('/domains/{domain}', [SaasManagementController::class, 'destroyDomain'])->name('domains.destroy');
+
+    // SaaS Plans, Subscriptions, Invoices, SSLCommerz & Manual Payments (Phase 4)
+    Route::get('/plans', [SaasBillingController::class, 'plans'])->name('plans.index');
+    Route::post('/plans', [SaasBillingController::class, 'storePlan'])->name('plans.store');
+    Route::delete('/plans/{plan}', [SaasBillingController::class, 'destroyPlan'])->name('plans.destroy');
+    Route::post('/plans/{plan}/subscribe', [SaasBillingController::class, 'subscribe'])->name('plans.subscribe');
+
+    Route::get('/billing', [SaasBillingController::class, 'billingIndex'])->name('billing.index');
+    Route::post('/billing/invoices/{invoice}/pay-manual', [SaasBillingController::class, 'payManual'])->name('billing.pay-manual');
+    Route::post('/billing/invoices/{invoice}/pay-sslcommerz', [SaasBillingController::class, 'paySslCommerz'])->name('billing.pay-sslcommerz');
+    Route::get('/billing/sslcommerz/{payment}/checkout', [SaasBillingController::class, 'sslCommerzCheckout'])->name('billing.sslcommerz.checkout');
+    Route::post('/billing/sslcommerz/{payment}/callback', [SaasBillingController::class, 'sslCommerzCallback'])->name('billing.sslcommerz.callback');
+    Route::post('/billing/payments/{payment}/approve', [SaasBillingController::class, 'approvePayment'])->name('billing.payments.approve');
+    Route::post('/billing/payments/{payment}/reject', [SaasBillingController::class, 'rejectPayment'])->name('billing.payments.reject');
+    Route::get('/billing/invoices/{invoice}/print', [SaasBillingController::class, 'showInvoice'])->name('billing.invoices.show');
 
     // SaaS Resellers & Clients Management + One-Click Impersonation (Phase 2)
     Route::get('/accounts', [SaasManagementController::class, 'accounts'])->name('saas.accounts');

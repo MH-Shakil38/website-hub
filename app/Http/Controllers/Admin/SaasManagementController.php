@@ -97,6 +97,21 @@ class SaasManagementController extends Controller
             $resellerId = $user->reseller_id;
         }
 
+        // Enforce Plan Site Limit & Theme Allowance for non-Super-Admin users
+        if (!$user->isSuperAdmin()) {
+            $plan = $user->currentPlan();
+            if ($plan) {
+                if (!$plan->allowsTheme($validated['theme_module'])) {
+                    return back()->withErrors(['theme_module' => "Your current plan [{$plan->name}] does not include the [{$validated['theme_module']}] theme."])->withInput();
+                }
+
+                $currentSiteCount = $user->accessibleTenantsQuery()->where('is_demo', false)->count();
+                if ($currentSiteCount >= (int) $plan->site_limit) {
+                    return back()->withErrors(['name' => "Plan limit reached! Your plan [{$plan->name}] allows up to {$plan->site_limit} website(s). Please upgrade your plan to add more websites."])->withInput();
+                }
+            }
+        }
+
         $tenant = Tenant::create([
             'owner_id' => $ownerId,
             'reseller_id' => $resellerId,
@@ -403,6 +418,12 @@ class SaasManagementController extends Controller
         $tenant = Tenant::findOrFail($validated['tenant_id']);
         if (!$user->canAccessTenant($tenant)) {
             abort(403, 'You do not have permission to add a domain to this website.');
+        }
+
+        // Enforce Plan Custom Domain permission
+        $tenantPlan = $tenant->plan_id ? \App\Models\Plan::find($tenant->plan_id) : $user->currentPlan();
+        if (!$user->isSuperAdmin() && $tenantPlan && !$tenantPlan->custom_domain) {
+            return back()->withErrors(['domain' => "Your current plan [{$tenantPlan->name}] only supports free subdomains. Upgrade to a Custom Domain plan to connect [{$validated['domain']}]."])->withInput();
         }
 
         $cleanDomain = $this->domainVerifier->normalizeHostname($validated['domain']);

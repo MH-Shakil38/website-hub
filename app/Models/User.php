@@ -66,6 +66,62 @@ class User extends Authenticatable
         return $this->hasMany(Tenant::class, 'owner_id');
     }
 
+    public function subscriptions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Subscription::class, 'user_id');
+    }
+
+    public function invoices(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Invoice::class, 'user_id');
+    }
+
+    /**
+     * Get the user's currently active or trial subscription (with its Plan).
+     */
+    public function activeSubscription(): ?Subscription
+    {
+        return $this->subscriptions()
+            ->with('plan')
+            ->whereIn('status', ['trial', 'active'])
+            ->latest('id')
+            ->first();
+    }
+
+    /**
+     * Get the effective Plan for this user (or null if none).
+     */
+    public function currentPlan(): ?Plan
+    {
+        return $this->activeSubscription()?->plan;
+    }
+
+    /**
+     * Maximum number of websites (tenants) this user is allowed to create under their current plan.
+     */
+    public function allowedSiteLimit(): int
+    {
+        if ($this->isSuperAdmin()) {
+            return 999999;
+        }
+
+        $plan = $this->currentPlan();
+        return $plan ? (int) $plan->site_limit : 1;
+    }
+
+    /**
+     * Check whether the user's current plan allows custom domain connection.
+     */
+    public function canUseCustomDomain(): bool
+    {
+        if ($this->isSuperAdmin() || $this->isReseller()) {
+            return true;
+        }
+
+        $plan = $this->currentPlan();
+        return $plan ? (bool) $plan->custom_domain : true;
+    }
+
     public function isSuperAdmin(): bool
     {
         return $this->type === 'super_admin' || ($this->role && $this->role->slug === 'administrator' && empty($this->type));
