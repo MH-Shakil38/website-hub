@@ -6,8 +6,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FrontendHubController;
 use Illuminate\Support\Facades\Route;
 
-// Serve Isolated Module Uploaded Media directly from Modules/{Module}/Public/uploads/{folder}/{filename}
-Route::get('/module-media/{module}/{folder}/{filename}', [ModuleCmsController::class, 'serveModuleMedia'])
+// Serve Isolated Module Uploaded Media directly from Modules/{Module}/Public/uploads/{t{id}/}{folder}/{filename}
+Route::get('/module-media/{module}/{folder}/{filename}/{subfilename?}', [ModuleCmsController::class, 'serveModuleMedia'])
     ->name('module.media.serve');
 
 // Dynamic Frontend Hub Routes (Single Active Module at '/' OR Multi-Module Showcase Hub + '/{slug}')

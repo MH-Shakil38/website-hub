@@ -13,8 +13,13 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    protected $connection = 'central';
+
     protected $fillable = [
         'role_id',
+        'type',
+        'reseller_id',
+        'referred_via',
         'name',
         'email',
         'phone',

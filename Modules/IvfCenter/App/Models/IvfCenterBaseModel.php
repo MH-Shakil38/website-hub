@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 abstract class IvfCenterBaseModel extends Model
 {
+    protected $connection = 'tenant';
+
     protected string $modulePrefix = 'ivf_';
 
     public function getTable(): string

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Setting;
 use App\Models\Website;
+use App\Services\TenantDatabaseManager;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -16,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(TenantDatabaseManager::class, fn () => new TenantDatabaseManager());
     }
 
     /**
@@ -41,9 +42,13 @@ class AppServiceProvider extends ServiceProvider
                     $this->mergeConfigFrom($cfgPath, $modLower);
                 }
 
-                $migPath = $modPath . '/Database/Migrations';
-                if (File::isDirectory($migPath)) {
-                    $this->loadMigrationsFrom($migPath);
+                // Only auto-load module migrations on the default connection in legacy single-module mode.
+                // In SaaS mode, module migrations run explicitly per tenant DB via TenantDatabaseManager.
+                if (config('app.mode', 'saas') === 'single') {
+                    $migPath = $modPath . '/Database/Migrations';
+                    if (File::isDirectory($migPath)) {
+                        $this->loadMigrationsFrom($migPath);
+                    }
                 }
             }
         }

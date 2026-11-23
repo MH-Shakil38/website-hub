@@ -40,7 +40,7 @@ class GymFitnessDataService
         $defaults = require module_path('GymFitness', 'Config/defaults.php');
 
         try {
-            if (!Schema::hasTable('gym_settings')) {
+            if (!Schema::connection('tenant')->hasTable('gym_settings')) {
                 return $defaults;
             }
 
@@ -96,7 +96,7 @@ class GymFitnessDataService
     public function ensureSeeded(): void
     {
         try {
-            if (!Schema::hasTable('gym_packages')) {
+            if (!Schema::connection('tenant')->hasTable('gym_packages')) {
                 return;
             }
 

@@ -110,7 +110,7 @@ class EventManagementDataService
     {
         $defaults = $this->getDefaultSettings();
 
-        if (!Schema::hasTable('em_settings')) {
+        if (!Schema::connection('tenant')->hasTable('em_settings')) {
             return $defaults;
         }
 
@@ -127,7 +127,7 @@ class EventManagementDataService
 
     public function ensureSeeded(): void
     {
-        if (!Schema::hasTable('em_speakers')) {
+        if (!Schema::connection('tenant')->hasTable('em_speakers')) {
             return;
         }
 

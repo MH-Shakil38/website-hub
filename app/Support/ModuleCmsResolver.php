@@ -65,6 +65,18 @@ class ModuleCmsResolver
             'slug' => 'event-management',
             'badge' => 'green',
         ],
+        'TechCompany' => [
+            'label' => 'Software Company',
+            'prefix' => 'tech_',
+            'slug' => 'software-company',
+            'badge' => 'blue',
+        ],
+        'IvfCenter' => [
+            'label' => 'IVF Center',
+            'prefix' => 'ivf_',
+            'slug' => 'ivf-center',
+            'badge' => 'pink',
+        ],
     ];
 
     /**
@@ -201,18 +213,25 @@ class ModuleCmsResolver
     }
 
     /**
-     * Store an uploaded file inside Modules/{Module}/Public/uploads/{folder}/
-     * and return its public URL (/module-media/{Module}/{folder}/{filename}).
+     * Store an uploaded file inside Modules/{Module}/Public/uploads/{t{tenant_id}/}{folder}/
+     * and return its public URL.
      */
     public static function storeModuleFile(UploadedFile $file, string $folder = 'media', ?string $module = null): string
     {
         $mod = $module ?? self::currentModule();
-        $targetDir = base_path("Modules/{$mod}/Public/uploads/{$folder}");
+        $tenant = app()->bound('tenant') ? app('tenant') : null;
+        $tenantPrefix = ($tenant && config('app.mode', 'saas') === 'saas') ? "t{$tenant->id}/" : '';
+
+        $targetDir = base_path("Modules/{$mod}/Public/uploads/{$tenantPrefix}{$folder}");
         File::ensureDirectoryExists($targetDir);
 
         $ext = $file->getClientOriginalExtension() ?: 'jpg';
         $filename = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '-' . time() . '-' . Str::random(4) . '.' . $ext;
         $file->move($targetDir, $filename);
+
+        if ($tenantPrefix !== '') {
+            return url("/module-media/{$mod}/t{$tenant->id}/{$folder}/{$filename}");
+        }
 
         return url("/module-media/{$mod}/{$folder}/{$filename}");
     }

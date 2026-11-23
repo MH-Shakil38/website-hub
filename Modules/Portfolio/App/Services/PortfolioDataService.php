@@ -32,7 +32,7 @@ class PortfolioDataService
         $defaults = require module_path('Portfolio', 'Config/defaults.php');
 
         try {
-            if (!Schema::hasTable('port_settings')) {
+            if (!Schema::connection('tenant')->hasTable('port_settings')) {
                 return $defaults;
             }
 
@@ -56,7 +56,7 @@ class PortfolioDataService
     public function ensureSeeded(): void
     {
         try {
-            if (!Schema::hasTable('port_projects')) {
+            if (!Schema::connection('tenant')->hasTable('port_projects')) {
                 return;
             }
 

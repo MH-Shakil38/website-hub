@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 abstract class WonderLearnBaseModel extends Model
 {
+    protected $connection = 'tenant';
+
     protected string $modulePrefix = 'wl_';
 
     public function getTable(): string

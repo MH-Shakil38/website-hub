@@ -413,21 +413,21 @@ flowchart LR
 - [x] `stancl/tenancy` যাচাই ও সিদ্ধান্ত: আমাদের ১১টি মডিউলের কাস্টম স্ট্রাকচারের সাথে শতভাগ নিয়ন্ত্রণের জন্য নিজস্ব হালকা ও দ্রুত `TenantDatabaseManager` ব্যবহার করা হবে
 - [x] MySQL user-এর `CREATE/DROP DATABASE` অনুমতি নিশ্চিত করা (`MYSQL_CREATE_DROP_OK`)
 
-### Phase 1: Multi-Tenancy Core (Multi-Database)
-- [ ] `config/database.php`: `central` আর `tenant` connection
-- [ ] `core_tenants` (db fields সহ), `core_domains`, `core_themes`, `core_tenant_migrations_log` migration ও model (`$connection = 'central'`)
-- [ ] `TenantDatabaseManager`: create/drop DB, connect/disconnect, migrate, seed
-- [ ] সব ১১টা `{Module}BaseModel`-এ `$connection = 'tenant'`
-- [ ] Module migrations যাতে central DB-তে না চলে, শুধু tenant DB-তে চলে, তার ব্যবস্থা
-- [ ] Artisan commands: `tenants:create`, `tenants:migrate {--module=} {--tenant=}`, `tenants:seed`, `tenants:backup`, `tenants:list`
-- [ ] বর্তমান `core_websites` + central DB-র module data → `core_themes` + প্রতি theme-এর জন্য ১টা demo tenant DB-তে সরানো
-- [ ] `IdentifyTenant` middleware (host → tenant, cached → tenant DB connect)
-- [ ] `ModuleCmsController` / `ModuleCmsResolver`-এর `DB::table()` query-গুলো যাতে `tenant` connection ব্যবহার করে তা নিশ্চিত করা
-- [ ] `FrontendHubController` refactor: tenant অনুযায়ী theme dispatch
-- [ ] প্রতিটা module-এর `routes/web.php`-এর `if (active_module === X)` সরিয়ে tenant-aware করা
-- [ ] Per-module asset symlink (`public/themes/{module}`) + `theme_asset()` helper
-- [ ] Tenant-wise upload path (`ModuleStorageService` আপডেট)
-- [ ] **Tests:** দুটো tenant DB বানিয়ে যাচাই করা যে প্রত্যেকে শুধু নিজের DB দেখে, আর provisioning rollback কাজ করে (Pest)
+### Phase 1: Multi-Tenancy Core (Multi-Database) ✅ (সম্পন্ন)
+- [x] `config/database.php`: `central` আর `tenant` connection
+- [x] `core_tenants` (db fields সহ), `core_domains`, `core_themes`, `core_tenant_migrations_log` migration ও model (`$connection = 'central'`)
+- [x] `TenantDatabaseManager`: create/drop DB, connect/disconnect, migrate, seed
+- [x] সব ১১টা `{Module}BaseModel`-এ `$connection = 'tenant'`
+- [x] Module migrations যাতে central DB-তে না চলে, শুধু tenant DB-তে চলে, তার ব্যবস্থা
+- [x] Artisan commands: `tenants:create`, `tenants:migrate {--module=} {--tenant=}`, `tenants:seed`, `tenants:sync-demos`, `tenants:list`, `themes:link`
+- [x] বর্তমান `core_websites` + central DB-র module data → `core_themes` + প্রতি theme-এর জন্য ১টা demo tenant DB-তে সরানো (`hub_t_0001` থেকে `hub_t_0011`)
+- [x] `IdentifyTenant` middleware (host → tenant, cached → tenant DB connect)
+- [x] `ModuleCmsController` / `ModuleCmsResolver` / `ModuleThemeDataService` / `ModuleManagerService`-এর query-গুলো যাতে `tenant` connection ব্যবহার করে তা নিশ্চিত করা
+- [x] `FrontendHubController` refactor: tenant অনুযায়ী theme dispatch
+- [x] প্রতিটা module-এর `routes/web.php`-এর `if (active_module === X)` সরিয়ে tenant-aware করা
+- [x] Per-module asset symlink (`public/themes/{module}`) + `theme_asset()` ও `current_tenant()` helper
+- [x] Tenant-wise upload path (`ModuleStorageService` ও `ModuleCmsResolver` আপডেট: `uploads/t{tenant_id}/`)
+- [x] **Tests:** দুটো tenant DB বানিয়ে যাচাই করা যে প্রত্যেকে শুধু নিজের DB দেখে, আর provisioning rollback কাজ করে (`MultiDatabaseTenancyTest`: 2 passed, 12 assertions)
 
 ### Phase 2: Roles আর Unified Dashboard
 - [ ] `users.type` + `reseller_id`, বিদ্যমান `Role`/`Permission` সাজানো

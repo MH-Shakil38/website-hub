@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 abstract class HajjUmrahBaseModel extends Model
 {
+    protected $connection = 'tenant';
+
     protected string $modulePrefix = 'hajj_';
 
     public function getTable(): string

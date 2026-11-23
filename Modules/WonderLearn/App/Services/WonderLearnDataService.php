@@ -64,7 +64,7 @@ class WonderLearnDataService
     {
         $defaults = $this->getDefaultSettings();
 
-        if (!Schema::hasTable('wl_settings')) {
+        if (!Schema::connection('tenant')->hasTable('wl_settings')) {
             return $defaults;
         }
 
@@ -81,7 +81,7 @@ class WonderLearnDataService
 
     public function ensureSeeded(): void
     {
-        if (!Schema::hasTable('wl_topics')) {
+        if (!Schema::connection('tenant')->hasTable('wl_topics')) {
             return;
         }
 

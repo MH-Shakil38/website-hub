@@ -4,8 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Modules\IvfCenter\App\Http\Controllers\Admin\AdminController;
 use Modules\IvfCenter\App\Http\Controllers\Frontend\HomeController;
 
-// 1. STANDALONE FRONTEND ROUTES (When active module is IvfCenter)
-if (config('app.active_module') === 'IvfCenter') {
+// 1. STANDALONE FRONTEND ROUTES (Only in legacy single-module mode when active module is IvfCenter)
+if (config('app.mode') === 'single' && config('app.active_module') === 'IvfCenter') {
     Route::middleware('web')->group(function () {
         Route::get('/', [HomeController::class, 'index'])->name('ivfcenter.home');
         Route::post('/book-consultation', [HomeController::class, 'bookConsultation'])->name('ivfcenter.consultation.submit');

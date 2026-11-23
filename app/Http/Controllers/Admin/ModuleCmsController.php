@@ -17,17 +17,24 @@ use Illuminate\Support\Str;
 class ModuleCmsController extends Controller
 {
     /**
-     * Serve uploaded files directly from Modules/{Module}/Public/uploads/{folder}/{filename}
+     * Serve uploaded files directly from Modules/{Module}/Public/uploads/{t{id}/}{folder}/{filename}
      */
-    public function serveModuleMedia(string $module, string $folder, string $filename)
+    public function serveModuleMedia(string $module, string $folder, string $filename, ?string $subfilename = null)
     {
         if (!isset(ModuleCmsResolver::SUPPORTED_MODULES[$module])) {
             abort(404);
         }
 
-        $safeFolder = basename($folder);
-        $safeFile = basename($filename);
-        $path = base_path("Modules/{$module}/Public/uploads/{$safeFolder}/{$safeFile}");
+        if ($subfilename !== null && preg_match('/^t\d+$/', $folder)) {
+            $safeTenant = basename($folder);
+            $safeFolder = basename($filename);
+            $safeFile = basename($subfilename);
+            $path = base_path("Modules/{$module}/Public/uploads/{$safeTenant}/{$safeFolder}/{$safeFile}");
+        } else {
+            $safeFolder = basename($folder);
+            $safeFile = basename($filename);
+            $path = base_path("Modules/{$module}/Public/uploads/{$safeFolder}/{$safeFile}");
+        }
 
         if (!File::exists($path)) {
             abort(404);

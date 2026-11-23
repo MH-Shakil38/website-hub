@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Setting extends Model
 {
+    protected $connection = 'central';
+
     protected $table = 'core_settings';
 
     protected $fillable = [

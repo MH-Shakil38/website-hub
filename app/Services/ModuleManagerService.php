@@ -75,8 +75,8 @@ class ModuleManagerService
         ];
 
         foreach ($tablesToClear as $table) {
-            if (Schema::hasTable($table)) {
-                DB::table($table)->truncate();
+            if (Schema::connection('tenant')->hasTable($table)) {
+                DB::connection('tenant')->table($table)->truncate();
             }
         }
 

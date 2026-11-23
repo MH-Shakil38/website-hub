@@ -30,7 +30,7 @@ class HajjUmrahDataService
         $defaults = require module_path('HajjUmrah', 'Config/defaults.php');
 
         try {
-            if (!Schema::hasTable('hajj_settings')) {
+            if (!Schema::connection('tenant')->hasTable('hajj_settings')) {
                 return $defaults;
             }
 
@@ -71,7 +71,7 @@ class HajjUmrahDataService
     public function ensureSeeded(): void
     {
         try {
-            if (!Schema::hasTable('hajj_packages')) {
+            if (!Schema::connection('tenant')->hasTable('hajj_packages')) {
                 return;
             }
 
