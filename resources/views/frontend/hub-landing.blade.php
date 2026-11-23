@@ -1918,6 +1918,20 @@
             document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
+        const THEME_PLACEHOLDERS = {
+            Interior:        { site: 'e.g. Royal Interior Studio',       sub: 'royal-interior' },
+            RealEstate:      { site: 'e.g. Skyline Properties Ltd',      sub: 'skyline-realty' },
+            Pharmacy:        { site: 'e.g. MediCare Plus Pharmacy',      sub: 'medicare-pharma' },
+            Clinic:          { site: 'e.g. Hope Fertility & Care Clinic', sub: 'hope-clinic' },
+            IvfCenter:       { site: 'e.g. Genesis IVF & Fertility Center', sub: 'genesis-ivf' },
+            Portfolio:       { site: 'e.g. Alex Morgan Dev Studio',      sub: 'alex-portfolio' },
+            TechCompany:     { site: 'e.g. NexaSoft Technologies',       sub: 'nexasoft-tech' },
+            HajjUmrah:       { site: 'e.g. Al-Haramain Hajj & Umrah',    sub: 'alharamain-travels' },
+            GymFitness:      { site: 'e.g. FitPulse Gym & Fitness Club', sub: 'fitpulse-gym' },
+            WonderLearn:     { site: 'e.g. WonderLearn Kids Academy',    sub: 'wonderlearn-kids' },
+            EventManagement: { site: 'e.g. Eventify Summit & Expo',      sub: 'eventify-summit' }
+        };
+
         function openInstallWizard(moduleKey, name, modLabel, thumb, demoUrl) {
             document.getElementById('wizardThemeModuleInput').value = moduleKey;
             document.getElementById('deployModalTitle').textContent = 'Install ' + name + ' (' + modLabel + ')';
@@ -1925,10 +1939,23 @@
             document.getElementById('deployModalThumb').src = thumb;
             document.getElementById('deployModalDemoBtn').href = demoUrl;
 
+            // Update Website Name & Subdomain placeholders dynamically based on selected theme
+            const ph = THEME_PLACEHOLDERS[moduleKey] || {
+                site: 'e.g. ' + name + ' (' + modLabel + ')',
+                sub: (name || modLabel || 'mysite').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+            };
+            const siteInput = document.getElementById('wizardSiteNameInput');
+            const subInput = document.getElementById('wizardSubdomainInput');
+            if (siteInput) {
+                siteInput.placeholder = ph.site;
+            }
+            if (subInput) {
+                subInput.placeholder = ph.sub;
+            }
+
             setWizardCycle(selectedLandingCycle);
             if (selectedLandingPlanId) {
                 selectWizardPlanCard(selectedLandingPlanId);
-                // If user already picked a plan from Pricing card, jump straight to Step 2 or start at Step 1 with it pre-checked
                 renderWizardStep(1);
             } else {
                 renderWizardStep(1);
