@@ -134,6 +134,16 @@
                                     </a>
 
                                     @if($user->isSuperAdmin() || ($user->isReseller() && (int) $t->reseller_id === (int) $user->id))
+                                        @if(!$t->is_demo)
+                                            <form action="{{ route('admin.reseller.tenants.renew', $t->id) }}" method="POST" class="d-inline" title="Renew 1 Month from Reseller Wallet (Mode A)">
+                                                @csrf
+                                                <input type="hidden" name="months" value="1">
+                                                <button type="submit" class="btn btn-sm btn-outline-success fw-semibold" style="font-size: 11.5px; border-radius: 7px;">
+                                                    <i class="bi bi-arrow-repeat me-1"></i> Renew
+                                                </button>
+                                            </form>
+                                        @endif
+
                                         <form action="{{ route('admin.tenants.toggle-status', $t->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             <button type="submit" class="btn btn-sm btn-outline-secondary" title="Toggle Active/Suspended" style="font-size: 11.5px; border-radius: 7px;">

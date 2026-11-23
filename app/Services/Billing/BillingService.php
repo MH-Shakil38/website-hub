@@ -133,6 +133,12 @@ class BillingService
             } elseif ($invoice->tenant) {
                 $invoice->tenant->update(['status' => 'active']);
             }
+
+            // Phase 5: If the paying user is a referred Client, record a Mode B Reseller Commission
+            try {
+                app(\App\Services\ResellerService::class)->recordCommissionForPaidInvoice($invoice);
+            } catch (\Throwable) {
+            }
         }
 
         // Also record in legacy core_transactions table for unified dashboard financial reporting

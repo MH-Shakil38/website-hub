@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\GlobalAdminController;
 use App\Http\Controllers\Admin\ModuleCmsController;
 use App\Http\Controllers\Admin\SaasBillingController;
 use App\Http\Controllers\Admin\SaasManagementController;
+use App\Http\Controllers\Admin\SaasResellerController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FrontendHubController;
 use App\Http\Middleware\EnsureDashboardAccess;
@@ -75,6 +76,16 @@ Route::prefix('admin')->name('admin.')->middleware([EnsureDashboardAccess::class
     Route::post('/billing/payments/{payment}/approve', [SaasBillingController::class, 'approvePayment'])->name('billing.payments.approve');
     Route::post('/billing/payments/{payment}/reject', [SaasBillingController::class, 'rejectPayment'])->name('billing.payments.reject');
     Route::get('/billing/invoices/{invoice}/print', [SaasBillingController::class, 'showInvoice'])->name('billing.invoices.show');
+
+    // SaaS Reseller Hub: Referral Link, Mode A & Mode B Billing, Wallet, Commissions & Payouts (Phase 5)
+    Route::get('/reseller-hub', [SaasResellerController::class, 'index'])->name('reseller.hub');
+    Route::post('/reseller-hub/profile', [SaasResellerController::class, 'updateProfile'])->name('reseller.profile.update');
+    Route::post('/reseller-hub/wallet/topup', [SaasResellerController::class, 'topUpWallet'])->name('reseller.wallet.topup');
+    Route::post('/reseller-hub/payouts', [SaasResellerController::class, 'requestPayout'])->name('reseller.payouts.request');
+    Route::post('/reseller-hub/payouts/{payout}/process', [SaasResellerController::class, 'processPayout'])->name('reseller.payouts.process');
+    Route::post('/reseller-hub/commissions/{commission}/approve', [SaasResellerController::class, 'approveCommission'])->name('reseller.commissions.approve');
+    Route::post('/reseller-hub/resellers/{reseller}/kyc', [SaasResellerController::class, 'updateKycStatus'])->name('reseller.kyc.update');
+    Route::post('/reseller-hub/tenants/{tenant}/renew', [SaasResellerController::class, 'renewClientTenant'])->name('reseller.tenants.renew');
 
     // SaaS Resellers & Clients Management + One-Click Impersonation (Phase 2)
     Route::get('/accounts', [SaasManagementController::class, 'accounts'])->name('saas.accounts');

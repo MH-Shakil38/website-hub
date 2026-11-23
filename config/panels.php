@@ -45,6 +45,12 @@ return [
                     'active' => 'admin.saas.accounts*',
                 ],
                 [
+                    'title' => 'Reseller Hub & Payouts',
+                    'icon' => 'bi bi-wallet2',
+                    'route' => 'admin.reseller.hub',
+                    'active' => 'admin.reseller.*',
+                ],
+                [
                     'title' => 'Themes & Modules',
                     'icon' => 'bi bi-globe2',
                     'route' => 'admin.websites',
@@ -114,10 +120,10 @@ return [
                     'active' => 'admin.billing.*',
                 ],
                 [
-                    'title' => 'Wallet & Commissions',
+                    'title' => 'Wallet, Referral & Payouts',
                     'icon' => 'bi bi-wallet2',
-                    'route' => 'admin.transactions',
-                    'active' => 'admin.transactions*',
+                    'route' => 'admin.reseller.hub',
+                    'active' => 'admin.reseller.*',
                 ],
             ],
         ],

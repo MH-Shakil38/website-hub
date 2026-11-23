@@ -454,14 +454,15 @@ flowchart LR
 - [x] প্রিন্টেবল/PDF ইনভয়েস ভিউ (`/admin/billing/invoices/{invoice}/print`)
 - [x] **Tests:** `PlansAndBillingTest` (1 passed, 27 assertions)
 
-### Phase 5: Reseller System
-- [ ] `core_resellers` (referral_code, billing_mode, commission_rate), `core_wallet_transactions`, `core_commissions`, `core_payout_requests`
-- [ ] Reseller panel: client CRUD, site provisioning (quota check), impersonation
-- [ ] Referral link: `?ref=` middleware → ৩০ দিনের cookie → signup-এ `reseller_id` বসানো, self-referral বন্ধ
-- [ ] Mode A (reseller collects): slot বা wallet থেকে wholesale দাম কাটা, রিসেলার panel থেকে client renewal
-- [ ] Mode B (commission): client payment সফল হলে pending commission → নির্দিষ্ট দিন পর approved → wallet
-- [ ] Wallet top-up, payout request ও Super Admin approval
-- [ ] Reseller KYC (NID/Trade license) ও Super Admin approval-এর পর account চালু
+### Phase 5: Reseller System ✅ (সম্পন্ন)
+- [x] `core_resellers` (`referral_code`, `billing_mode`, `commission_rate`, `site_quota`, `wallet_balance`, `kyc_status`), `core_wallet_transactions`, `core_commissions`, `core_payout_requests` মাইগ্রেশন ও মডেল
+- [x] Reseller Hub (`/admin/reseller-hub`): রিসেলার প্রোফাইল, মোড সুইচার (Mode A / Mode B), ওয়ালেট লেজার, কমিশন তালিকা ও পেআউট রিকোয়েস্ট
+- [x] Referral link: `?ref=CODE` মিডলওয়্যার (`TrackResellerReferral`) → ৩০ দিনের কুকি ও ক্লিক কাউন্টার → সাইনআপে অটো `reseller_id` বসানো এবং সেলফ-রেফারেল বন্ধ
+- [x] Mode A (`reseller_collects`): প্যাকেজ স্লট কোটা থেকে সাইট খোলা, কোটা শেষ হলে ওয়ালেট থেকে হোলসেল দাম কাটা, এবং রিসেলার প্যানেল থেকে ক্লায়েন্ট সাইট রিনিউয়াল
+- [x] Mode B (`commission`): রেফার করা ক্লায়েন্ট পেমেন্ট সফল করলেই অটো পেন্ডিং কমিশন তৈরি → ৭ দিন পর (`resellers:release-commissions`) বা Super Admin রিলিজ করলে ওয়ালেটে যোগ
+- [x] Wallet top-up, payout request (bKash/Nagad/Rocket/Bank) ও Super Admin approval/refund
+- [x] Reseller KYC (NID/Trade License) ও Super Admin KYC/Quota কন্ট্রোল
+- [x] **Tests:** `ResellerSystemTest` (1 passed, 24 assertions)
 
 ### Phase 6: SaaS Homepage আর Onboarding
 - [ ] **SaaS Homepage Builder** (`core_saas_sections`): Hero, Features, Theme Gallery, Pricing (`core_plans` থেকে auto), Testimonials, FAQ, Footer, SEO

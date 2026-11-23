@@ -98,7 +98,18 @@ class SaasManagementController extends Controller
         }
 
         // Enforce Plan Site Limit & Theme Allowance for non-Super-Admin users
-        if (!$user->isSuperAdmin()) {
+        if ($user->isReseller()) {
+            $resellerProfile = $user->ensureResellerProfile();
+            if ($resellerProfile->kyc_status === 'rejected') {
+                return back()->withErrors(['name' => 'Your reseller KYC verification was rejected. Please update your KYC details.'])->withInput();
+            }
+
+            try {
+                app(\App\Services\ResellerService::class)->consumeSlotOrWalletForNewSite($resellerProfile, $validated['name']);
+            } catch (\Throwable $e) {
+                return back()->withErrors(['name' => $e->getMessage()])->withInput();
+            }
+        } elseif (!$user->isSuperAdmin()) {
             $plan = $user->currentPlan();
             if ($plan) {
                 if (!$plan->allowsTheme($validated['theme_module'])) {
@@ -294,6 +305,10 @@ class SaasManagementController extends Controller
             'password' => Hash::make($validated['password']),
             'email_verified_at' => now(),
         ]);
+
+        if ($accountType === 'reseller') {
+            $newUser->ensureResellerProfile();
+        }
 
         ActivityLog::record(
             'New ' . ucfirst($accountType) . ' Account Created',

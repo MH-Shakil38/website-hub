@@ -316,3 +316,11 @@ Artisan::command('billing:check-expirations', function () {
 
 Schedule::command('billing:check-expirations')->daily();
 
+Artisan::command('resellers:release-commissions', function () {
+    $service = app(\App\Services\ResellerService::class);
+    $count = $service->releaseMaturedCommissions();
+    $this->info("Released {$count} matured reseller commission(s) into wallets!");
+})->purpose('Release matured pending reseller commissions into reseller wallets');
+
+Schedule::command('resellers:release-commissions')->daily();
+

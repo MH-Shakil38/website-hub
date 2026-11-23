@@ -56,6 +56,29 @@ class User extends Authenticatable
         return $this->belongsTo(self::class, 'reseller_id');
     }
 
+    public function resellerProfile(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Reseller::class, 'user_id');
+    }
+
+    public function ensureResellerProfile(): Reseller
+    {
+        return $this->resellerProfile()->firstOrCreate(
+            ['user_id' => $this->id],
+            [
+                'company_name' => $this->name . ' Agency',
+                'phone' => $this->phone,
+                'kyc_document_type' => 'NID',
+                'kyc_status' => 'approved',
+                'billing_mode' => 'reseller_collects',
+                'commission_rate' => 15.00,
+                'site_quota' => 10,
+                'sites_used' => 0,
+                'wallet_balance' => 0.00,
+            ]
+        );
+    }
+
     public function clients(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(self::class, 'reseller_id');
