@@ -464,13 +464,14 @@ flowchart LR
 - [x] Reseller KYC (NID/Trade License) ও Super Admin KYC/Quota কন্ট্রোল
 - [x] **Tests:** `ResellerSystemTest` (1 passed, 24 assertions)
 
-### Phase 6: SaaS Homepage আর Onboarding
-- [ ] **SaaS Homepage Builder** (`core_saas_sections`): Hero, Features, Theme Gallery, Pricing (`core_plans` থেকে auto), Testimonials, FAQ, Footer, SEO
-- [ ] `hub-landing.blade.php`-এর hardcoded লেখা DB-তে আনা
-- [ ] Pricing Card-এ ক্লিক করলে নির্বাচিত প্ল্যান ধরে `#themes` সেকশনে স্মুথ স্ক্রল + সিলেকশন ব্যানার
-- [ ] Step-by-Step Theme Install Wizard (Theme/Free Trial → Subdomain live check → Account info → Email Verification)
-- [ ] Email Verification সফল হলে Live Progress স্ক্রিনসহ নতুন DB তৈরি ও থিম অটো-ইনস্টল (`TenantProvisioner`)
-- [ ] প্রতিটা module-এ `TenantDemoSeeder` ও ৪৮ ঘণ্টা পর অভেরিফাইড পেন্ডিং সাইনআপ ক্লিনআপ জব
+### Phase 6: SaaS Homepage আর Onboarding ✅ (সম্পন্ন)
+- [x] **SaaS Homepage Builder** (`/admin/saas-homepage` ও `core_saas_sections` টেবিল): Hero, Features, Theme Gallery (`#themes`), Pricing (`core_plans` থেকে auto), FAQ, Bottom CTA, Footer ও SEO ড্যাশবোর্ড থেকে পুরোপুরি কন্ট্রোল ও হাইড/শো
+- [x] `hub-landing.blade.php`-এর লেখাগুলো `SaasSection` (`core_saas_sections`) থেকে ডাইনামিক করা এবং ডিফল্ট ডাটা সিড রাখা
+- [x] Pricing Card-এ ক্লিক করলে নির্বাচিত প্ল্যান ধরে `#themes` সেকশনে স্মুথ স্ক্রল + সিলেকশন ব্যানার (`selectPlanAndScrollToThemes`)
+- [x] Step-by-Step Theme Install Wizard (Step 1: Theme & 14-Day Free Trial Plan → Step 2: Live AJAX Subdomain availability check → Step 3: Account info → Step 4: Email Verification)
+- [x] **Email Verification Gate:** ইমেইল ভেরিফিকেশনের আগে শুধু `pending_verification` রো তৈরি হয় (`db_name = null`), আর ভেরিফিকেশন লিংকে ক্লিক করলেই লাইভ প্রগ্রেস বারসহ আলাদা MySQL Database তৈরি, থিম মাইগ্রেশন ও ডেমো সিড হয়ে লাইভ সাইট ও Client Dashboard চালু হয়
+- [x] ৪৮ ঘণ্টা পর অভেরিফাইড পেন্ডিং সাইনআপ ক্লিনআপ কমান্ড ও শিডিউলার (`php artisan tenants:cleanup-unverified`)
+- [x] **Tests:** `SaasHomepageAndOnboardingTest` (1 passed, 25 assertions)
 
 ### Phase 7: হার্ডেনিং আর Launch
 - [ ] Rate limiting, এবং reCAPTCHA (signup, login)

@@ -27,6 +27,12 @@ return [
                     'active' => 'admin.dashboard',
                 ],
                 [
+                    'title' => 'SaaS Homepage Builder',
+                    'icon' => 'bi bi-layout-text-window-reverse',
+                    'route' => 'admin.saas.homepage',
+                    'active' => 'admin.saas.homepage*',
+                ],
+                [
                     'title' => 'Tenants (Client Sites)',
                     'icon' => 'bi bi-hdd-network-fill',
                     'route' => 'admin.tenants.index',

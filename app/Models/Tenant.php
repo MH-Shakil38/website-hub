@@ -21,10 +21,12 @@ class Tenant extends Model
         'owner_id',
         'reseller_id',
         'plan_id',
+        'billing_cycle',
         'theme_module',
         'name',
         'subdomain',
         'status',
+        'verification_token',
         'email_verified_at',
         'trial_ends_at',
         'storage_used_mb',
@@ -66,6 +68,11 @@ class Tenant extends Model
     public function theme(): BelongsTo
     {
         return $this->belongsTo(Theme::class, 'theme_module', 'module_name');
+    }
+
+    public function plan(): BelongsTo
+    {
+        return $this->belongsTo(Plan::class, 'plan_id');
     }
 
     public function domains(): HasMany

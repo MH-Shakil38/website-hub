@@ -7,12 +7,25 @@ use App\Http\Controllers\Admin\SaasManagementController;
 use App\Http\Controllers\Admin\SaasResellerController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FrontendHubController;
+use App\Http\Controllers\SaasOnboardingController;
 use App\Http\Middleware\EnsureDashboardAccess;
 use Illuminate\Support\Facades\Route;
 
 // Caddy On-Demand TLS Domain Verification Endpoint (Phase 3: returns 200 if domain is verified & active, 404 otherwise)
 Route::get('/internal/domain-check', [SaasManagementController::class, 'caddyDomainCheck'])
     ->name('saas.caddy.domain-check');
+
+// Public Step-by-Step Theme Installation Wizard & Email Verification Onboarding (Phase 6)
+Route::get('/install/check-subdomain', [SaasOnboardingController::class, 'checkSubdomain'])
+    ->name('saas.install.check-subdomain');
+Route::post('/install/register', [SaasOnboardingController::class, 'registerPendingInstall'])
+    ->name('saas.install.register');
+Route::get('/install/verify/{uuid}', [SaasOnboardingController::class, 'showVerifyNotice'])
+    ->name('saas.install.verify.notice');
+Route::match(['get', 'post'], '/install/verify/{uuid}/{token}', [SaasOnboardingController::class, 'verifyAndProvision'])
+    ->name('saas.install.verify.confirm');
+Route::get('/install/success/{uuid}', [SaasOnboardingController::class, 'showInstallSuccess'])
+    ->name('saas.install.success');
 
 // Serve Isolated Module Uploaded Media directly from Modules/{Module}/Public/uploads/{t{id}/}{folder}/{filename}
 Route::get('/module-media/{module}/{folder}/{filename}/{subfilename?}', [ModuleCmsController::class, 'serveModuleMedia'])
@@ -47,6 +60,10 @@ Route::get('/logout', [AuthController::class, 'logout']);
 Route::prefix('admin')->name('admin.')->middleware([EnsureDashboardAccess::class])->group(function () {
     Route::get('/', fn () => redirect()->route('admin.dashboard'));
     Route::get('/dashboard', [GlobalAdminController::class, 'dashboard'])->name('dashboard');
+
+    // SaaS Homepage Builder (Phase 6: Control SaaS Landing Page from Dashboard)
+    Route::get('/saas-homepage', [SaasOnboardingController::class, 'editHomepage'])->name('saas.homepage');
+    Route::post('/saas-homepage', [SaasOnboardingController::class, 'updateHomepage'])->name('saas.homepage.update');
 
     // SaaS Multi-Database Tenants & Website Context Switcher (Phase 2)
     Route::get('/tenants', [SaasManagementController::class, 'tenants'])->name('tenants.index');

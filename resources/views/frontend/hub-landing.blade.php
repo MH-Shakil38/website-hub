@@ -1,10 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    @php
+        $sec = isset($saasSections) ? $saasSections : \App\Models\SaasSection::getLandingMap();
+        $seoC = $sec['seo']['content'] ?? [];
+        $heroSec = $sec['hero'] ?? ['is_visible' => true, 'content' => []];
+        $heroC = $heroSec['content'] ?? [];
+        $themesSec = $sec['themes'] ?? ['is_visible' => true, 'content' => []];
+        $themesC = $themesSec['content'] ?? [];
+        $featSec = $sec['features'] ?? ['is_visible' => true, 'content' => []];
+        $featC = $featSec['content'] ?? [];
+        $pricingSec = $sec['pricing'] ?? ['is_visible' => true, 'content' => []];
+        $pricingC = $pricingSec['content'] ?? [];
+        $faqSec = $sec['faq'] ?? ['is_visible' => true, 'content' => []];
+        $faqC = $faqSec['content'] ?? [];
+        $ctaSec = $sec['cta_footer'] ?? ['is_visible' => true, 'content' => []];
+        $ctaC = $ctaSec['content'] ?? [];
+        $plansForLanding = isset($clientPlans) && $clientPlans->isNotEmpty()
+            ? $clientPlans
+            : collect();
+        $baseCentralDomain = config('app.central_domains')[0] ?? 'localhost';
+    @endphp
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $globalSiteName ?? 'SiteBuilder' }} Cloud — Modern Multi-Industry SaaS Website Platform</title>
-    <meta name="description" content="Launch production-ready industry websites in seconds. Multi-module SaaS website builder with isolated databases, visual CMS, and instant deployment.">
+    <title>{{ $globalSiteName ?? 'SiteBuilder' }} Cloud — {{ $seoC['meta_title'] ?? 'Modern Multi-Industry SaaS Website Platform' }}</title>
+    <meta name="description" content="{{ $seoC['meta_description'] ?? 'Launch production-ready industry websites in seconds. Multi-module SaaS website builder with isolated databases, visual CMS, and instant deployment.' }}">
 
     <!-- Google Fonts: Plus Jakarta Sans & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -726,8 +746,8 @@
 
             <ul class="saas-nav-links d-none d-lg-flex">
                 <li>
-                    <a href="#templates">
-                        <span>Industry Demos</span>
+                    <a href="#themes">
+                        <span>Industry Themes</span>
                         <span class="nav-count-pill">{{ $activeSites->count() }} Live</span>
                     </a>
                 </li>
@@ -742,7 +762,7 @@
                 <a href="{{ route('admin.dashboard') }}" class="btn-saas-ghost d-none d-md-inline-block">
                     <i class="bi bi-grid-1x2-fill me-1 text-danger"></i> Admin Console
                 </a>
-                <a href="#pricing" class="btn-saas-primary">
+                <a href="#themes" class="btn-saas-primary">
                     <span>Start Free Trial</span>
                     <i class="bi bi-arrow-right"></i>
                 </a>
@@ -753,34 +773,35 @@
     <!-- =====================================================================
          2. ULTRA-MODERN SAAS HERO SECTION
          ===================================================================== -->
+    @if($heroSec['is_visible'] ?? true)
     <section class="saas-hero text-center">
         <div class="hero-orb-1"></div>
         <div class="hero-orb-2"></div>
 
         <div class="container position-relative" style="z-index: 5;">
-            <a href="#templates" class="hero-pill-announcement">
-                <span class="hero-pill-tag">New v3.5 Cloud</span>
-                <span>{{ $activeSites->count() }}+ Ready-to-Deploy Industry Websites in One SaaS Hub</span>
+            <a href="#themes" class="hero-pill-announcement">
+                <span class="hero-pill-tag">{{ $heroC['pill_tag'] ?? 'New v3.5 Cloud' }}</span>
+                <span>{{ $activeSites->count() }}+ {{ $heroC['pill_text'] ?? 'Ready-to-Deploy Industry Websites in One SaaS Hub' }}</span>
                 <i class="bi bi-arrow-right text-danger"></i>
             </a>
 
             <h1 class="saas-hero-title">
-                Launch Production-Ready <br class="d-none d-md-inline">
-                <span class="text-gradient-saas">Industry Websites in Seconds</span>
+                {{ $heroC['heading_line_1'] ?? 'Launch Production-Ready' }} <br class="d-none d-md-inline">
+                <span class="text-gradient-saas">{{ $heroC['heading_gradient'] ?? 'Industry Websites in Seconds' }}</span>
             </h1>
 
             <p class="saas-hero-sub">
-                The all-in-one modular SaaS website platform for agencies, enterprises, and creators. Activate any industry niche—from <strong>Real Estate, Healthcare &amp; Pharmacy</strong> to <strong>Gym, Hajj &amp; Kids Learning</strong>—with isolated databases, visual CMS, and instant domain routing.
+                {{ $heroC['subheading'] ?? 'The all-in-one modular SaaS website platform for agencies, enterprises, and creators. Activate any industry niche with isolated databases, visual CMS, and instant domain routing.' }}
             </p>
 
             <div class="d-flex align-items-center justify-content-center flex-wrap gap-3">
-                <a href="#templates" class="btn-saas-primary btn-hero-lg">
+                <a href="#themes" class="btn-saas-primary btn-hero-lg">
                     <i class="bi bi-rocket-takeoff-fill"></i>
-                    <span>Explore {{ $activeSites->count() }} Live Demos</span>
+                    <span>{{ $heroC['primary_btn_text'] ?? ('Explore ' . $activeSites->count() . ' Live Demos') }}</span>
                 </a>
-                <a href="{{ route('admin.websites') }}" class="btn-hero-lg btn-hero-secondary">
-                    <i class="bi bi-sliders2-vertical"></i>
-                    <span>Open SaaS Control Panel</span>
+                <a href="#pricing" class="btn-hero-lg btn-hero-secondary">
+                    <i class="bi bi-tags-fill"></i>
+                    <span>{{ $heroC['secondary_btn_text'] ?? 'View Pricing & Free Trial' }}</span>
                 </a>
             </div>
 
@@ -861,6 +882,7 @@
             </div>
         </div>
     </section>
+    @endif
 
     <!-- =====================================================================
          3. SAAS METRICS & ARCHITECTURE BAR
@@ -897,19 +919,32 @@
     </section>
 
     <!-- =====================================================================
-         4. LIVE INDUSTRY TEMPLATES & DEMOS SHOWCASE (#templates)
+         4. LIVE INDUSTRY TEMPLATES & DEMOS SHOWCASE (#themes / #templates)
          ===================================================================== -->
-    <section class="saas-section" id="templates">
+    @if($themesSec['is_visible'] ?? true)
+    <section class="saas-section" id="themes">
+        <div id="templates"></div>
         <div class="container">
-            <div class="text-center mb-5">
+            <div class="text-center mb-4">
                 <div class="section-eyebrow">
                     <i class="bi bi-collection-play-fill"></i>
-                    <span>Live Interactive Demos</span>
+                    <span>{{ $themesC['eyebrow'] ?? 'Live Interactive Demos' }}</span>
                 </div>
-                <h2 class="section-heading">Explore Ready-to-Use Industry Websites</h2>
+                <h2 class="section-heading">{{ $themesC['heading'] ?? 'Explore Ready-to-Use Industry Websites' }}</h2>
                 <p class="section-subheading">
-                    Every module below is a complete, standalone business application with its own bespoke frontend theme, database tables, and dedicated Admin CRUD suite.
+                    {{ $themesC['subheading'] ?? 'Every module below is a complete, standalone business application with its own bespoke frontend theme, isolated database, and dedicated Admin CRUD suite.' }}
                 </p>
+            </div>
+
+            <!-- Selected Plan Banner (Appears when user clicks a Pricing Card) -->
+            <div id="selectedPlanBanner" class="d-none alert border-0 shadow-sm rounded-4 p-3 px-4 mb-4 d-flex align-items-center justify-content-between flex-wrap gap-2" style="background: linear-gradient(135deg, #090D16 0%, #1E1B4B 100%); color: #FFFFFF;">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-danger rounded-pill px-3 py-2">STEP 1: SELECT YOUR THEME</span>
+                    <span class="small">
+                        Selected Plan: <strong id="bannerPlanName" class="text-warning">Single Theme Starter (14-Day Free Trial)</strong> — Now click <strong>"Install Theme (Free Trial)"</strong> on your favorite industry theme below!
+                    </span>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-light rounded-pill px-3" onclick="clearSelectedPlan()">Change Plan</button>
             </div>
 
             <!-- Interactive Category Filter Pills & Search -->
@@ -1010,24 +1045,17 @@
                                     </div>
 
                                     <div class="d-flex gap-2 pt-1">
-                                        <a href="{{ url('/' . $site->slug) }}" class="btn-saas-primary flex-grow-1 justify-content-center">
-                                            <span>Live Demo</span>
+                                        <a href="{{ url('/' . $site->slug) }}" class="btn btn-outline-dark rounded-3 px-3 fw-semibold small d-inline-flex align-items-center gap-1">
+                                            <span>Live Preview</span>
                                             <i class="bi bi-box-arrow-up-right"></i>
                                         </a>
                                         <button type="button"
-                                                class="btn btn-dark rounded-3 px-3 fw-semibold small d-inline-flex align-items-center gap-1"
-                                                onclick="openDeployModal(@js($site->name), @js($site->module), @js($site->thumbnail), @js(url('/' . $site->slug)))"
-                                                title="Deploy This SaaS Template">
-                                            <i class="bi bi-rocket-takeoff"></i>
-                                            <span>Use Template</span>
+                                                class="btn-saas-primary flex-grow-1 justify-content-center"
+                                                onclick="openInstallWizard(@js($site->module_name ?: 'Interior'), @js($site->name), @js($site->module), @js($site->thumbnail), @js(url('/' . $site->slug)))"
+                                                title="Install This Theme with 14-Day Free Trial">
+                                            <i class="bi bi-rocket-takeoff-fill"></i>
+                                            <span>Install Theme (Free Trial)</span>
                                         </button>
-                                        @if($site->admin_route && Route::has($site->admin_route))
-                                            <a href="{{ route($site->admin_route) }}"
-                                               class="btn btn-outline-secondary rounded-3 px-3 d-inline-flex align-items-center"
-                                               title="Configure in Admin CMS">
-                                                <i class="bi bi-sliders"></i>
-                                            </a>
-                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -1037,20 +1065,22 @@
             @endif
         </div>
     </section>
+    @endif
 
     <!-- =====================================================================
          5. BENTO-GRID SAAS PLATFORM FEATURES (#features)
          ===================================================================== -->
+    @if($featSec['is_visible'] ?? true)
     <section class="saas-section bg-white border-top border-bottom" id="features">
         <div class="container">
             <div class="text-center mb-5">
                 <div class="section-eyebrow">
                     <i class="bi bi-cpu-fill"></i>
-                    <span>Enterprise SaaS Architecture</span>
+                    <span>{{ $featC['eyebrow'] ?? 'Enterprise SaaS Architecture' }}</span>
                 </div>
-                <h2 class="section-heading">Built for Multi-Tenant Scale &amp; Speed</h2>
+                <h2 class="section-heading">{{ $featC['heading'] ?? 'Built for Multi-Tenant Scale & Speed' }}</h2>
                 <p class="section-subheading">
-                    Engineered with strict modular isolation so you can host dozens of industry vertical websites or deploy single-tenant client projects with zero friction.
+                    {{ $featC['subheading'] ?? 'Engineered with strict modular isolation so you can host dozens of industry vertical websites or deploy single-tenant client projects with zero friction.' }}
                 </p>
             </div>
 
@@ -1129,6 +1159,7 @@
             </div>
         </div>
     </section>
+    @endif
 
     <!-- =====================================================================
          6. HOW IT WORKS — 3-STEP SAAS WORKFLOW (#how-it-works)
@@ -1181,16 +1212,17 @@
     <!-- =====================================================================
          7. INTERACTIVE SAAS PRICING SECTION (#pricing)
          ===================================================================== -->
+    @if($pricingSec['is_visible'] ?? true)
     <section class="saas-section bg-white border-top" id="pricing">
         <div class="container">
             <div class="text-center mb-5">
                 <div class="section-eyebrow">
                     <i class="bi bi-tags-fill"></i>
-                    <span>Transparent SaaS Pricing</span>
+                    <span>{{ $pricingC['eyebrow'] ?? 'Transparent SaaS Pricing' }}</span>
                 </div>
-                <h2 class="section-heading">Flexible Plans for Every Business</h2>
+                <h2 class="section-heading">{{ $pricingC['heading'] ?? 'Flexible Plans for Every Business' }}</h2>
                 <p class="section-subheading mb-4">
-                    Start free and upgrade as you grow. Switch between monthly and yearly billing anytime.
+                    {{ $pricingC['subheading'] ?? 'Start free and upgrade as you grow. Switch between monthly and yearly billing anytime.' }}
                 </p>
 
                 <!-- Monthly / Yearly Billing Toggle -->
@@ -1205,181 +1237,129 @@
             </div>
 
             <div class="row g-4 align-items-stretch">
-                <!-- Plan 1: Starter -->
-                <div class="col-lg-4">
-                    <div class="pricing-card">
-                        <div>
-                            <div class="fw-bold text-uppercase small text-muted mb-1">Starter</div>
-                            <h4 class="fw-bolder mb-2">Single Business</h4>
-                            <p class="text-muted small mb-4">Perfect for launching one standalone business website on your custom domain.</p>
+                @forelse($plansForLanding as $pItem)
+                    <div class="col-lg-4">
+                        <div class="pricing-card {{ $pItem->is_featured ? 'featured' : '' }}">
+                            @if($pItem->is_featured)
+                                <span class="popular-ribbon"><i class="bi bi-stars me-1"></i> Most Popular</span>
+                            @endif
+                            <div>
+                                <div class="fw-bold text-uppercase small {{ $pItem->is_featured ? 'text-info' : 'text-muted' }} mb-1">
+                                    {{ $pItem->trial_days > 0 ? ($pItem->trial_days . '-Day Free Trial') : 'SaaS Package' }}
+                                </div>
+                                <h4 class="fw-bolder mb-2 {{ $pItem->is_featured ? 'text-white' : '' }}">{{ $pItem->name }}</h4>
+                                <p class="{{ $pItem->is_featured ? 'text-white-50' : 'text-muted' }} small mb-4">{{ $pItem->description }}</p>
 
-                            <div class="d-flex align-items-baseline gap-1 mb-2">
-                                <span class="price-amount" data-monthly="$29" data-yearly="$23">$29</span>
-                                <span class="text-muted fw-semibold small">/ month</span>
+                                <div class="d-flex align-items-baseline gap-1 mb-2">
+                                    <span class="price-amount {{ $pItem->is_featured ? 'text-white' : '' }}"
+                                          data-monthly="{{ $pItem->currency }} {{ number_format($pItem->price_monthly, 0) }}"
+                                          data-yearly="{{ $pItem->currency }} {{ number_format($pItem->price_yearly, 0) }}">
+                                        {{ $pItem->currency }} {{ number_format($pItem->price_monthly, 0) }}
+                                    </span>
+                                    <span class="{{ $pItem->is_featured ? 'text-white-50' : 'text-muted' }} fw-semibold small">/ cycle</span>
+                                </div>
+                                <small class="{{ $pItem->is_featured ? 'text-info' : 'text-muted' }} d-block mb-3 billing-note">Billed monthly (14-Day Free Trial)</small>
+
+                                <ul class="pricing-feature-list {{ $pItem->is_featured ? 'text-white-50' : '' }}">
+                                    <li class="{{ $pItem->is_featured ? 'text-white' : '' }}">
+                                        <i class="bi bi-check-circle-fill {{ $pItem->is_featured ? 'text-danger' : 'text-success' }}"></i>
+                                        <strong>{{ $pItem->site_limit }} Industry Website(s) (Isolated DB)</strong>
+                                    </li>
+                                    <li class="{{ $pItem->is_featured ? 'text-white' : '' }}">
+                                        <i class="bi bi-check-circle-fill {{ $pItem->is_featured ? 'text-danger' : 'text-success' }}"></i>
+                                        {{ $pItem->custom_domain ? 'Custom Domain + Free Caddy Auto-SSL' : 'Free Platform Subdomain (.yourhub.com)' }}
+                                    </li>
+                                    @foreach($pItem->features ?? [] as $fLine)
+                                        <li class="{{ $pItem->is_featured ? 'text-white' : '' }}">
+                                            <i class="bi bi-check-circle-fill {{ $pItem->is_featured ? 'text-danger' : 'text-success' }}"></i>
+                                            {{ $fLine }}
+                                        </li>
+                                    @endforeach
+                                </ul>
                             </div>
-                            <small class="text-muted d-block mb-3 billing-note">Billed monthly</small>
 
-                            <ul class="pricing-feature-list">
-                                <li><i class="bi bi-check-circle-fill text-success"></i> <strong>1 Active Industry Module</strong></li>
-                                <li><i class="bi bi-check-circle-fill text-success"></i> Custom Domain &amp; Free SSL</li>
-                                <li><i class="bi bi-check-circle-fill text-success"></i> Full Visual CMS &amp; Media Library</li>
-                                <li><i class="bi bi-check-circle-fill text-success"></i> Lead &amp; Booking Management</li>
-                                <li><i class="bi bi-check-circle-fill text-success"></i> 1-Click Default Template Reset</li>
-                            </ul>
+                            <button type="button"
+                                    onclick="selectPlanAndScrollToThemes({{ $pItem->id }}, @js($pItem->name))"
+                                    class="{{ $pItem->is_featured ? 'btn-saas-primary w-100 py-3 justify-content-center' : 'btn btn-outline-dark w-100 py-3 rounded-3 fw-bold' }}">
+                                <span>Select Theme &amp; Start Free Trial</span>
+                                <i class="bi bi-arrow-up-right ms-1"></i>
+                            </button>
                         </div>
-                        <a href="{{ route('admin.websites') }}" class="btn btn-outline-dark w-100 py-3 rounded-3 fw-bold">
-                            Get Started with Starter
-                        </a>
                     </div>
-                </div>
-
-                <!-- Plan 2: Agency Pro (Featured) -->
-                <div class="col-lg-4">
-                    <div class="pricing-card featured">
-                        <span class="popular-ribbon"><i class="bi bi-stars me-1"></i> Most Popular</span>
-                        <div>
-                            <div class="fw-bold text-uppercase small text-info mb-1">Agency Pro</div>
-                            <h4 class="fw-bolder mb-2 text-white">Multi-Website Hub</h4>
-                            <p class="text-white-50 small mb-4">Ideal for agencies and growing businesses managing multiple industry verticals.</p>
-
-                            <div class="d-flex align-items-baseline gap-1 mb-2">
-                                <span class="price-amount text-white" data-monthly="$79" data-yearly="$63">$79</span>
-                                <span class="text-white-50 fw-semibold small">/ month</span>
-                            </div>
-                            <small class="text-info d-block mb-3 billing-note">Billed monthly</small>
-
-                            <ul class="pricing-feature-list text-white-50">
-                                <li class="text-white"><i class="bi bi-check-circle-fill text-danger"></i> <strong>All {{ $activeSites->count() }}+ Industry Modules Unlocked</strong></li>
-                                <li class="text-white"><i class="bi bi-check-circle-fill text-danger"></i> Up to 15 Active Client Websites</li>
-                                <li class="text-white"><i class="bi bi-check-circle-fill text-danger"></i> Multilingual (EN / বাংলা / AR + RTL)</li>
-                                <li class="text-white"><i class="bi bi-check-circle-fill text-danger"></i> Member Portals &amp; QR Check-in Suite</li>
-                                <li class="text-white"><i class="bi bi-check-circle-fill text-danger"></i> Role-Based Team Access &amp; 2FA</li>
-                            </ul>
-                        </div>
-                        <a href="{{ route('admin.websites') }}" class="btn-saas-primary w-100 py-3 justify-content-center">
-                            <span>Start 14-Day Free Trial</span>
-                            <i class="bi bi-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Plan 3: Enterprise SaaS -->
-                <div class="col-lg-4">
-                    <div class="pricing-card">
-                        <div>
-                            <div class="fw-bold text-uppercase small text-primary mb-1">Enterprise</div>
-                            <h4 class="fw-bolder mb-2">White-Label SaaS</h4>
-                            <p class="text-muted small mb-4">Full platform ownership with unlimited tenants and automated client handover CLI.</p>
-
-                            <div class="d-flex align-items-baseline gap-1 mb-2">
-                                <span class="price-amount" data-monthly="$199" data-yearly="$159">$199</span>
-                                <span class="text-muted fw-semibold small">/ month</span>
-                            </div>
-                            <small class="text-muted d-block mb-3 billing-note">Billed monthly</small>
-
-                            <ul class="pricing-feature-list">
-                                <li><i class="bi bi-check-circle-fill text-primary"></i> <strong>Unlimited Active Websites &amp; Domains</strong></li>
-                                <li><i class="bi bi-check-circle-fill text-primary"></i> 100% White-Label Custom Branding</li>
-                                <li><i class="bi bi-check-circle-fill text-primary"></i> <code>demo:handover</code> Standalone Export CLI</li>
-                                <li><i class="bi bi-check-circle-fill text-primary"></i> Payment Gateway &amp; Wallet Settlement</li>
-                                <li><i class="bi bi-check-circle-fill text-primary"></i> Dedicated Priority Engineering Support</li>
-                            </ul>
-                        </div>
-                        <a href="{{ route('admin.settings') }}" class="btn btn-dark w-100 py-3 rounded-3 fw-bold">
-                            Launch Enterprise Console
-                        </a>
-                    </div>
-                </div>
+                @empty
+                    <div class="col-12 text-center text-muted">Plans are being configured.</div>
+                @endforelse
             </div>
         </div>
     </section>
+    @endif
 
     <!-- =====================================================================
          8. FREQUENTLY ASKED QUESTIONS (#faq)
          ===================================================================== -->
+    @if($faqSec['is_visible'] ?? true)
     <section class="saas-section" id="faq">
         <div class="container" style="max-width: 860px;">
             <div class="text-center mb-5">
                 <div class="section-eyebrow">
                     <i class="bi bi-question-circle-fill"></i>
-                    <span>Got Questions?</span>
+                    <span>{{ $faqC['eyebrow'] ?? 'Got Questions?' }}</span>
                 </div>
-                <h2 class="section-heading">Frequently Asked Questions</h2>
+                <h2 class="section-heading">{{ $faqC['heading'] ?? 'Frequently Asked Questions' }}</h2>
                 <p class="section-subheading">
-                    Everything you need to know about our modular multi-website SaaS architecture.
+                    {{ $faqC['subheading'] ?? 'Everything you need to know about our modular multi-website SaaS architecture.' }}
                 </p>
             </div>
 
             <div class="accordion accordion-flush bg-white border rounded-4 p-3 shadow-sm" id="saasFaqAccordion">
-                <div class="accordion-item border-bottom">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button fw-bold py-3" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
-                            How does Single Active Module mode vs. Multi-Module SaaS Hub mode work?
-                        </button>
-                    </h2>
-                    <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#saasFaqAccordion">
-                        <div class="accordion-body text-muted small" style="line-height: 1.7;">
-                            When <strong>multiple modules</strong> are turned Active in <em>Admin &rarr; Websites</em>, the root URL (<code>/</code>) displays this SaaS Hub landing page and each module runs on its own slug (e.g., <code>/wonder-learn</code>, <code>/gym-fitness</code>, <code>/real-estate</code>). When <strong>only 1 module</strong> is Active, that single website automatically runs directly on the root domain (<code>/</code>)!
+                @foreach($faqC['items'] ?? [] as $fIdx => $fRow)
+                    <div class="accordion-item {{ !$loop->last ? 'border-bottom' : '' }}">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button {{ $fIdx > 0 ? 'collapsed' : '' }} fw-bold py-3" type="button" data-bs-toggle="collapse" data-bs-target="#faqItem-{{ $fIdx }}">
+                                {{ $fRow['q'] ?? '' }}
+                            </button>
+                        </h2>
+                        <div id="faqItem-{{ $fIdx }}" class="accordion-collapse collapse {{ $fIdx === 0 ? 'show' : '' }}" data-bs-parent="#saasFaqAccordion">
+                            <div class="accordion-body text-muted small" style="line-height: 1.7;">
+                                {{ $fRow['a'] ?? '' }}
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="accordion-item border-bottom">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed fw-bold py-3" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
-                            Are the databases and uploaded media files isolated between modules?
-                        </button>
-                    </h2>
-                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#saasFaqAccordion">
-                        <div class="accordion-body text-muted small" style="line-height: 1.7;">
-                            Yes! Every module has its own strict table prefix (<code>int_</code>, <code>re_</code>, <code>pharma_</code>, <code>gym_</code>, <code>hajj_</code>, <code>wl_</code>) and stores its theme assets and uploads inside <code>Modules/{Module}/Public/</code> so modules never collide.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed fw-bold py-3" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
-                            Can we convert this into a full automated subscription SaaS later?
-                        </button>
-                    </h2>
-                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#saasFaqAccordion">
-                        <div class="accordion-body text-muted small" style="line-height: 1.7;">
-                            Absolutely. The core database already tracks websites, domains, roles, permissions, and PGW transactions, making it ready to hook into automated tenant provisioning and recurring billing whenever you are ready.
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </section>
+    @endif
 
     <!-- =====================================================================
          9. BOTTOM CTA BANNER & MODERN SAAS FOOTER
          ===================================================================== -->
+    @if($ctaSec['is_visible'] ?? true)
     <section class="pb-5">
         <div class="container">
             <div class="saas-cta-banner text-center">
                 <span class="badge bg-white bg-opacity-10 text-white border border-white border-opacity-25 rounded-pill px-3 py-2 mb-3">
-                    <i class="bi bi-stars text-warning me-1"></i> Ready for Instant Deployment
+                    <i class="bi bi-stars text-warning me-1"></i> {{ $ctaC['cta_badge'] ?? 'Ready for Instant Deployment' }}
                 </span>
                 <h2 class="fw-bolder font-display mb-3" style="font-size: clamp(28px, 3.5vw, 44px);">
-                    Start Building Your Next Industry Website Today
+                    {{ $ctaC['cta_heading'] ?? 'Start Building Your Next Industry Website Today' }}
                 </h2>
                 <p class="text-white-50 mx-auto mb-4" style="max-width: 600px; font-size: 16px;">
-                    Launch a live demo in one click or open the unified Admin Console to customize themes, menus, and content.
+                    {{ $ctaC['cta_subheading'] ?? 'Pick a theme, verify your email, and launch your isolated website in under 30 seconds.' }}
                 </p>
                 <div class="d-flex align-items-center justify-content-center flex-wrap gap-3">
-                    <a href="{{ route('admin.websites') }}" class="btn-saas-primary btn-hero-lg">
-                        <i class="bi bi-globe2"></i>
-                        <span>Manage Websites in Admin</span>
+                    <a href="#themes" class="btn-saas-primary btn-hero-lg">
+                        <i class="bi bi-rocket-takeoff-fill"></i>
+                        <span>Select a Theme &amp; Start Free Trial</span>
                     </a>
-                    <a href="#templates" class="btn-hero-lg btn-hero-secondary">
-                        <span>Browse {{ $activeSites->count() }} Live Demos</span>
+                    <a href="#pricing" class="btn-hero-lg btn-hero-secondary">
+                        <span>Compare Pricing Plans</span>
                     </a>
                 </div>
             </div>
         </div>
     </section>
+    @endif
 
     <footer class="saas-footer">
         <div class="container">
@@ -1395,7 +1375,7 @@
                         <span class="fw-bolder fs-5 text-white font-display">{{ $globalSiteName ?? 'SiteBuilder' }} Cloud</span>
                     </div>
                     <p class="small mb-3" style="max-width: 320px; line-height: 1.6;">
-                        Next-generation modular multi-website SaaS hub. Build, manage, and scale standalone industry websites from a single unified codebase.
+                        {{ $ctaC['footer_about'] ?? 'Next-generation modular multi-website SaaS hub. Build, manage, and scale standalone industry websites from a single unified codebase.' }}
                     </p>
                     <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill" style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); color: #34D399; font-size: 12px; font-weight: 600;">
                         <span>●</span> All Cloud Systems Operational
@@ -1449,69 +1429,199 @@
         </div>
     </footer>
 
-    <!-- SaaS "Use Template / Instant Provisioning" Preview Modal -->
+    <!-- =====================================================================
+         10. STEP-BY-STEP THEME INSTALLATION & FREE TRIAL WIZARD MODAL (Phase 6)
+         ===================================================================== -->
     <div class="modal fade" id="saasDeployModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
-                <div class="modal-header border-0 text-white" style="background: linear-gradient(135deg, #090D16 0%, #1E1B4B 100%);">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <form action="{{ route('saas.install.register') }}" method="POST" class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
+                @csrf
+                <input type="hidden" name="theme_module" id="wizardThemeModuleInput" value="Interior">
+
+                <div class="modal-header border-0 text-white p-4" style="background: linear-gradient(135deg, #090D16 0%, #1E1B4B 100%);">
                     <div>
-                        <span class="badge bg-danger rounded-pill mb-1" id="deployModalModule">Industry Template</span>
-                        <h5 class="modal-title fw-bolder font-display mb-0" id="deployModalTitle">Deploy Website</h5>
+                        <span class="badge bg-danger rounded-pill mb-1" id="deployModalModule">14-Day Free Trial Included</span>
+                        <h5 class="modal-title fw-bolder font-display mb-0" id="deployModalTitle">Install Theme</h5>
                     </div>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
+
                 <div class="modal-body p-4">
-                    <div class="d-flex align-items-center gap-3 p-2 rounded-3 bg-light border mb-3">
-                        <img id="deployModalThumb" src="" alt="" style="width: 72px; height: 50px; object-fit: cover; border-radius: 8px;">
-                        <div>
-                            <div class="fw-bold small text-dark" id="deployModalName">Template Name</div>
-                            <small class="text-success fw-semibold"><i class="bi bi-check-circle-fill me-1"></i> Pre-configured DB, Theme &amp; Admin CMS</small>
+                    <!-- Step 1: Selected Theme & Plan -->
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 p-3 rounded-3 bg-light border mb-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <img id="deployModalThumb" src="" alt="" style="width: 76px; height: 52px; object-fit: cover; border-radius: 8px;">
+                            <div>
+                                <div class="fw-bold text-dark" id="deployModalName">Template Name</div>
+                                <small class="text-success fw-semibold"><i class="bi bi-database-check me-1"></i> Dedicated Isolated MySQL Database &amp; Visual CMS</small>
+                            </div>
                         </div>
+                        <a href="#" id="deployModalDemoBtn" target="_blank" class="btn btn-sm btn-outline-dark rounded-pill px-3">
+                            <i class="bi bi-eye me-1"></i> Live Preview
+                        </a>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">Your Business / Website Name</label>
-                        <input type="text" class="form-control rounded-3" placeholder="e.g. Apex Global Ltd.">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">Choose Subdomain or Custom Domain</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="yourbrand">
-                            <span class="input-group-text bg-light fw-semibold small">.sitebuilder.cloud</span>
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label class="form-label small fw-bold"><span class="badge bg-dark me-1">1</span> Subscription Package (Starts with 14-Day Free Trial)</label>
+                            <select name="plan_id" id="wizardPlanSelect" class="form-select rounded-3">
+                                @foreach($plansForLanding as $wPlan)
+                                    <option value="{{ $wPlan->id }}">
+                                        {{ $wPlan->name }} — {{ $wPlan->currency }} {{ number_format($wPlan->price_monthly, 0) }}/mo ({{ $wPlan->trial_days }}-Day Free Trial)
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold">Billing Cycle</label>
+                            <select name="billing_cycle" id="wizardCycleSelect" class="form-select rounded-3">
+                                <option value="monthly">Monthly</option>
+                                <option value="yearly">Yearly (Save 20%)</option>
+                            </select>
+                        </div>
+
+                        <!-- Step 2: Website Name & Live Subdomain Availability Check -->
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold"><span class="badge bg-dark me-1">2</span> Your Business / Website Name</label>
+                            <input type="text" name="site_name" id="wizardSiteNameInput" class="form-control rounded-3" placeholder="e.g. Royal Interior Studio" oninput="autoSuggestSubdomain(this.value)" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Choose Free Subdomain</label>
+                            <div class="input-group">
+                                <input type="text" name="subdomain" id="wizardSubdomainInput" class="form-control" placeholder="royal-studio" oninput="checkSubdomainLive(this.value)" required>
+                                <span class="input-group-text bg-light fw-semibold small">.{{ $baseCentralDomain }}</span>
+                            </div>
+                            <div id="subdomainCheckFeedback" class="small mt-1 fw-semibold text-muted" style="font-size: 11.5px;">
+                                Enter at least 3 characters to check availability.
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Owner Account Info -->
+                        <div class="col-12 pt-2 border-top">
+                            <div class="small fw-bold mb-2"><span class="badge bg-dark me-1">3</span> Owner Account &amp; Email Verification</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Your Full Name</label>
+                            <input type="text" name="name" value="{{ auth()->user()?->name }}" class="form-control rounded-3" placeholder="John Doe" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Email Address (Verification Link Sent Here)</label>
+                            <input type="email" name="email" value="{{ auth()->user()?->email }}" class="form-control rounded-3" placeholder="you@company.com" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Mobile / WhatsApp Number</label>
+                            <input type="text" name="phone" value="{{ auth()->user()?->phone }}" class="form-control rounded-3" placeholder="+8801XXXXXXXXX">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Dashboard Password</label>
+                            <input type="password" name="password" class="form-control rounded-3" placeholder="Minimum 6 characters" minlength="6" required>
                         </div>
                     </div>
-                    <div class="mb-2">
-                        <label class="form-label small fw-bold">Select SaaS Subscription Tier</label>
-                        <select class="form-select rounded-3">
-                            <option>Starter Plan — $29/month (14-Day Free Trial)</option>
-                            <option selected>Agency Pro Plan — $79/month (All Features Unlocked)</option>
-                            <option>Enterprise White-Label — $199/month</option>
-                        </select>
-                    </div>
                 </div>
-                <div class="modal-footer border-0 bg-light justify-content-between">
-                    <a href="#" id="deployModalDemoBtn" class="btn btn-outline-secondary rounded-3 fw-semibold">
-                        <i class="bi bi-eye me-1"></i> View Live Demo
-                    </a>
-                    <a href="{{ route('admin.websites') }}" class="btn-saas-primary">
-                        <i class="bi bi-rocket-takeoff-fill"></i>
-                        <span>Provision in Admin Console</span>
-                    </a>
+
+                <div class="modal-footer border-0 bg-light justify-content-between px-4 py-3">
+                    <span class="text-muted small">
+                        <i class="bi bi-shield-lock-fill text-success me-1"></i> Step 4: Verify Email &rarr; Auto Database &amp; Theme Install
+                    </span>
+                    <button type="submit" id="wizardSubmitBtn" class="btn-saas-primary">
+                        <span>Continue to Email Verification</span>
+                        <i class="bi bi-arrow-right"></i>
+                    </button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function openDeployModal(name, mod, thumb, demoUrl) {
-            document.getElementById('deployModalTitle').textContent = 'Deploy ' + name;
-            document.getElementById('deployModalName').textContent = name + ' (' + mod + ' Module)';
-            document.getElementById('deployModalModule').textContent = mod + ' SaaS Template';
+        let selectedLandingPlanId = null;
+        let selectedLandingCycle = 'monthly';
+        let subdomainDebounceTimer = null;
+
+        // Pricing Card Click -> Set selected plan, reveal banner, and smooth scroll to #themes
+        function selectPlanAndScrollToThemes(planId, planName) {
+            selectedLandingPlanId = planId;
+            const planSelect = document.getElementById('wizardPlanSelect');
+            if (planSelect) {
+                planSelect.value = String(planId);
+            }
+            const banner = document.getElementById('selectedPlanBanner');
+            const bannerName = document.getElementById('bannerPlanName');
+            if (banner && bannerName) {
+                bannerName.textContent = planName + ' (14-Day Free Trial)';
+                banner.classList.remove('d-none');
+            }
+            const themesEl = document.getElementById('themes');
+            if (themesEl) {
+                themesEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function clearSelectedPlan() {
+            selectedLandingPlanId = null;
+            document.getElementById('selectedPlanBanner')?.classList.add('d-none');
+            document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function openInstallWizard(moduleKey, name, modLabel, thumb, demoUrl) {
+            document.getElementById('wizardThemeModuleInput').value = moduleKey;
+            document.getElementById('deployModalTitle').textContent = 'Install ' + name + ' (' + modLabel + ')';
+            document.getElementById('deployModalName').textContent = name + ' (' + modLabel + ' Theme)';
+            document.getElementById('deployModalModule').textContent = 'Step 1–4: Install ' + modLabel + ' Theme';
             document.getElementById('deployModalThumb').src = thumb;
             document.getElementById('deployModalDemoBtn').href = demoUrl;
+
+            if (selectedLandingPlanId) {
+                const planSelect = document.getElementById('wizardPlanSelect');
+                if (planSelect) planSelect.value = String(selectedLandingPlanId);
+            }
+            const cycleSelect = document.getElementById('wizardCycleSelect');
+            if (cycleSelect) cycleSelect.value = selectedLandingCycle;
+
             new bootstrap.Modal(document.getElementById('saasDeployModal')).show();
         }
+
+        function autoSuggestSubdomain(siteName) {
+            const subInput = document.getElementById('wizardSubdomainInput');
+            if (!subInput || subInput.dataset.manuallyEdited === 'true') return;
+            const slug = (siteName || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').substring(0, 32);
+            subInput.value = slug;
+            if (slug.length >= 3) {
+                checkSubdomainLive(slug);
+            }
+        }
+
+        function checkSubdomainLive(val) {
+            const feedback = document.getElementById('subdomainCheckFeedback');
+            const clean = (val || '').toLowerCase().replace(/[^a-z0-9\-]/g, '');
+            if (!feedback) return;
+
+            if (clean.length < 3) {
+                feedback.className = 'small mt-1 fw-semibold text-muted';
+                feedback.textContent = 'Subdomain must be at least 3 characters.';
+                return;
+            }
+
+            feedback.className = 'small mt-1 fw-semibold text-secondary';
+            feedback.textContent = 'Checking subdomain availability...';
+
+            clearTimeout(subdomainDebounceTimer);
+            subdomainDebounceTimer = setTimeout(() => {
+                fetch(`{{ route('saas.install.check-subdomain') }}?subdomain=${encodeURIComponent(clean)}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.available) {
+                            feedback.className = 'small mt-1 fw-semibold text-success';
+                            feedback.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> ${data.message}`;
+                        } else {
+                            feedback.className = 'small mt-1 fw-semibold text-danger';
+                            feedback.innerHTML = `<i class="bi bi-x-circle-fill me-1"></i> ${data.message}`;
+                        }
+                    })
+                    .catch(() => {});
+            }, 250);
+        }
+
         // 1. Category Filter for Live Demos
         function filterDemos(cat, btn) {
             document.querySelectorAll('.filter-pill-btn').forEach(b => b.classList.remove('active'));
@@ -1534,6 +1644,7 @@
 
         // 3. Monthly / Yearly SaaS Pricing Toggle
         function toggleBilling(cycle) {
+            selectedLandingCycle = cycle;
             const btnM = document.getElementById('btnMonthly');
             const btnY = document.getElementById('btnYearly');
 
@@ -1550,7 +1661,7 @@
             });
 
             document.querySelectorAll('.billing-note').forEach(el => {
-                el.textContent = cycle === 'yearly' ? 'Billed annually (20% discount applied)' : 'Billed monthly';
+                el.textContent = cycle === 'yearly' ? 'Billed annually (Save 20% • 14-Day Free Trial)' : 'Billed monthly (14-Day Free Trial)';
             });
         }
     </script>

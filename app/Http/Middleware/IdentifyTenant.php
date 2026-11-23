@@ -70,6 +70,9 @@ class IdentifyTenant
 
                 $this->tenantDb->connect($tenant);
             }
+        } else {
+            // Central domain request (e.g. localhost or yourhub.com): ensure any previous admin tenant binding is cleared
+            $this->tenantDb->disconnect();
         }
 
         return $next($request);

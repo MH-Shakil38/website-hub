@@ -324,3 +324,24 @@ Artisan::command('resellers:release-commissions', function () {
 
 Schedule::command('resellers:release-commissions')->daily();
 
+Artisan::command('tenants:cleanup-unverified {--hours=48}', function () {
+    $hours = max(1, (int) $this->option('hours'));
+    $cutoff = now()->subHours($hours);
+
+    $staleTenants = \App\Models\Tenant::where('status', 'pending_verification')
+        ->whereNull('email_verified_at')
+        ->whereNull('db_name')
+        ->where('created_at', '<=', $cutoff)
+        ->get();
+
+    $count = 0;
+    foreach ($staleTenants as $t) {
+        $t->forceDelete();
+        $count++;
+    }
+
+    $this->info("Cleaned up {$count} unverified pending tenant registration(s) older than {$hours} hours.");
+})->purpose('Remove unverified pending_verification tenant rows older than 48 hours to free up subdomains');
+
+Schedule::command('tenants:cleanup-unverified')->daily();
+

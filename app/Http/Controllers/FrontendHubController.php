@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Plan;
+use App\Models\SaasSection;
 use App\Models\Tenant;
 use App\Models\Website;
 use App\Services\TenantDatabaseManager;
@@ -30,7 +32,15 @@ class FrontendHubController extends Controller
 
         $activeSites = Website::activeModules();
 
-        // 1. Single Active Module Mode: Runs directly on root '/'
+        // 0b. In SaaS Mode, the central domain root '/' ALWAYS renders the SaaS Hub Landing Page
+        if (config('app.mode', 'saas') === 'saas') {
+            if ($activeSites->count() <= 1) {
+                $activeSites = Website::whereNotNull('module_name')->orderBy('id')->get();
+            }
+            return view('frontend.hub-landing', $this->buildHubLandingData($activeSites));
+        }
+
+        // 1. Legacy Single Active Module Mode: Runs directly on root '/'
         if ($activeSites->count() === 1) {
             $singleSite = $activeSites->first();
             $this->connectDemoTenantForModule($singleSite->module_name);
@@ -40,9 +50,7 @@ class FrontendHubController extends Controller
 
         // 2. Multi-Module Showcase Hub Mode: Shows all active themes landing page
         if ($activeSites->count() > 1) {
-            return view('frontend.hub-landing', [
-                'activeSites' => $activeSites,
-            ]);
+            return view('frontend.hub-landing', $this->buildHubLandingData($activeSites));
         }
 
         // 3. Fallback if no database active modules: check config('app.active_module')
@@ -52,9 +60,30 @@ class FrontendHubController extends Controller
             return $this->dispatchModuleAction($activeModuleName, 'index');
         }
 
-        return view('frontend.hub-landing', [
+        return view('frontend.hub-landing', $this->buildHubLandingData($activeSites));
+    }
+
+    protected function buildHubLandingData($activeSites): array
+    {
+        $saasSections = SaasSection::getLandingMap();
+        $clientPlans = collect();
+
+        try {
+            if (Schema::connection('central')->hasTable('core_plans')) {
+                Plan::ensureDefaultsSeeded();
+                $clientPlans = Plan::where('audience', 'client')
+                    ->where('is_active', true)
+                    ->orderBy('sort_order')
+                    ->get();
+            }
+        } catch (\Throwable) {
+        }
+
+        return [
             'activeSites' => $activeSites,
-        ]);
+            'saasSections' => $saasSections,
+            'clientPlans' => $clientPlans,
+        ];
     }
 
     /**
