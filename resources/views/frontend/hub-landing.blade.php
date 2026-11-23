@@ -1045,16 +1045,19 @@
                                     </div>
 
                                     <div class="d-flex gap-2 pt-1">
-                                        <a href="{{ url('/' . $site->slug) }}" class="btn btn-outline-dark rounded-3 px-3 fw-semibold small d-inline-flex align-items-center gap-1">
+                                        <a href="{{ url('/' . $site->slug) }}"
+                                           class="btn btn-outline-dark rounded-3 px-3 py-2 fw-semibold d-inline-flex align-items-center justify-content-center gap-1 flex-grow-1"
+                                           style="font-size: 13px; white-space: nowrap;">
                                             <span>Live Preview</span>
-                                            <i class="bi bi-box-arrow-up-right"></i>
+                                            <i class="bi bi-box-arrow-up-right" style="font-size: 12px;"></i>
                                         </a>
                                         <button type="button"
-                                                class="btn-saas-primary flex-grow-1 justify-content-center"
+                                                class="btn-saas-primary flex-grow-1 justify-content-center py-2 px-3"
+                                                style="font-size: 13px; white-space: nowrap;"
                                                 onclick="openInstallWizard(@js($site->module_name ?: 'Interior'), @js($site->name), @js($site->module), @js($site->thumbnail), @js(url('/' . $site->slug)))"
                                                 title="Install This Theme with 14-Day Free Trial">
                                             <i class="bi bi-rocket-takeoff-fill"></i>
-                                            <span>Install Theme (Free Trial)</span>
+                                            <span>Install Theme</span>
                                         </button>
                                     </div>
                                 </div>
