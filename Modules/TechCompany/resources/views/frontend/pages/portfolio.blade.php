@@ -1,7 +1,7 @@
 @extends('techcompany::frontend.layouts.master')
 
-@section('title')Portfolio | YourCompany@endsection
-@section('meta_description')YourCompany portfolio and case studies@endsection
+@section('title', '')
+@section('meta_description', '')
 
 @section('content')
 <main>

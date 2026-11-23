@@ -61,6 +61,10 @@
                     'realestate' => 'bi bi-buildings-fill',
                     'portfolio' => 'bi bi-code-slash',
                     'clinic' => 'bi bi-heart-pulse-fill',
+                    'hajjumrah' => 'bi bi-moon-stars-fill',
+                    'gymfitness' => 'bi bi-lightning-charge-fill',
+                    'wonderlearn' => 'bi bi-stars',
+                    'eventmanagement' => 'bi bi-calendar2-event-fill',
                     default => 'bi bi-box-fill',
                 };
 
@@ -94,7 +98,7 @@
                     </button>
 
                     <div class="collapse {{ $isExpanded ? 'show' : '' }}" id="collapse-mod-{{ $modLower }}">
-                        <ul class="sb-nav mt-1 ps-2" style="border-left: 2px solid #E2E8F0; margin-left: 14px;">
+                        <ul class="sb-nav mt-1 ps-2" style="border-left: 2px solid #E2E8F0; margin-left: 10px;">
                             @if(!empty($modMenus))
                                 @foreach($modMenus as $m)
                                     @if(Route::has($m['route']))
@@ -108,9 +112,9 @@
                                             }
                                         @endphp
                                         <li>
-                                            <a href="{{ $menuUrl }}" class="sb-nav-link {{ $isMenuActive ? 'active' : '' }}" style="padding: 8px 12px; font-size: 13px;">
+                                            <a href="{{ $menuUrl }}" class="sb-nav-link {{ $isMenuActive ? 'active' : '' }}" title="{{ $m['title'] }}" style="padding: 7px 10px; font-size: 12.5px;">
                                                 <span class="link-left">
-                                                    <i class="{{ $m['icon'] ?? 'bi bi-circle' }} nav-icon" style="font-size: 14px;"></i>
+                                                    <i class="{{ $m['icon'] ?? 'bi bi-circle' }} nav-icon" style="font-size: 13.5px;"></i>
                                                     <span>{{ $m['title'] }}</span>
                                                 </span>
                                             </a>

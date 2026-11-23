@@ -167,13 +167,13 @@ class DatabaseSeeder extends Seeder
                 'domain' => 'techcompany.com',
                 'thumbnail' => 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=400&q=80',
                 'module' => 'Software',
-                'module_name' => null,
+                'module_name' => 'TechCompany',
                 'slug' => 'software-company',
                 'admin_route' => 'admin.websites',
                 'description' => 'Enterprise SaaS & software solutions showcase website.',
                 'module_badge' => 'green',
-                'status' => 'Private',
-                'is_active' => false,
+                'status' => 'Published',
+                'is_active' => true,
                 'updated_at' => Carbon::parse('2025-03-20 14:00:00'),
                 'created_at' => Carbon::parse('2025-03-10 10:00:00'),
             ],
@@ -221,6 +221,66 @@ class DatabaseSeeder extends Seeder
                 'is_active' => true,
                 'updated_at' => Carbon::parse('2025-03-31 18:00:00'),
                 'created_at' => Carbon::parse('2025-03-15 10:00:00'),
+            ],
+            [
+                'name' => 'Al Hajenra Hajj & Umrah',
+                'domain' => 'alhajenra.com',
+                'thumbnail' => '/module-media/HajjUmrah/theme/hero-kaaba-haram.jpg',
+                'module' => 'Hajj & Umrah',
+                'module_name' => 'HajjUmrah',
+                'slug' => 'hajj-umrah',
+                'admin_route' => 'admin.hajjumrah.packages.index',
+                'description' => 'Government Approved Hajj & Umrah Travel Agency — Economy, Standard & Classic Packages with Multilingual (BN/EN/AR + RTL) Support.',
+                'module_badge' => 'green',
+                'status' => 'Published',
+                'is_active' => true,
+                'updated_at' => Carbon::parse('2025-04-01 10:00:00'),
+                'created_at' => Carbon::parse('2025-03-16 10:00:00'),
+            ],
+            [
+                'name' => 'FitPulse Gym & Fitness',
+                'domain' => 'fitpulse.com',
+                'thumbnail' => '/module-media/GymFitness/theme/hero-athlete.jpg',
+                'module' => 'Gym & Fitness',
+                'module_name' => 'GymFitness',
+                'slug' => 'gym-fitness',
+                'admin_route' => 'admin.gymfitness.dashboard',
+                'description' => 'Premium Gym & Fitness Center with Membership Packages, Class Schedule, Trainer Management, QR Check-in & Member Portal (EN / বাংলা).',
+                'module_badge' => 'green',
+                'status' => 'Published',
+                'is_active' => true,
+                'updated_at' => Carbon::parse('2025-04-02 10:00:00'),
+                'created_at' => Carbon::parse('2025-03-17 10:00:00'),
+            ],
+            [
+                'name' => 'WonderLearn Kids',
+                'domain' => 'wonderlearn.com',
+                'thumbnail' => '/module-media/WonderLearn/theme/hero-original.jpg',
+                'module' => 'Kids Learning',
+                'module_name' => 'WonderLearn',
+                'slug' => 'wonder-learn',
+                'admin_route' => 'admin.wonderlearn.dashboard',
+                'description' => 'WonderLearn Kids Learning Platform — Explore by Topic, Magical Stories, Play & Learn Interactive Games, Featured Adventures & Parent Portal.',
+                'module_badge' => 'blue',
+                'status' => 'Published',
+                'is_active' => true,
+                'updated_at' => Carbon::parse('2025-04-03 10:00:00'),
+                'created_at' => Carbon::parse('2025-03-18 10:00:00'),
+            ],
+            [
+                'name' => 'Eventify Conferences',
+                'domain' => 'eventifyevent.com',
+                'thumbnail' => '/module-media/EventManagement/theme/eventify-full-preview.jpg',
+                'module' => 'Event Management',
+                'module_name' => 'EventManagement',
+                'slug' => 'event-management',
+                'admin_route' => 'admin.eventmanagement.dashboard',
+                'description' => 'Eventify Yearly Business Conferences "13" — Live Countdown, Keynote Speakers, Multi-Day Schedule Plan, Ticket Pricing Tiers & Venue Map.',
+                'module_badge' => 'green',
+                'status' => 'Published',
+                'is_active' => true,
+                'updated_at' => Carbon::parse('2025-04-04 10:00:00'),
+                'created_at' => Carbon::parse('2025-03-19 10:00:00'),
             ],
         ];
 
@@ -361,6 +421,18 @@ class DatabaseSeeder extends Seeder
 
         if (class_exists(\Modules\Portfolio\App\Services\PortfolioDataService::class)) {
             app(\Modules\Portfolio\App\Services\PortfolioDataService::class)->ensureSeeded();
+        }
+        if (class_exists(\Modules\HajjUmrah\App\Services\HajjUmrahDataService::class)) {
+            app(\Modules\HajjUmrah\App\Services\HajjUmrahDataService::class)->ensureSeeded();
+        }
+        if (class_exists(\Modules\GymFitness\App\Services\GymFitnessDataService::class)) {
+            app(\Modules\GymFitness\App\Services\GymFitnessDataService::class)->ensureSeeded();
+        }
+        if (class_exists(\Modules\WonderLearn\App\Services\WonderLearnDataService::class)) {
+            app(\Modules\WonderLearn\App\Services\WonderLearnDataService::class)->ensureSeeded();
+        }
+        if (class_exists(\Modules\EventManagement\App\Services\EventManagementDataService::class)) {
+            app(\Modules\EventManagement\App\Services\EventManagementDataService::class)->ensureSeeded();
         }
     }
 

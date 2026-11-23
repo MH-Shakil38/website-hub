@@ -35,6 +35,9 @@ class ModuleStorageService
         $uploadsDir = base_path("Modules/{$module}/Public/uploads");
         if (File::isDirectory($uploadsDir)) {
             foreach (File::directories($uploadsDir) as $subDir) {
+                if (basename($subDir) === 'theme') {
+                    continue;
+                }
                 File::deleteDirectory($subDir);
             }
             foreach (File::files($uploadsDir) as $file) {

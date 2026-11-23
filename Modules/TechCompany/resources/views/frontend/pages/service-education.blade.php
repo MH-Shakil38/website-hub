@@ -1,7 +1,7 @@
 @extends('techcompany::frontend.layouts.master')
 
-@section('title')School & Education | YourCompany@endsection
-@section('meta_description')School, college and coaching management — admission, attendance, exams, results, fees and parent apps.@endsection
+@section('title', '')
+@section('meta_description', '')
 
 @section('content')
 <main>

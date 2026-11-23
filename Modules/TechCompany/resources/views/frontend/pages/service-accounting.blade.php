@@ -1,7 +1,7 @@
 @extends('techcompany::frontend.layouts.master')
 
-@section('title')Accounting Software | YourCompany@endsection
-@section('meta_description')Double-entry accounting with chart of accounts, vouchers, bank reconciliation, VAT and financial statements for any business.@endsection
+@section('title', '')
+@section('meta_description', '')
 
 @section('content')
 <main>

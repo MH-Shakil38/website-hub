@@ -15,10 +15,24 @@ class FrontendHubController extends Controller
     {
         $activeSites = Website::activeModules();
 
+        // 1. Single Active Module Mode: Runs directly on root '/'
         if ($activeSites->count() === 1) {
             $singleSite = $activeSites->first();
 
             return $this->dispatchModuleAction($singleSite->module_name, 'index');
+        }
+
+        // 2. Multi-Module Showcase Hub Mode: Shows all active themes landing page
+        if ($activeSites->count() > 1) {
+            return view('frontend.hub-landing', [
+                'activeSites' => $activeSites,
+            ]);
+        }
+
+        // 3. Fallback if no database active modules: check config('app.active_module')
+        $activeModuleName = config('app.active_module');
+        if ($activeModuleName && $activeModuleName !== 'Hub' && is_dir(base_path('Modules/' . $activeModuleName))) {
+            return $this->dispatchModuleAction($activeModuleName, 'index');
         }
 
         return view('frontend.hub-landing', [

@@ -44,6 +44,34 @@ class ModuleManagerService
             $prefix . 'media',
             $prefix . 'videos',
             $prefix . 'themes',
+            $prefix . 'packages',
+            $prefix . 'pricing_plans',
+            $prefix . 'partners',
+            $prefix . 'inquiries',
+            $prefix . 'subscribers',
+            $prefix . 'pages',
+            $prefix . 'users',
+            $prefix . 'trainers',
+            $prefix . 'members',
+            $prefix . 'subscriptions',
+            $prefix . 'classes',
+            $prefix . 'class_bookings',
+            $prefix . 'attendances',
+            $prefix . 'payments',
+            $prefix . 'programs',
+            $prefix . 'equipments',
+            $prefix . 'fitness_plans',
+            $prefix . 'progress_logs',
+            $prefix . 'topics',
+            $prefix . 'stories',
+            $prefix . 'games',
+            $prefix . 'adventures',
+            $prefix . 'enrollments',
+            $prefix . 'speakers',
+            $prefix . 'schedules',
+            $prefix . 'sponsors',
+            $prefix . 'memories',
+            $prefix . 'ticket_bookings',
         ];
 
         foreach ($tablesToClear as $table) {
@@ -54,6 +82,18 @@ class ModuleManagerService
 
         if ($module === 'Portfolio' && class_exists(\Modules\Portfolio\App\Services\PortfolioDataService::class)) {
             app(\Modules\Portfolio\App\Services\PortfolioDataService::class)->ensureSeeded();
+        }
+        if ($module === 'HajjUmrah' && class_exists(\Modules\HajjUmrah\App\Services\HajjUmrahDataService::class)) {
+            app(\Modules\HajjUmrah\App\Services\HajjUmrahDataService::class)->ensureSeeded();
+        }
+        if ($module === 'GymFitness' && class_exists(\Modules\GymFitness\App\Services\GymFitnessDataService::class)) {
+            app(\Modules\GymFitness\App\Services\GymFitnessDataService::class)->ensureSeeded();
+        }
+        if ($module === 'WonderLearn' && class_exists(\Modules\WonderLearn\App\Services\WonderLearnDataService::class)) {
+            app(\Modules\WonderLearn\App\Services\WonderLearnDataService::class)->ensureSeeded();
+        }
+        if ($module === 'EventManagement' && class_exists(\Modules\EventManagement\App\Services\EventManagementDataService::class)) {
+            app(\Modules\EventManagement\App\Services\EventManagementDataService::class)->ensureSeeded();
         }
 
         // 2. Remove custom uploaded files from Modules/{Module}/Public/uploads/

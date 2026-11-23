@@ -36,14 +36,14 @@
 
         /* Sidebar */
         .sb-sidebar {
-            width: 256px;
+            width: 268px;
             flex-shrink: 0;
             background: #FFFFFF;
             border-right: 1px solid var(--sb-border);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 22px 16px 20px;
+            padding: 20px 14px 18px;
             position: sticky;
             top: 0;
             height: 100vh;
@@ -78,25 +78,37 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 10px 14px;
+            padding: 9px 12px;
             border-radius: 10px;
-            font-size: 13.5px;
+            font-size: 13px;
             font-weight: 500;
             color: #334155;
             text-decoration: none;
             transition: all 0.15s ease;
+            white-space: nowrap;
+            overflow: hidden;
         }
 
         .sb-nav-link .link-left {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+            min-width: 0;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sb-nav-link .link-left > span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .sb-nav-link i.nav-icon {
-            font-size: 16px;
+            font-size: 15px;
             color: #64748B;
             width: 18px;
+            flex-shrink: 0;
             text-align: center;
             transition: color 0.15s;
         }
@@ -783,16 +795,16 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const targetTextareas = document.querySelectorAll('textarea.sb-rich-editor, textarea[name="description"], textarea[name="content"]');
-
-            targetTextareas.forEach(function (textarea) {
-                if (textarea.dataset.rteInitialized === 'true') return;
+            function initRichTextEditor(textarea) {
+                if (textarea.dataset.rteInitialized === 'true' || textarea.classList.contains('no-rte')) return;
                 textarea.dataset.rteInitialized = 'true';
 
                 const wrapper = document.createElement('div');
                 wrapper.className = 'sb-rte-wrap';
 
-                // Build Full-Featured Toolbar
+                const isCompact = textarea.classList.contains('sb-rte-compact') || (textarea.rows && parseInt(textarea.rows, 10) <= 2);
+
+                // Build Full-Featured Summernote-Style Toolbar
                 const toolbar = document.createElement('div');
                 toolbar.className = 'sb-rte-toolbar';
                 toolbar.innerHTML = `
@@ -837,7 +849,7 @@
                     <div class="sb-rte-group">
                         <label class="sb-rte-color-label" title="Text Color">
                             <i class="bi bi-palette"></i>
-                            <input type="color" class="sb-rte-color-input" data-cmd-color="foreColor" value="#078BFF">
+                            <input type="color" class="sb-rte-color-input" data-cmd-color="foreColor" value="#1FA84F">
                         </label>
                         <label class="sb-rte-color-label" title="Highlight Background Color">
                             <i class="bi bi-highlighter"></i>
@@ -888,6 +900,17 @@
                 const editor = document.createElement('div');
                 editor.className = 'sb-rte-editor';
                 editor.contentEditable = 'true';
+                if (isCompact) {
+                    editor.style.minHeight = '125px';
+                    editor.style.maxHeight = '260px';
+                }
+                if (textarea.getAttribute('dir') === 'rtl' || /_ar\b/.test(textarea.name || '')) {
+                    editor.setAttribute('dir', 'rtl');
+                    editor.style.textAlign = 'right';
+                }
+                if (/_bn\b/.test(textarea.name || '')) {
+                    editor.style.fontFamily = "'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', 'Inter', sans-serif";
+                }
 
                 // Convert plain text newlines to paragraphs if not already HTML
                 const initialVal = textarea.value.trim();
@@ -901,10 +924,16 @@
                 const statusbar = document.createElement('div');
                 statusbar.className = 'sb-rte-statusbar';
                 statusbar.innerHTML = `
-                    <span><i class="bi bi-stars text-primary me-1"></i> Rich Text Editor (Visual &amp; HTML)</span>
+                    <span><i class="bi bi-stars text-primary me-1"></i> Summernote Pro Rich Text Editor (Visual &amp; HTML)</span>
                     <span class="sb-rte-counts">0 words • 0 chars</span>
                 `;
                 const countEl = statusbar.querySelector('.sb-rte-counts');
+
+                // Remove required from hidden textarea to avoid browser 'not focusable' error, validate on submit if needed
+                if (textarea.hasAttribute('required')) {
+                    textarea.removeAttribute('required');
+                    textarea.dataset.wasRequired = 'true';
+                }
 
                 // Hide original textarea and use it as the synced form field (+ HTML source view)
                 textarea.classList.add('sb-rte-source');
@@ -1016,7 +1045,7 @@
                             const url = prompt('Enter Image URL:', 'https://');
                             if (url && url !== 'https://') {
                                 editor.focus();
-                                document.execCommand('insertHTML', false, `<img src="${url}" alt="Project Image" style="max-width:100%; border-radius:10px; margin:10px 0;">`);
+                                document.execCommand('insertHTML', false, `<img src="${url}" alt="Content Image" style="max-width:100%; border-radius:10px; margin:10px 0;">`);
                                 syncToTextarea();
                             }
                         } else if (action === 'table') {
@@ -1024,11 +1053,11 @@
                             const tableHtml = `
                                 <table>
                                     <thead>
-                                        <tr><th>Feature / Module</th><th>Technology Stack</th><th>Impact / Result</th></tr>
+                                        <tr><th>Day / Schedule</th><th>Location &amp; Activity</th><th>Included Services</th></tr>
                                     </thead>
                                     <tbody>
-                                        <tr><td>Core Architecture</td><td>Laravel 12, MySQL</td><td>99.9% Uptime &amp; Fast Response</td></tr>
-                                        <tr><td>Frontend UI</td><td>Next.js, Tailwind CSS</td><td>100/100 Lighthouse Score</td></tr>
+                                        <tr><td>Day 1–5</td><td>Makkah Hotel Check-in &amp; Umrah Tawaf</td><td>Hotel, Transport &amp; Mutawif Guide</td></tr>
+                                        <tr><td>Day 6–10</td><td>Madinah Masjid An-Nabawi &amp; Ziyarah</td><td>Full Board Halal Meals &amp; AC Bus</td></tr>
                                     </tbody>
                                 </table><p><br></p>`;
                             document.execCommand('insertHTML', false, tableHtml);
@@ -1037,9 +1066,9 @@
                             editor.focus();
                             const listHtml = `
                                 <ul style="list-style:none; padding-left:0;">
-                                    <li>✅ Clean modular architecture &amp; scalable database design</li>
-                                    <li>✅ Responsive UI/UX with fast API integration</li>
-                                    <li>✅ Automated testing, security hardening &amp; CI/CD deployment</li>
+                                    <li>✅ Direct Return Flight &amp; Express Visa Processing</li>
+                                    <li>✅ Star Hotel Walking Distance to Haramain</li>
+                                    <li>✅ 3 Times Buffet Meals &amp; Guided Ziyarah Tours</li>
                                 </ul><p><br></p>`;
                             document.execCommand('insertHTML', false, listHtml);
                             syncToTextarea();
@@ -1047,7 +1076,7 @@
                             editor.focus();
                             const calloutHtml = `
                                 <blockquote>
-                                    <strong>💡 Key Project Highlight:</strong> Built with high-performance caching, role-based access control, and real-time analytics dashboard.
+                                    <strong>💡 Important Package Highlight:</strong> Experienced religious scholars (Shariah guides) accompany the group throughout Makkah and Madinah.
                                 </blockquote><p><br></p>`;
                             document.execCommand('insertHTML', false, calloutHtml);
                             syncToTextarea();
@@ -1071,7 +1100,27 @@
                         }
                     });
                 });
-            });
+            }
+
+            const rteSelector = [
+                'textarea.sb-rich-editor',
+                'textarea[name="description"]',
+                'textarea[name^="description_"]',
+                'textarea[name="short_description"]',
+                'textarea[name^="short_description_"]',
+                'textarea[name="content"]',
+                'textarea[name^="content_"]',
+                'textarea[name="details"]',
+                'textarea[name^="details_"]',
+                'textarea[name="review_text"]',
+                'textarea[name^="review_text_"]',
+                'textarea[name*="[hero_subtitle]"]',
+                'textarea[name*="[services_subtitle]"]',
+                'textarea[name*="[pricing_subtitle]"]',
+                'textarea[name*="[offers_subtitle]"]'
+            ].join(', ');
+
+            document.querySelectorAll(rteSelector).forEach(initRichTextEditor);
         });
     </script>
     @stack('module_scripts')

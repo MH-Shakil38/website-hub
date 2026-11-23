@@ -1,7 +1,7 @@
 @extends('techcompany::frontend.layouts.master')
 
-@section('title')Custom Web & App Development | YourCompany@endsection
-@section('meta_description')Corporate websites, SaaS products, web apps and mobile apps built with Laravel, React, Next.js and Flutter.@endsection
+@section('title', '')
+@section('meta_description', '')
 
 @section('content')
 <main>

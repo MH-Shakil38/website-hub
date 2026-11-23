@@ -1,0 +1,11 @@
+{
+    "name": "EventManagement",
+    "alias": "eventmanagement",
+    "description": "Eventify — Yearly Business Conferences & Event Management Module with Live Countdown, Speakers, Multi-Day Schedule, Ticket Pricing, Venue Map, and Ticket Booking.",
+    "keywords": ["event", "conference", "eventify", "speakers", "schedule", "tickets", "eventmanagement"],
+    "priority": 0,
+    "providers": [
+        "Modules\\EventManagement\\App\\Providers\\EventManagementServiceProvider"
+    ],
+    "files": []
+}

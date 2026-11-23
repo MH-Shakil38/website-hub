@@ -19,7 +19,7 @@
 
 <header class="header">
   <div class="container nav">
-    <a href="{{ $url('index') }}"{!! $active('index') !!} class="logo"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 10 5-10 5L2 7l10-5z"/><path d="m2 12 10 5 10-5M2 17l10 5 10-5"/></svg></span>YourCompany</a>
+    <a href="{{ $url('index') }}" class="logo"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 10 5-10 5L2 7l10-5z"/><path d="m2 12 10 5 10-5M2 17l10 5 10-5"/></svg></span>YourCompany</a>
     <ul class="nav-links">
       <li><a href="{{ $url('index') }}"{!! $active('index') !!}>Home</a></li>
       <li><a href="{{ $url('about') }}"{!! $active('about') !!}>About</a></li>
@@ -30,7 +30,7 @@
       <li><a href="{{ $url('contact') }}"{!! $active('contact') !!}>Contact</a></li>
     </ul>
     <div class="nav-cta">
-      <a href="{{ $url('contact') }}"{!! $active('contact') !!} class="btn btn-primary">Get a Quote</a>
+      <a href="{{ $url('contact') }}" class="btn btn-primary">Get a Quote</a>
       <button class="burger" aria-label="Open menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
     </div>
   </div>
@@ -39,7 +39,7 @@
   <a href="{{ $url('index') }}"{!! $active('index') !!}>Home</a><a href="{{ $url('about') }}"{!! $active('about') !!}>About</a><a href="{{ $url('services') }}"{!! $active('services') !!}>Solutions</a>
   <div class="sub"><a href="{{ $url('service-ecommerce') }}">E-commerce</a><a href="{{ $url('service-pos') }}">POS System</a><a href="{{ $url('service-real-estate') }}">Real Estate</a><a href="{{ $url('service-interior-design') }}">Interior Design</a><a href="{{ $url('service-hospital') }}">Hospital / Clinic</a><a href="{{ $url('service-hrm') }}">HRM & Payroll</a><a href="{{ $url('service-manufacturing') }}">Manufacturing</a><a href="{{ $url('service-accounting') }}">Accounting</a><a href="{{ $url('service-education') }}">School / Education</a><a href="{{ $url('service-custom-development') }}">Custom Software</a></div>
   <a href="{{ $url('portfolio') }}"{!! $active('portfolio') !!}>Portfolio</a><a href="{{ $url('pricing') }}"{!! $active('pricing') !!}>Pricing</a><a href="{{ $url('faq') }}"{!! $active('faq') !!}>FAQ</a><a href="{{ $url('contact') }}"{!! $active('contact') !!}>Contact</a>
-  <a href="{{ $url('contact') }}"{!! $active('contact') !!} class="btn btn-primary">Get a Quote</a>
+  <a href="{{ $url('contact') }}" class="btn btn-primary">Get a Quote</a>
 </nav>
 @yield('content')
 

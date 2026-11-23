@@ -41,6 +41,30 @@ class ModuleCmsResolver
             'slug' => 'developer-portfolio',
             'badge' => 'blue',
         ],
+        'HajjUmrah' => [
+            'label' => 'Hajj & Umrah',
+            'prefix' => 'hajj_',
+            'slug' => 'hajj-umrah',
+            'badge' => 'green',
+        ],
+        'GymFitness' => [
+            'label' => 'Gym & Fitness',
+            'prefix' => 'gym_',
+            'slug' => 'gym-fitness',
+            'badge' => 'green',
+        ],
+        'WonderLearn' => [
+            'label' => 'Kids Learning',
+            'prefix' => 'wl_',
+            'slug' => 'wonder-learn',
+            'badge' => 'blue',
+        ],
+        'EventManagement' => [
+            'label' => 'Event Management',
+            'prefix' => 'em_',
+            'slug' => 'event-management',
+            'badge' => 'green',
+        ],
     ];
 
     /**
@@ -78,6 +102,22 @@ class ModuleCmsResolver
         if ($request->routeIs('admin.portfolio.*')) {
             session(['admin_cms_module' => 'Portfolio']);
             return 'Portfolio';
+        }
+        if ($request->routeIs('admin.hajjumrah.*')) {
+            session(['admin_cms_module' => 'HajjUmrah']);
+            return 'HajjUmrah';
+        }
+        if ($request->routeIs('admin.gymfitness.*')) {
+            session(['admin_cms_module' => 'GymFitness']);
+            return 'GymFitness';
+        }
+        if ($request->routeIs('admin.wonderlearn.*')) {
+            session(['admin_cms_module' => 'WonderLearn']);
+            return 'WonderLearn';
+        }
+        if ($request->routeIs('admin.eventmanagement.*')) {
+            session(['admin_cms_module' => 'EventManagement']);
+            return 'EventManagement';
         }
 
         // 2. If ONLY 1 module is active in Manage Websites, always lock to that 1 module

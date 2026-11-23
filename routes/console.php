@@ -36,6 +36,12 @@ Artisan::command('demo:activate {module}', function (string $module) {
         File::put($envPath, $envContent);
     }
 
+    // Sync database core_websites table
+    if (class_exists(\App\Models\Website::class)) {
+        \App\Models\Website::query()->update(['is_active' => false]);
+        \App\Models\Website::where('module_name', $module)->update(['is_active' => true]);
+    }
+
     // 3. Recreate public/module-assets symlink pointing to Modules/{module}/Public
     $linkPath = public_path('module-assets');
     $targetPath = base_path("Modules/{$module}/Public");

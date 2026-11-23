@@ -1,7 +1,7 @@
 @extends('techcompany::frontend.layouts.master')
 
-@section('title')Real Estate Platform | YourCompany@endsection
-@section('meta_description')Property listing websites and real estate developer software — project, flat booking, installment and client management.@endsection
+@section('title', '')
+@section('meta_description', '')
 
 @section('content')
 <main>
