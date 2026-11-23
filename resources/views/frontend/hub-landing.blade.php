@@ -1430,27 +1430,130 @@
     </footer>
 
     <!-- =====================================================================
-         10. STEP-BY-STEP THEME INSTALLATION & FREE TRIAL WIZARD MODAL (Phase 6)
+         10. 3-STEP INTERACTIVE THEME INSTALLATION WIZARD MODAL (NO RELOAD)
          ===================================================================== -->
+    <style>
+        .wiz-stepper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 22px;
+            padding: 0 8px;
+        }
+        .wiz-step-item {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            z-index: 2;
+            background: #FFFFFF;
+            padding: 4px 10px;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .wiz-step-circle {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12.5px;
+            font-weight: 800;
+            background: #E2E8F0;
+            color: #475569;
+            transition: all 0.2s ease;
+        }
+        .wiz-step-label {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #64748B;
+        }
+        .wiz-step-item.active .wiz-step-circle {
+            background: #EC134A;
+            color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(236, 19, 74, 0.35);
+        }
+        .wiz-step-item.active .wiz-step-label {
+            color: #0F172A;
+        }
+        .wiz-step-item.done .wiz-step-circle {
+            background: #10B981;
+            color: #FFFFFF;
+        }
+        .wiz-step-item.done .wiz-step-label {
+            color: #10B981;
+        }
+        .wiz-stepper-line {
+            position: absolute;
+            top: 50%;
+            left: 24px;
+            right: 24px;
+            height: 2px;
+            background: #E2E8F0;
+            z-index: 1;
+            transform: translateY(-50%);
+        }
+        .wiz-radio-card {
+            display: block;
+            position: relative;
+            border: 2px solid #E2E8F0;
+            border-radius: 14px;
+            padding: 14px 16px;
+            cursor: pointer;
+            background: #FFFFFF;
+            transition: all 0.18s ease;
+            user-select: none;
+        }
+        .wiz-radio-card:hover {
+            border-color: #CBD5E1;
+            background: #F8FAFC;
+        }
+        .wiz-radio-card.selected {
+            border-color: #EC134A;
+            background: #FFF1F5;
+            box-shadow: 0 6px 18px rgba(236, 19, 74, 0.08);
+        }
+        .wiz-cycle-pill {
+            flex: 1;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 10px 14px;
+            cursor: pointer;
+            background: #FFFFFF;
+            transition: all 0.18s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .wiz-cycle-pill.selected {
+            border-color: #0F172A;
+            background: #0F172A;
+            color: #FFFFFF;
+        }
+    </style>
+
     <div class="modal fade" id="saasDeployModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
-            <form action="{{ route('saas.install.register') }}" method="POST" class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
+            <form action="{{ route('saas.install.register') }}" method="POST" id="themeInstallWizardForm" class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
                 @csrf
                 <input type="hidden" name="theme_module" id="wizardThemeModuleInput" value="Interior">
 
+                <!-- Modal Header -->
                 <div class="modal-header border-0 text-white p-4" style="background: linear-gradient(135deg, #090D16 0%, #1E1B4B 100%);">
                     <div>
-                        <span class="badge bg-danger rounded-pill mb-1" id="deployModalModule">14-Day Free Trial Included</span>
+                        <span class="badge bg-danger rounded-pill mb-1" id="deployModalModule">Step 1 of 3: Choose Package</span>
                         <h5 class="modal-title fw-bolder font-display mb-0" id="deployModalTitle">Install Theme</h5>
                     </div>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
 
                 <div class="modal-body p-4">
-                    <!-- Step 1: Selected Theme & Plan -->
+                    <!-- Selected Theme Summary Bar -->
                     <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 p-3 rounded-3 bg-light border mb-3">
                         <div class="d-flex align-items-center gap-3">
-                            <img id="deployModalThumb" src="" alt="" style="width: 76px; height: 52px; object-fit: cover; border-radius: 8px;">
+                            <img id="deployModalThumb" src="" alt="" style="width: 72px; height: 50px; object-fit: cover; border-radius: 8px;">
                             <div>
                                 <div class="fw-bold text-dark" id="deployModalName">Template Name</div>
                                 <small class="text-success fw-semibold"><i class="bi bi-database-check me-1"></i> Dedicated Isolated MySQL Database &amp; Visual CMS</small>
@@ -1461,72 +1564,188 @@
                         </a>
                     </div>
 
-                    <div class="row g-3">
-                        <div class="col-md-8">
-                            <label class="form-label small fw-bold"><span class="badge bg-dark me-1">1</span> Subscription Package (Starts with 14-Day Free Trial)</label>
-                            <select name="plan_id" id="wizardPlanSelect" class="form-select rounded-3">
-                                @foreach($plansForLanding as $wPlan)
-                                    <option value="{{ $wPlan->id }}">
-                                        {{ $wPlan->name }} — {{ $wPlan->currency }} {{ number_format($wPlan->price_monthly, 0) }}/mo ({{ $wPlan->trial_days }}-Day Free Trial)
-                                    </option>
-                                @endforeach
-                            </select>
+                    <!-- 3-Step Visual Progress Stepper -->
+                    <div class="wiz-stepper">
+                        <div class="wiz-stepper-line"></div>
+                        <div class="wiz-step-item active" id="wizStepIndicator1" onclick="goToWizardStep(1)">
+                            <span class="wiz-step-circle" id="wizStepCircle1">1</span>
+                            <span class="wiz-step-label">1. Package &amp; Billing</span>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label small fw-bold">Billing Cycle</label>
-                            <select name="billing_cycle" id="wizardCycleSelect" class="form-select rounded-3">
-                                <option value="monthly">Monthly</option>
-                                <option value="yearly">Yearly (Save 20%)</option>
-                            </select>
+                        <div class="wiz-step-item" id="wizStepIndicator2" onclick="goToWizardStep(2)">
+                            <span class="wiz-step-circle" id="wizStepCircle2">2</span>
+                            <span class="wiz-step-label">2. Website &amp; Subdomain</span>
+                        </div>
+                        <div class="wiz-step-item" id="wizStepIndicator3" onclick="goToWizardStep(3)">
+                            <span class="wiz-step-circle" id="wizStepCircle3">3</span>
+                            <span class="wiz-step-label">3. Account &amp; Install</span>
+                        </div>
+                    </div>
+
+                    <!-- Validation Alert inside Wizard -->
+                    <div id="wizardStepAlert" class="alert alert-danger py-2 px-3 small fw-semibold d-none mb-3" style="border-radius: 10px;"></div>
+
+                    <!-- =========================================================
+                         STEP 1 PANEL: SUBSCRIPTION PACKAGE & BILLING CYCLE (RADIO CARDS)
+                         ========================================================= -->
+                    <div id="wizardStepPanel1" class="wizard-step-panel">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-uppercase text-muted mb-2">
+                                <i class="bi bi-calendar2-check me-1"></i> Choose Billing Cycle
+                            </label>
+                            <div class="d-flex gap-2">
+                                <label class="wiz-cycle-pill selected" id="wizCycleLabelMonthly" onclick="setWizardCycle('monthly')">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="radio" name="billing_cycle" value="monthly" class="form-check-input m-0" checked>
+                                        <span class="fw-bold small">Monthly Billing</span>
+                                    </div>
+                                    <span class="badge bg-secondary-subtle text-secondary rounded-pill" style="font-size: 10.5px;">Flexible</span>
+                                </label>
+                                <label class="wiz-cycle-pill" id="wizCycleLabelYearly" onclick="setWizardCycle('yearly')">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="radio" name="billing_cycle" value="yearly" class="form-check-input m-0">
+                                        <span class="fw-bold small">Yearly Billing</span>
+                                    </div>
+                                    <span class="badge bg-success text-white rounded-pill" style="font-size: 10.5px;">Save 20%</span>
+                                </label>
+                            </div>
                         </div>
 
-                        <!-- Step 2: Website Name & Live Subdomain Availability Check -->
-                        <div class="col-md-6">
-                            <label class="form-label small fw-bold"><span class="badge bg-dark me-1">2</span> Your Business / Website Name</label>
-                            <input type="text" name="site_name" id="wizardSiteNameInput" class="form-control rounded-3" placeholder="e.g. Royal Interior Studio" oninput="autoSuggestSubdomain(this.value)" required>
+                        <label class="form-label small fw-bold text-uppercase text-muted mb-2">
+                            <i class="bi bi-box-seam me-1"></i> Select Subscription Package (14-Day Free Trial Included)
+                        </label>
+                        <div class="d-flex flex-column gap-2">
+                            @foreach($plansForLanding as $wIdx => $wPlan)
+                                <label class="wiz-radio-card {{ $wIdx === 0 ? 'selected' : '' }}" data-plan-card="{{ $wPlan->id }}" onclick="selectWizardPlanCard({{ $wPlan->id }})">
+                                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <input type="radio"
+                                                   name="plan_id"
+                                                   value="{{ $wPlan->id }}"
+                                                   class="form-check-input m-0"
+                                                   style="width: 19px; height: 19px;"
+                                                   {{ $wIdx === 0 ? 'checked' : '' }}>
+                                            <div>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="fw-bolder text-dark" style="font-size: 14.5px;">{{ $wPlan->name }}</span>
+                                                    @if($wPlan->is_featured)
+                                                        <span class="badge bg-danger rounded-pill" style="font-size: 10px;">MOST POPULAR</span>
+                                                    @endif
+                                                    @if($wPlan->trial_days > 0)
+                                                        <span class="badge bg-success-subtle text-success rounded-pill" style="font-size: 10px;">
+                                                            {{ $wPlan->trial_days }}-Day Free Trial
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                                <div class="text-muted small mt-1" style="font-size: 12px;">
+                                                    <strong>{{ $wPlan->site_limit }}</strong> Website(s) •
+                                                    <strong>{{ number_format($wPlan->storage_mb) }} MB</strong> Storage •
+                                                    {{ $wPlan->custom_domain ? 'Custom Domain + Auto-SSL' : 'Free Subdomain (.yourhub.com)' }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="text-end">
+                                            <div class="fw-bolder text-dark fs-5 wiz-plan-price"
+                                                 data-monthly="{{ $wPlan->currency }} {{ number_format($wPlan->price_monthly, 0) }}/mo"
+                                                 data-yearly="{{ $wPlan->currency }} {{ number_format($wPlan->price_yearly, 0) }}/yr">
+                                                {{ $wPlan->currency }} {{ number_format($wPlan->price_monthly, 0) }}/mo
+                                            </div>
+                                            <small class="text-success fw-semibold" style="font-size: 11px;">৳0 due today (Free Trial)</small>
+                                        </div>
+                                    </div>
+                                </label>
+                            @endforeach
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-bold">Choose Free Subdomain</label>
-                            <div class="input-group">
-                                <input type="text" name="subdomain" id="wizardSubdomainInput" class="form-control" placeholder="royal-studio" oninput="checkSubdomainLive(this.value)" required>
-                                <span class="input-group-text bg-light fw-semibold small">.{{ $baseCentralDomain }}</span>
+                    </div>
+
+                    <!-- =========================================================
+                         STEP 2 PANEL: WEBSITE NAME & LIVE SUBDOMAIN CHECK
+                         ========================================================= -->
+                    <div id="wizardStepPanel2" class="wizard-step-panel d-none">
+                        <div class="p-3 rounded-3 bg-light border mb-3 small text-muted">
+                            <i class="bi bi-info-circle-fill text-primary me-1"></i>
+                            Enter your business or website name below. We will automatically suggest a free subdomain and verify its availability in real time.
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Your Business / Website Name <span class="text-danger">*</span></label>
+                            <input type="text"
+                                   name="site_name"
+                                   id="wizardSiteNameInput"
+                                   class="form-control form-control-lg rounded-3"
+                                   placeholder="e.g. Royal Interior Studio"
+                                   oninput="autoSuggestSubdomain(this.value)"
+                                   required>
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="form-label small fw-bold">Choose Your Free Subdomain <span class="text-danger">*</span></label>
+                            <div class="input-group input-group-lg">
+                                <input type="text"
+                                       name="subdomain"
+                                       id="wizardSubdomainInput"
+                                       class="form-control"
+                                       placeholder="royal-studio"
+                                       oninput="this.dataset.manuallyEdited='true'; checkSubdomainLive(this.value)"
+                                       required>
+                                <span class="input-group-text bg-light fw-bold small">.{{ $baseCentralDomain }}</span>
                             </div>
-                            <div id="subdomainCheckFeedback" class="small mt-1 fw-semibold text-muted" style="font-size: 11.5px;">
+                            <div id="subdomainCheckFeedback" class="small mt-2 fw-semibold text-muted" style="font-size: 12.5px;">
                                 Enter at least 3 characters to check availability.
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Step 3: Owner Account Info -->
-                        <div class="col-12 pt-2 border-top">
-                            <div class="small fw-bold mb-2"><span class="badge bg-dark me-1">3</span> Owner Account &amp; Email Verification</div>
+                    <!-- =========================================================
+                         STEP 3 PANEL: OWNER ACCOUNT & EMAIL VERIFICATION
+                         ========================================================= -->
+                    <div id="wizardStepPanel3" class="wizard-step-panel d-none">
+                        <div class="p-3 rounded-3 bg-light border mb-3 small text-muted">
+                            <i class="bi bi-envelope-check-fill text-success me-1"></i>
+                            Almost done! Enter your account details below. After you verify your email, your isolated MySQL database and theme will install automatically.
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Your Full Name</label>
-                            <input type="text" name="name" value="{{ auth()->user()?->name }}" class="form-control rounded-3" placeholder="John Doe" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Email Address (Verification Link Sent Here)</label>
-                            <input type="email" name="email" value="{{ auth()->user()?->email }}" class="form-control rounded-3" placeholder="you@company.com" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Mobile / WhatsApp Number</label>
-                            <input type="text" name="phone" value="{{ auth()->user()?->phone }}" class="form-control rounded-3" placeholder="+8801XXXXXXXXX">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Dashboard Password</label>
-                            <input type="password" name="password" class="form-control rounded-3" placeholder="Minimum 6 characters" minlength="6" required>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Your Full Name <span class="text-danger">*</span></label>
+                                <input type="text" name="name" id="wizardOwnerName" value="{{ auth()->user()?->name }}" class="form-control rounded-3" placeholder="John Doe" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Email Address (Verification Link Sent Here) <span class="text-danger">*</span></label>
+                                <input type="email" name="email" id="wizardOwnerEmail" value="{{ auth()->user()?->email }}" class="form-control rounded-3" placeholder="you@company.com" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Mobile / WhatsApp Number</label>
+                                <input type="text" name="phone" id="wizardOwnerPhone" value="{{ auth()->user()?->phone }}" class="form-control rounded-3" placeholder="01812-XXXXXX">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Dashboard Password <span class="text-danger">*</span></label>
+                                <input type="password" name="password" id="wizardOwnerPassword" class="form-control rounded-3" placeholder="Minimum 6 characters" minlength="6" required>
+                            </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Dynamic Modal Footer (Back / Next Step / Submit) -->
                 <div class="modal-footer border-0 bg-light justify-content-between px-4 py-3">
-                    <span class="text-muted small">
-                        <i class="bi bi-shield-lock-fill text-success me-1"></i> Step 4: Verify Email &rarr; Auto Database &amp; Theme Install
-                    </span>
-                    <button type="submit" id="wizardSubmitBtn" class="btn-saas-primary">
-                        <span>Continue to Email Verification</span>
-                        <i class="bi bi-arrow-right"></i>
-                    </button>
+                    <div>
+                        <button type="button" id="wizardPrevBtn" class="btn btn-outline-secondary rounded-3 fw-semibold px-3 d-none" onclick="prevWizardStep()">
+                            <i class="bi bi-arrow-left me-1"></i> Previous Step
+                        </button>
+                        <span id="wizardFooterHint" class="text-muted small">
+                            <i class="bi bi-shield-check text-success me-1"></i> No credit card required for 14-day trial
+                        </span>
+                    </div>
+
+                    <div>
+                        <button type="button" id="wizardNextBtn" class="btn-saas-primary" onclick="nextWizardStep()">
+                            <span id="wizardNextBtnText">Next: Website &amp; Subdomain</span>
+                            <i class="bi bi-arrow-right"></i>
+                        </button>
+                        <button type="submit" id="wizardSubmitBtn" class="btn-saas-primary d-none">
+                            <i class="bi bi-envelope-check-fill"></i>
+                            <span>Verify Email &amp; Install Theme</span>
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -1534,17 +1753,153 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        let currentWizardStep = 1;
+        let isSubdomainAvailable = false;
         let selectedLandingPlanId = null;
         let selectedLandingCycle = 'monthly';
         let subdomainDebounceTimer = null;
 
+        function selectWizardPlanCard(planId) {
+            selectedLandingPlanId = planId;
+            document.querySelectorAll('[data-plan-card]').forEach(card => {
+                const isMatch = String(card.getAttribute('data-plan-card')) === String(planId);
+                card.classList.toggle('selected', isMatch);
+                const radio = card.querySelector('input[type="radio"]');
+                if (radio) radio.checked = isMatch;
+            });
+        }
+
+        function setWizardCycle(cycle) {
+            selectedLandingCycle = cycle;
+            const lblM = document.getElementById('wizCycleLabelMonthly');
+            const lblY = document.getElementById('wizCycleLabelYearly');
+            if (lblM && lblY) {
+                lblM.classList.toggle('selected', cycle === 'monthly');
+                lblY.classList.toggle('selected', cycle === 'yearly');
+                const rM = lblM.querySelector('input[type="radio"]');
+                const rY = lblY.querySelector('input[type="radio"]');
+                if (rM) rM.checked = (cycle === 'monthly');
+                if (rY) rY.checked = (cycle === 'yearly');
+            }
+            document.querySelectorAll('.wiz-plan-price').forEach(el => {
+                el.textContent = el.getAttribute('data-' + cycle);
+            });
+        }
+
+        function showWizardAlert(msg) {
+            const box = document.getElementById('wizardStepAlert');
+            if (!box) return;
+            if (!msg) {
+                box.classList.add('d-none');
+                box.textContent = '';
+            } else {
+                box.textContent = msg;
+                box.classList.remove('d-none');
+            }
+        }
+
+        function renderWizardStep(step) {
+            currentWizardStep = step;
+            showWizardAlert('');
+
+            document.getElementById('wizardStepPanel1')?.classList.toggle('d-none', step !== 1);
+            document.getElementById('wizardStepPanel2')?.classList.toggle('d-none', step !== 2);
+            document.getElementById('wizardStepPanel3')?.classList.toggle('d-none', step !== 3);
+
+            for (let i = 1; i <= 3; i++) {
+                const ind = document.getElementById('wizStepIndicator' + i);
+                const cir = document.getElementById('wizStepCircle' + i);
+                if (!ind || !cir) continue;
+                ind.classList.remove('active', 'done');
+                if (i < step) {
+                    ind.classList.add('done');
+                    cir.innerHTML = '<i class="bi bi-check-lg"></i>';
+                } else if (i === step) {
+                    ind.classList.add('active');
+                    cir.textContent = String(i);
+                } else {
+                    cir.textContent = String(i);
+                }
+            }
+
+            const badge = document.getElementById('deployModalModule');
+            if (badge) {
+                if (step === 1) badge.textContent = 'Step 1 of 3: Choose Package & Billing';
+                if (step === 2) badge.textContent = 'Step 2 of 3: Website Name & Subdomain';
+                if (step === 3) badge.textContent = 'Step 3 of 3: Owner Account & Verification';
+            }
+
+            const prevBtn = document.getElementById('wizardPrevBtn');
+            const nextBtn = document.getElementById('wizardNextBtn');
+            const nextTxt = document.getElementById('wizardNextBtnText');
+            const submitBtn = document.getElementById('wizardSubmitBtn');
+            const hint = document.getElementById('wizardFooterHint');
+
+            prevBtn?.classList.toggle('d-none', step === 1);
+            hint?.classList.toggle('d-none', step !== 1);
+
+            if (step === 1) {
+                nextBtn?.classList.remove('d-none');
+                submitBtn?.classList.add('d-none');
+                if (nextTxt) nextTxt.textContent = 'Next: Website & Subdomain';
+            } else if (step === 2) {
+                nextBtn?.classList.remove('d-none');
+                submitBtn?.classList.add('d-none');
+                if (nextTxt) nextTxt.textContent = 'Next: Owner Account';
+                setTimeout(() => document.getElementById('wizardSiteNameInput')?.focus(), 100);
+            } else if (step === 3) {
+                nextBtn?.classList.add('d-none');
+                submitBtn?.classList.remove('d-none');
+                setTimeout(() => document.getElementById('wizardOwnerName')?.focus(), 100);
+            }
+        }
+
+        function nextWizardStep() {
+            if (currentWizardStep === 1) {
+                renderWizardStep(2);
+                return;
+            }
+            if (currentWizardStep === 2) {
+                const siteName = (document.getElementById('wizardSiteNameInput')?.value || '').trim();
+                const sub = (document.getElementById('wizardSubdomainInput')?.value || '').trim().toLowerCase();
+                if (!siteName) {
+                    showWizardAlert('Please enter your Business / Website Name.');
+                    document.getElementById('wizardSiteNameInput')?.focus();
+                    return;
+                }
+                if (sub.length < 3) {
+                    showWizardAlert('Please choose a subdomain with at least 3 characters.');
+                    document.getElementById('wizardSubdomainInput')?.focus();
+                    return;
+                }
+                if (isSubdomainAvailable === false) {
+                    showWizardAlert('This subdomain is not available. Please choose another subdomain.');
+                    document.getElementById('wizardSubdomainInput')?.focus();
+                    return;
+                }
+                renderWizardStep(3);
+            }
+        }
+
+        function prevWizardStep() {
+            if (currentWizardStep > 1) {
+                renderWizardStep(currentWizardStep - 1);
+            }
+        }
+
+        function goToWizardStep(targetStep) {
+            if (targetStep < currentWizardStep) {
+                renderWizardStep(targetStep);
+            } else if (targetStep === 2 && currentWizardStep === 1) {
+                nextWizardStep();
+            } else if (targetStep === 3 && currentWizardStep === 2) {
+                nextWizardStep();
+            }
+        }
+
         // Pricing Card Click -> Set selected plan, reveal banner, and smooth scroll to #themes
         function selectPlanAndScrollToThemes(planId, planName) {
-            selectedLandingPlanId = planId;
-            const planSelect = document.getElementById('wizardPlanSelect');
-            if (planSelect) {
-                planSelect.value = String(planId);
-            }
+            selectWizardPlanCard(planId);
             const banner = document.getElementById('selectedPlanBanner');
             const bannerName = document.getElementById('bannerPlanName');
             if (banner && bannerName) {
@@ -1567,16 +1922,17 @@
             document.getElementById('wizardThemeModuleInput').value = moduleKey;
             document.getElementById('deployModalTitle').textContent = 'Install ' + name + ' (' + modLabel + ')';
             document.getElementById('deployModalName').textContent = name + ' (' + modLabel + ' Theme)';
-            document.getElementById('deployModalModule').textContent = 'Step 1–4: Install ' + modLabel + ' Theme';
             document.getElementById('deployModalThumb').src = thumb;
             document.getElementById('deployModalDemoBtn').href = demoUrl;
 
+            setWizardCycle(selectedLandingCycle);
             if (selectedLandingPlanId) {
-                const planSelect = document.getElementById('wizardPlanSelect');
-                if (planSelect) planSelect.value = String(selectedLandingPlanId);
+                selectWizardPlanCard(selectedLandingPlanId);
+                // If user already picked a plan from Pricing card, jump straight to Step 2 or start at Step 1 with it pre-checked
+                renderWizardStep(1);
+            } else {
+                renderWizardStep(1);
             }
-            const cycleSelect = document.getElementById('wizardCycleSelect');
-            if (cycleSelect) cycleSelect.value = selectedLandingCycle;
 
             new bootstrap.Modal(document.getElementById('saasDeployModal')).show();
         }
@@ -1597,12 +1953,13 @@
             if (!feedback) return;
 
             if (clean.length < 3) {
-                feedback.className = 'small mt-1 fw-semibold text-muted';
+                isSubdomainAvailable = false;
+                feedback.className = 'small mt-2 fw-semibold text-muted';
                 feedback.textContent = 'Subdomain must be at least 3 characters.';
                 return;
             }
 
-            feedback.className = 'small mt-1 fw-semibold text-secondary';
+            feedback.className = 'small mt-2 fw-semibold text-secondary';
             feedback.textContent = 'Checking subdomain availability...';
 
             clearTimeout(subdomainDebounceTimer);
@@ -1610,16 +1967,20 @@
                 fetch(`{{ route('saas.install.check-subdomain') }}?subdomain=${encodeURIComponent(clean)}`)
                     .then(r => r.json())
                     .then(data => {
+                        isSubdomainAvailable = Boolean(data.available);
                         if (data.available) {
-                            feedback.className = 'small mt-1 fw-semibold text-success';
+                            feedback.className = 'small mt-2 fw-semibold text-success';
                             feedback.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> ${data.message}`;
+                            showWizardAlert('');
                         } else {
-                            feedback.className = 'small mt-1 fw-semibold text-danger';
+                            feedback.className = 'small mt-2 fw-semibold text-danger';
                             feedback.innerHTML = `<i class="bi bi-x-circle-fill me-1"></i> ${data.message}`;
                         }
                     })
-                    .catch(() => {});
-            }, 250);
+                    .catch(() => {
+                        isSubdomainAvailable = true;
+                    });
+            }, 220);
         }
 
         // 1. Category Filter for Live Demos
