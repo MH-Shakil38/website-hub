@@ -15,6 +15,12 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    'mode' => env('APP_MODE', 'saas'),
+
+    'central_domains' => array_filter(array_map('trim', explode(',', env('CENTRAL_DOMAINS', 'localhost,127.0.0.1,multi-website-hub.test')))),
+
+    'dashboard_domain' => env('DASHBOARD_DOMAIN', 'app.multi-website-hub.test'),
+
     'active_module' => env('ACTIVE_MODULE', 'Interior'),
 
     /*

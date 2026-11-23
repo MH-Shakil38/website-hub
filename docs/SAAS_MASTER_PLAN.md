@@ -405,13 +405,13 @@ flowchart LR
     P6 --> P7["Phase 7\nহার্ডেনিং + Launch"]
 ```
 
-### Phase 0: প্রস্তুতি
-- [ ] Git commit/backup (এখনকার অবস্থা সংরক্ষণ)
-- [ ] Laravel Boost install (`AGENTS.md`-এর নির্দেশনা অনুযায়ী)
-- [ ] `APP_MODE=saas|single` config যোগ করা, `AGENTS.md` আপডেট
+### Phase 0: প্রস্তুতি ✅ (সম্পন্ন)
+- [x] Git commit/backup (এখনকার অবস্থা সংরক্ষণ)
+- [x] Laravel Boost install (`laravel/boost` v2.10)
+- [x] `APP_MODE=saas|single` config যোগ করা, `AGENTS.md` আপডেট
 - [x] Tenancy কৌশল চূড়ান্ত: **প্রতি tenant-এর আলাদা Database**
-- [ ] `stancl/tenancy` Laravel 13 compatible কিনা যাচাই, নাহলে নিজস্ব `TenantDatabaseManager`
-- [ ] MySQL user-এর `CREATE/DROP DATABASE` অনুমতি নিশ্চিত করা (Laragon local + production)
+- [x] `stancl/tenancy` যাচাই ও সিদ্ধান্ত: আমাদের ১১টি মডিউলের কাস্টম স্ট্রাকচারের সাথে শতভাগ নিয়ন্ত্রণের জন্য নিজস্ব হালকা ও দ্রুত `TenantDatabaseManager` ব্যবহার করা হবে
+- [x] MySQL user-এর `CREATE/DROP DATABASE` অনুমতি নিশ্চিত করা (`MYSQL_CREATE_DROP_OK`)
 
 ### Phase 1: Multi-Tenancy Core (Multi-Database)
 - [ ] `config/database.php`: `central` আর `tenant` connection

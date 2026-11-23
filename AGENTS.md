@@ -54,11 +54,13 @@ Boost replaces these bootstrap instructions with guidelines tailored to the appl
 ## 1. Core Project Vision & Architecture (প্রজেক্টের মূল ধারণা)
 
 1. **Single-Repo, Multi-Niche Modules:** Multiple complete business websites (`Interior`, `RealEstate`, `Pharmacy`, etc.) are built as separate modules inside the `Modules/` directory using `nwidart/laravel-modules`.
-2. **Single Active Module Mode:** Only **ONE** module is active at a time (`ACTIVE_MODULE` in `.env` and `true` in `modules_statuses.json`). Clients cannot switch demos; the developer activates one module per deployment.
-3. **Unified Global Admin Panel:** There is **ONE Global Admin Panel** (`resources/views/admin/`). It handles authentication, global users/roles, general settings, and dynamically injects the active module's admin menu items into the global sidebar.
+2. **Dual Operation Mode (`APP_MODE=saas|single`):**
+   - **SaaS Multi-Tenant Mode (`APP_MODE=saas`, default):** All theme modules remain active simultaneously. Each client website (tenant) gets its own isolated MySQL database (`tenant` connection, e.g., `hub_t_0001`), while central platform tables (`core_*`) live in the `central` database. Requests are routed by domain/subdomain (`IdentifyTenant` middleware). See `docs/SAAS_MASTER_PLAN.md` for full architecture.
+   - **Single Active Module Mode (`APP_MODE=single`):** Legacy/handover mode where only **ONE** module is active at a time (`ACTIVE_MODULE` in `.env` and `true` in `modules_statuses.json`), used when delivering a standalone single-niche deployment via `php artisan demo:activate` / `demo:handover`.
+3. **Unified Global Admin Panel (Role-Scoped in SaaS Mode):** There is **ONE Global Admin Panel** (`resources/views/admin/`). In `saas` mode, Super Admin, Reseller, and Client roles share the same layout with role-conditional sidebars and tenant-scoped data.
 4. **100% Standalone Module Frontend:** Each module has its own completely independent frontend theme, layout (`master.blade.php`), homepage menu/navbar, footer, CSS, and JS (`Modules/{Module}/resources/views/frontend/`). Frontends NEVER share styles or layouts across modules.
-5. **100% Self-Contained Module Assets & Uploads:** Every module stores its static theme assets (`CSS`, `JS`, images) AND user-uploaded files inside its own folder (`Modules/{Module}/Public/`). Nothing belonging to a module is stored permanently in the root `public/` or `storage/` directories.
-6. **Zero-Collision Database Prefixing:** Every module uses a mandatory table prefix (`int_`, `re_`, `pharma_`) and anonymous migration classes so tables and classes never clash.
+5. **100% Self-Contained Module Assets & Uploads:** Every module stores its static theme assets (`CSS`, `JS`, images) AND user-uploaded files inside its own folder (`Modules/{Module}/Public/`). In `saas` mode, tenant uploads are isolated under `Modules/{Module}/Public/uploads/t{tenant_id}/`.
+6. **Zero-Collision Database Prefixing & Multi-DB Isolation:** Every module uses a mandatory table prefix (`int_`, `re_`, `pharma_`, etc.), extends `{Module}BaseModel` (targeting the `tenant` connection in `saas` mode), and uses anonymous migration classes so tables and classes never clash.
 
 ---
 
