@@ -381,128 +381,58 @@
         </div>
         <button type="button" class="date-picker-btn">
             <i class="bi bi-calendar4-week" style="color: #64748B;"></i>
-            <span>{{ $dateRangeLabel ?? 'Mar 1, 2025 - Mar 31, 2025' }}</span>
-            <i class="bi bi-chevron-down" style="font-size: 11px; color: #64748B;"></i>
+            <span>{{ $dateRangeLabel }}</span>
         </button>
     </div>
 
-    <!-- 4 KPI Stat Cards (Dynamic Counts from Database) -->
+    <!-- 4 KPI Stat Cards (real totals, growth this month and 6-month trend from the database) -->
+    @php
+        $kpiCards = [
+            ['key' => 'websites', 'label' => 'Total Websites', 'icon' => 'bi-globe2', 'bg' => '#FFE4EC', 'color' => '#EC134A', 'one' => 'website', 'many' => 'websites', 'value' => $totalWebsites ?? 0],
+            ['key' => 'pages', 'label' => 'Total Pages', 'icon' => 'bi-file-earmark-text', 'bg' => '#DBEAFE', 'color' => '#3B82F6', 'one' => 'page', 'many' => 'pages', 'value' => $totalPages ?? 0],
+            ['key' => 'media', 'label' => 'Media Files', 'icon' => 'bi-image', 'bg' => '#DCFCE7', 'color' => '#10B981', 'one' => 'file', 'many' => 'files', 'value' => $mediaFilesCount ?? 0],
+            ['key' => 'users', 'label' => 'Total Users', 'icon' => 'bi-person', 'bg' => '#F3E8FF', 'color' => '#A855F7', 'one' => 'user', 'many' => 'users', 'value' => $totalUsers ?? 0],
+        ];
+    @endphp
     <div class="kpi-grid">
-        <!-- Card 1: Total Websites -->
-        <div class="kpi-card">
-            <div class="kpi-top">
-                <div class="kpi-icon" style="background: #FFE4EC; color: #EC134A;">
-                    <i class="bi bi-globe2"></i>
+        @foreach($kpiCards as $i => $card)
+            @php
+                $k = $kpis[$card['key']] ?? ['new_this_month' => 0, 'trend' => 0, 'trend_up' => false, 'spark' => []];
+                $sp = \App\Support\DashboardStats::sparkPath($k['spark']);
+                $newCount = $k['new_this_month'];
+            @endphp
+            <div class="kpi-card">
+                <div class="kpi-top">
+                    <div class="kpi-icon" style="background: {{ $card['bg'] }}; color: {{ $card['color'] }};">
+                        <i class="bi {{ $card['icon'] }}"></i>
+                    </div>
+                    <div class="kpi-meta">
+                        <span>{{ $card['label'] }}</span>
+                        <h3>{{ $card['value'] }}</h3>
+                    </div>
                 </div>
-                <div class="kpi-meta">
-                    <span>Total Websites</span>
-                    <h3>{{ $totalWebsites ?? 5 }}</h3>
-                </div>
-            </div>
-            <div class="kpi-bottom">
-                <div>
-                    <div class="kpi-trend-up"><i class="bi bi-arrow-up"></i> 25%</div>
-                    <p class="kpi-sub">+1 new website this month</p>
-                </div>
-                <svg width="86" height="42" viewBox="0 0 86 42" fill="none">
-                    <defs>
-                        <linearGradient id="sp1" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="#EC134A" stop-opacity="0.25"/>
-                            <stop offset="100%" stop-color="#EC134A" stop-opacity="0.0"/>
-                        </linearGradient>
-                    </defs>
-                    <path d="M2 35 Q16 32, 26 22 T52 20 T84 8 L84 40 L2 40 Z" fill="url(#sp1)"/>
-                    <path d="M2 35 Q16 32, 26 22 T52 20 T84 8" stroke="#EC134A" stroke-width="2" fill="none" stroke-linecap="round"/>
-                </svg>
-            </div>
-        </div>
-
-        <!-- Card 2: Total Pages -->
-        <div class="kpi-card">
-            <div class="kpi-top">
-                <div class="kpi-icon" style="background: #DBEAFE; color: #3B82F6;">
-                    <i class="bi bi-file-earmark-text"></i>
-                </div>
-                <div class="kpi-meta">
-                    <span>Total Pages</span>
-                    <h3>{{ $totalPages ?? 48 }}</h3>
+                <div class="kpi-bottom">
+                    <div>
+                        @if($k['trend_up'])
+                            <div class="kpi-trend-up" title="Growth this month"><i class="bi bi-arrow-up"></i> {{ rtrim(rtrim(number_format($k['trend'], 1), '0'), '.') }}%</div>
+                        @else
+                            <div class="kpi-trend-up" style="color: #94A3B8;" title="No change this month"><i class="bi bi-dash"></i> 0%</div>
+                        @endif
+                        <p class="kpi-sub">+{{ number_format($newCount) }} new {{ $newCount === 1 ? $card['one'] : $card['many'] }} this month</p>
+                    </div>
+                    <svg width="86" height="42" viewBox="0 0 86 42" fill="none" aria-label="{{ $card['label'] }} over the last 6 months">
+                        <defs>
+                            <linearGradient id="sp{{ $i + 1 }}" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="{{ $card['color'] }}" stop-opacity="0.25"/>
+                                <stop offset="100%" stop-color="{{ $card['color'] }}" stop-opacity="0.0"/>
+                            </linearGradient>
+                        </defs>
+                        <path d="{{ $sp['area'] }}" fill="url(#sp{{ $i + 1 }})"/>
+                        <path d="{{ $sp['line'] }}" stroke="{{ $card['color'] }}" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                 </div>
             </div>
-            <div class="kpi-bottom">
-                <div>
-                    <div class="kpi-trend-up"><i class="bi bi-arrow-up"></i> 12%</div>
-                    <p class="kpi-sub">+5 new pages this month</p>
-                </div>
-                <svg width="86" height="42" viewBox="0 0 86 42" fill="none">
-                    <defs>
-                        <linearGradient id="sp2" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="#3B82F6" stop-opacity="0.25"/>
-                            <stop offset="100%" stop-color="#3B82F6" stop-opacity="0.0"/>
-                        </linearGradient>
-                    </defs>
-                    <path d="M2 36 Q18 33, 28 24 T55 21 T84 9 L84 40 L2 40 Z" fill="url(#sp2)"/>
-                    <path d="M2 36 Q18 33, 28 24 T55 21 T84 9" stroke="#3B82F6" stroke-width="2" fill="none" stroke-linecap="round"/>
-                </svg>
-            </div>
-        </div>
-
-        <!-- Card 3: Media Files -->
-        <div class="kpi-card">
-            <div class="kpi-top">
-                <div class="kpi-icon" style="background: #DCFCE7; color: #10B981;">
-                    <i class="bi bi-image"></i>
-                </div>
-                <div class="kpi-meta">
-                    <span>Media Files</span>
-                    <h3>{{ $mediaFilesCount ?? '1,284' }}</h3>
-                </div>
-            </div>
-            <div class="kpi-bottom">
-                <div>
-                    <div class="kpi-trend-up"><i class="bi bi-arrow-up"></i> 18%</div>
-                    <p class="kpi-sub">+196 new files this month</p>
-                </div>
-                <svg width="86" height="42" viewBox="0 0 86 42" fill="none">
-                    <defs>
-                        <linearGradient id="sp3" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="#10B981" stop-opacity="0.25"/>
-                            <stop offset="100%" stop-color="#10B981" stop-opacity="0.0"/>
-                        </linearGradient>
-                    </defs>
-                    <path d="M2 36 Q18 32, 30 23 T56 19 T84 8 L84 40 L2 40 Z" fill="url(#sp3)"/>
-                    <path d="M2 36 Q18 32, 30 23 T56 19 T84 8" stroke="#10B981" stroke-width="2" fill="none" stroke-linecap="round"/>
-                </svg>
-            </div>
-        </div>
-
-        <!-- Card 4: Total Users -->
-        <div class="kpi-card">
-            <div class="kpi-top">
-                <div class="kpi-icon" style="background: #F3E8FF; color: #A855F7;">
-                    <i class="bi bi-person"></i>
-                </div>
-                <div class="kpi-meta">
-                    <span>Total Users</span>
-                    <h3>{{ $totalUsers ?? 12 }}</h3>
-                </div>
-            </div>
-            <div class="kpi-bottom">
-                <div>
-                    <div class="kpi-trend-up"><i class="bi bi-arrow-up"></i> 8%</div>
-                    <p class="kpi-sub">+1 new user this month</p>
-                </div>
-                <svg width="86" height="42" viewBox="0 0 86 42" fill="none">
-                    <defs>
-                        <linearGradient id="sp4" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="#A855F7" stop-opacity="0.25"/>
-                            <stop offset="100%" stop-color="#A855F7" stop-opacity="0.0"/>
-                        </linearGradient>
-                    </defs>
-                    <path d="M2 36 Q18 32, 28 24 T55 20 T84 9 L84 40 L2 40 Z" fill="url(#sp4)"/>
-                    <path d="M2 36 Q18 32, 28 24 T55 20 T84 9" stroke="#A855F7" stroke-width="2" fill="none" stroke-linecap="round"/>
-                </svg>
-            </div>
-        </div>
+        @endforeach
     </div>
 
     <!-- Middle Row: Website Traffic & Page Overview -->
@@ -606,15 +536,15 @@
                 <!-- SVG Donut Chart -->
                 <svg width="175" height="175" viewBox="0 0 180 180">
                     <!-- Published (Green) -->
-                    <circle cx="90" cy="90" r="68" fill="none" stroke="#10B981" stroke-width="22" stroke-dasharray="280 427" stroke-dashoffset="100"/>
+                    <circle cx="90" cy="90" r="68" fill="none" stroke="#10B981" stroke-width="22" stroke-dasharray="{{ $pageDonut['published']['dash'] ?? '0 427' }}" stroke-dashoffset="{{ $pageDonut['published']['offset'] ?? 0 }}"/>
                     <!-- Draft (Amber) -->
-                    <circle cx="90" cy="90" r="68" fill="none" stroke="#F59E0B" stroke-width="22" stroke-dasharray="72 427" stroke-dashoffset="-182"/>
+                    <circle cx="90" cy="90" r="68" fill="none" stroke="#F59E0B" stroke-width="22" stroke-dasharray="{{ $pageDonut['draft']['dash'] ?? '0 427' }}" stroke-dashoffset="{{ $pageDonut['draft']['offset'] ?? 0 }}"/>
                     <!-- Private (Purple) -->
-                    <circle cx="90" cy="90" r="68" fill="none" stroke="#A855F7" stroke-width="22" stroke-dasharray="44 427" stroke-dashoffset="-256"/>
+                    <circle cx="90" cy="90" r="68" fill="none" stroke="#A855F7" stroke-width="22" stroke-dasharray="{{ $pageDonut['private']['dash'] ?? '0 427' }}" stroke-dashoffset="{{ $pageDonut['private']['offset'] ?? 0 }}"/>
                     <!-- Scheduled (Blue) -->
-                    <circle cx="90" cy="90" r="68" fill="none" stroke="#3B82F6" stroke-width="22" stroke-dasharray="27 427" stroke-dashoffset="-302"/>
+                    <circle cx="90" cy="90" r="68" fill="none" stroke="#3B82F6" stroke-width="22" stroke-dasharray="{{ $pageDonut['scheduled']['dash'] ?? '0 427' }}" stroke-dashoffset="{{ $pageDonut['scheduled']['offset'] ?? 0 }}"/>
 
-                    <text x="90" y="88" text-anchor="middle" font-family="Inter, sans-serif" font-size="28" font-weight="800" fill="#0F172A">{{ $totalPages ?? 48 }}</text>
+                    <text x="90" y="88" text-anchor="middle" font-family="Inter, sans-serif" font-size="28" font-weight="800" fill="#0F172A">{{ $totalPages ?? 0 }}</text>
                     <text x="90" y="108" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" font-weight="500" fill="#64748B">Total Pages</text>
                 </svg>
 
@@ -622,19 +552,19 @@
                 <div class="donut-legend">
                     <div class="donut-legend-row">
                         <span><i class="legend-dot" style="background: #10B981;"></i>Published</span>
-                        <strong>{{ $publishedPages ?? 32 }}</strong>
+                        <strong>{{ $publishedPages ?? 0 }}</strong>
                     </div>
                     <div class="donut-legend-row">
                         <span><i class="legend-dot" style="background: #F59E0B;"></i>Draft</span>
-                        <strong>{{ $draftPages ?? 8 }}</strong>
+                        <strong>{{ $draftPages ?? 0 }}</strong>
                     </div>
                     <div class="donut-legend-row">
                         <span><i class="legend-dot" style="background: #A855F7;"></i>Private</span>
-                        <strong>{{ $privatePages ?? 5 }}</strong>
+                        <strong>{{ $privatePages ?? 0 }}</strong>
                     </div>
                     <div class="donut-legend-row">
                         <span><i class="legend-dot" style="background: #3B82F6;"></i>Scheduled</span>
-                        <strong>{{ $scheduledPages ?? 3 }}</strong>
+                        <strong>{{ $scheduledPages ?? 0 }}</strong>
                     </div>
                 </div>
             </div>
@@ -688,7 +618,7 @@
                             </td>
                             <td><span class="sb-badge-pill sb-badge-{{ $site->module_badge ?? 'pink' }}">{{ $site->module }}</span></td>
                             <td><span class="sb-badge-pill {{ $statusBadge }}">{{ $site->status }}</span></td>
-                            <td>{{ $site->updated_at ? $site->updated_at->format('M d, Y') : 'Mar 31, 2025' }}</td>
+                            <td>{{ $site->updated_at ? $site->updated_at->format('M d, Y') : '—' }}</td>
                             <td>
                                 <div class="dropdown">
                                     <button class="btn-dots" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></button>

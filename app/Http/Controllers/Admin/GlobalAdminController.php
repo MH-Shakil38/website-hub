@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Support\DashboardStats;
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
 use App\Models\Page;
@@ -35,9 +36,24 @@ class GlobalAdminController extends Controller
         $privatePages = (clone $pagesQuery)->where('status', 'Private')->count();
         $scheduledPages = (clone $pagesQuery)->where('status', 'Scheduled')->count();
 
-        $mediaFilesCount = Setting::getValue('media_files_count', '1,284');
         $totalUsers = User::count();
-        $dateRangeLabel = Setting::getValue('date_range_label', 'Mar 1, 2025 - Mar 31, 2025');
+        $dateRangeLabel = DashboardStats::monthRangeLabel();
+
+        // KPI cards: real totals, growth this month and a 6-month sparkline.
+        $kpis = [
+            'websites' => DashboardStats::kpi([Website::query()]),
+            'pages' => DashboardStats::kpi([clone $pagesQuery]),
+            'media' => DashboardStats::kpi(DashboardStats::mediaQueries()),
+            'users' => DashboardStats::kpi([User::query()]),
+        ];
+        $mediaFilesCount = number_format($kpis['media']['total']);
+
+        $pageDonut = DashboardStats::donut([
+            'published' => $publishedPages,
+            'draft' => $draftPages,
+            'private' => $privatePages,
+            'scheduled' => $scheduledPages,
+        ]);
 
         $recentWebsites = Website::latest('updated_at')->take(4)->get();
         $allWebsites = Website::orderBy('name')->get();
@@ -56,7 +72,9 @@ class GlobalAdminController extends Controller
             'recentWebsites',
             'allWebsites',
             'selectedWebsiteId',
-            'recentActivities'
+            'recentActivities',
+            'kpis',
+            'pageDonut'
         ));
     }
 
