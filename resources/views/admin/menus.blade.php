@@ -49,10 +49,10 @@
             <form action="{{ route('admin.menu-builder') }}" method="GET" style="position: relative; width: 250px;">
                 <input type="hidden" name="cms_module" value="{{ $modKey }}">
                 <i class="bi bi-search" style="position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #64748B; font-size: 14px;"></i>
-                <input type="text" name="search" value="{{ $search }}" placeholder="Search Menu Title or URL..." style="width: 100%; height: 42px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 9px; padding: 0 14px 0 36px; font-size: 13px; color: #0F172A; outline: none;">
+                <input type="text" name="search" value="{{ $search }}" placeholder="Search Menu Title or URL..." class="form-control sb-search-input">
             </form>
 
-            <button type="button" data-bs-toggle="modal" data-bs-target="#addMenuModal" style="height: 42px; background: #D8125B; color: #FFFFFF; border: none; border-radius: 9px; padding: 0 18px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 10px rgba(216, 18, 91, 0.2);">
+            <button type="button" data-bs-toggle="modal" data-bs-target="#addMenuModal" style="height: var(--sb-control-h); background: #D8125B; color: #FFFFFF; border: none; border-radius: 10px; padding: 0 18px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 10px rgba(216, 18, 91, 0.2);">
                 <i class="bi bi-plus-lg"></i>
                 <span>Add Menu Item</span>
             </button>
@@ -128,30 +128,30 @@
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="form-label fw-semibold small">Menu Label</label>
-                        <input type="text" name="title" class="form-control" placeholder="e.g. Portfolio / Services" style="height: 44px; border-radius: 10px;" required>
+                        <input type="text" name="title" class="form-control" placeholder="e.g. Portfolio / Services" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold small">URL / Path</label>
-                        <input type="text" name="url" class="form-control" placeholder="e.g. /portfolio or /contact" style="height: 44px; border-radius: 10px;" required>
+                        <input type="text" name="url" class="form-control" placeholder="e.g. /portfolio or /contact" required>
                     </div>
                     <div class="row g-3">
                         <div class="col-md-4">
                             <label class="form-label fw-semibold small">Location</label>
-                            <select name="location" class="form-select" style="height: 44px; border-radius: 10px;">
+                            <select name="location" class="form-select">
                                 <option value="header">Header Navbar</option>
                                 <option value="footer">Footer</option>
                             </select>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label fw-semibold small">Target</label>
-                            <select name="target" class="form-select" style="height: 44px; border-radius: 10px;">
+                            <select name="target" class="form-select">
                                 <option value="_self">Same Window</option>
                                 <option value="_blank">New Tab</option>
                             </select>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label fw-semibold small">Sort Order</label>
-                            <input type="number" name="sort_order" value="1" class="form-control" style="height: 44px; border-radius: 10px;">
+                            <input type="number" name="sort_order" value="1" class="form-control">
                         </div>
                     </div>
                 </div>

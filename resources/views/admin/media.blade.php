@@ -49,10 +49,10 @@
             <form action="{{ route('admin.media-library') }}" method="GET" style="position: relative; width: 250px;">
                 <input type="hidden" name="cms_module" value="{{ $modKey }}">
                 <i class="bi bi-search" style="position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #64748B; font-size: 14px;"></i>
-                <input type="text" name="search" value="{{ $search }}" placeholder="Search Media Title..." style="width: 100%; height: 42px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 9px; padding: 0 14px 0 36px; font-size: 13px; color: #0F172A; outline: none;">
+                <input type="text" name="search" value="{{ $search }}" placeholder="Search Media Title..." class="form-control sb-search-input">
             </form>
 
-            <button type="button" data-bs-toggle="modal" data-bs-target="#uploadMediaModal" style="height: 42px; background: #D8125B; color: #FFFFFF; border: none; border-radius: 9px; padding: 0 18px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 10px rgba(216, 18, 91, 0.2);">
+            <button type="button" data-bs-toggle="modal" data-bs-target="#uploadMediaModal" style="height: var(--sb-control-h); background: #D8125B; color: #FFFFFF; border: none; border-radius: 10px; padding: 0 18px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 10px rgba(216, 18, 91, 0.2);">
                 <i class="bi bi-cloud-arrow-up"></i>
                 <span>Upload Media</span>
             </button>
@@ -134,11 +134,11 @@
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="form-label fw-semibold small">Media Title</label>
-                        <input type="text" name="title" class="form-control" placeholder="e.g. Living Room Showcase" style="height: 44px; border-radius: 10px;" required>
+                        <input type="text" name="title" class="form-control" placeholder="e.g. Living Room Showcase" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold small">Room / Gallery Category</label>
-                        <select name="category" class="form-select" style="height: 44px; border-radius: 10px;">
+                        <select name="category" class="form-select">
                             <option value="living">Living Room (living)</option>
                             <option value="kitchen">Kitchen (kitchen)</option>
                             <option value="bedroom">Bedroom (bedroom)</option>
@@ -148,11 +148,11 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold small">Subtitle / Alt Text</label>
-                        <input type="text" name="alt_text" class="form-control" placeholder="e.g. Living · Austin, TX" style="height: 44px; border-radius: 10px;">
+                        <input type="text" name="alt_text" class="form-control" placeholder="e.g. Living · Austin, TX">
                     </div>
                     <div class="mb-0">
                         <label class="form-label fw-semibold small">Select File (Saves to <code>Modules/{{ $modKey }}/Public/uploads/media</code>)</label>
-                        <input type="file" name="media_file" class="form-control" style="height: 44px; padding-top: 9px; border-radius: 10px;">
+                        <input type="file" name="media_file" class="form-control">
                     </div>
                 </div>
                 <div class="modal-footer border-top px-4 py-3">

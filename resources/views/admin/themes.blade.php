@@ -53,10 +53,10 @@
             <form action="{{ route('admin.themes') }}" method="GET" style="position: relative; width: 250px;">
                 <input type="hidden" name="cms_module" value="{{ $modKey }}">
                 <i class="bi bi-search" style="position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #64748B; font-size: 14px;"></i>
-                <input type="text" name="search" value="{{ $search }}" placeholder="Search Theme Preset..." style="width: 100%; height: 42px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 9px; padding: 0 14px 0 36px; font-size: 13px; color: #0F172A; outline: none;">
+                <input type="text" name="search" value="{{ $search }}" placeholder="Search Theme Preset..." class="form-control sb-search-input">
             </form>
 
-            <button type="button" data-bs-toggle="modal" data-bs-target="#addThemeModal" style="height: 42px; background: #D8125B; color: #FFFFFF; border: none; border-radius: 9px; padding: 0 18px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 10px rgba(216, 18, 91, 0.2);">
+            <button type="button" data-bs-toggle="modal" data-bs-target="#addThemeModal" style="height: var(--sb-control-h); background: #D8125B; color: #FFFFFF; border: none; border-radius: 10px; padding: 0 18px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 10px rgba(216, 18, 91, 0.2);">
                 <i class="bi bi-plus-lg"></i>
                 <span>Create Theme Preset</span>
             </button>
@@ -152,7 +152,7 @@
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="form-label fw-semibold small">Theme Name</label>
-                        <input type="text" name="name" class="form-control" placeholder="e.g. Royal Gold Edition" style="height: 44px; border-radius: 10px;" required>
+                        <input type="text" name="name" class="form-control" placeholder="e.g. Royal Gold Edition" required>
                     </div>
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
@@ -167,7 +167,7 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label fw-semibold small">Font Family</label>
-                            <select name="font_family" class="form-select" style="height: 44px; border-radius: 10px;">
+                            <select name="font_family" class="form-select">
                                 <option value="Inter">Inter</option>
                                 <option value="Playfair Display">Playfair Display</option>
                                 <option value="Plus Jakarta Sans">Plus Jakarta Sans</option>
@@ -176,7 +176,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold small">Layout Style</label>
-                            <input type="text" name="layout_style" value="Modern Grid" class="form-control" style="height: 44px; border-radius: 10px;" required>
+                            <input type="text" name="layout_style" value="Modern Grid" class="form-control" required>
                         </div>
                     </div>
                 </div>

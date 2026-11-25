@@ -36,7 +36,7 @@
                         <input type="text" name="qr_or_code" class="form-control" placeholder="e.g. FP-2026-0001 or QR-FP-2026-0001" required autofocus>
                     </div>
                     <div class="d-flex align-items-end">
-                        <button type="submit" class="btn btn-success fw-bold px-4" style="height:38px;">
+                        <button type="submit" class="btn btn-success fw-bold px-4" style="height: var(--sb-control-h);">
                             <i class="bi bi-check2-circle me-1"></i> Instant Check-In
                         </button>
                     </div>
@@ -57,7 +57,7 @@
                         </select>
                     </div>
                     <div class="d-flex align-items-end">
-                        <button type="submit" class="btn btn-dark fw-bold px-4" style="height:38px;">Record Check-In</button>
+                        <button type="submit" class="btn btn-dark fw-bold px-4" style="height: var(--sb-control-h);">Record Check-In</button>
                     </div>
                 </form>
             </div>

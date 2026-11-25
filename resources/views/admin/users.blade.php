@@ -54,7 +54,7 @@
         <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
             <!-- Role Filter Dropdown -->
             <div class="dropdown">
-                <button type="button" data-bs-toggle="dropdown" style="height: 42px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 9px; padding: 0 14px; font-size: 13px; font-weight: 500; color: #1E293B; display: inline-flex; align-items: center; gap: 10px;">
+                <button type="button" data-bs-toggle="dropdown" style="height: var(--sb-control-h); background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 10px; padding: 0 14px; font-size: 13px; font-weight: 500; color: #1E293B; display: inline-flex; align-items: center; gap: 10px;">
                     <i class="bi bi-shield-check" style="color: #475569;"></i>
                     <span>{{ $roleName ?: 'All Roles' }}</span>
                     <i class="bi bi-chevron-down" style="font-size: 11px; color: #64748B;"></i>
@@ -71,17 +71,17 @@
             <form action="{{ route('admin.users') }}" method="GET" style="position: relative; width: 250px;">
                 <input type="hidden" name="cms_module" value="{{ $modKey }}">
                 <i class="bi bi-search" style="position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #64748B; font-size: 14px;"></i>
-                <input type="text" name="search" value="{{ $search }}" placeholder="Search by Name, Email or Phone..." style="width: 100%; height: 42px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 9px; padding: 0 14px 0 36px; font-size: 13px; color: #0F172A; outline: none;">
+                <input type="text" name="search" value="{{ $search }}" placeholder="Search by Name, Email or Phone..." class="form-control sb-search-input">
             </form>
 
             <!-- Manage Roles Button -->
-            <button type="button" data-bs-toggle="modal" data-bs-target="#rolesPermissionsModal" style="height: 42px; background: #FFFFFF; color: #0F172A; border: 1px solid #CBD5E1; border-radius: 9px; padding: 0 16px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; cursor: pointer;">
+            <button type="button" data-bs-toggle="modal" data-bs-target="#rolesPermissionsModal" style="height: var(--sb-control-h); background: #FFFFFF; color: #0F172A; border: 1px solid #CBD5E1; border-radius: 10px; padding: 0 16px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; cursor: pointer;">
                 <i class="bi bi-key"></i>
                 <span>Roles &amp; Permissions</span>
             </button>
 
             <!-- Add User Button -->
-            <button type="button" data-bs-toggle="modal" data-bs-target="#addUserModal" style="height: 42px; background: #D8125B; color: #FFFFFF; border: none; border-radius: 9px; padding: 0 18px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 10px rgba(216, 18, 91, 0.2);">
+            <button type="button" data-bs-toggle="modal" data-bs-target="#addUserModal" style="height: var(--sb-control-h); background: #D8125B; color: #FFFFFF; border: none; border-radius: 10px; padding: 0 18px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 10px rgba(216, 18, 91, 0.2);">
                 <i class="bi bi-person-plus" style="font-size: 15px;"></i>
                 <span>Add Module User</span>
             </button>
@@ -175,7 +175,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <label class="form-label fw-semibold small">Status</label>
-                                                <select name="status" class="form-select" style="border-radius: 10px; height: 44px;">
+                                                <select name="status" class="form-select">
                                                     <option value="Active" @selected($u->status === 'Active')>Active</option>
                                                     <option value="Inactive" @selected($u->status === 'Inactive')>Inactive</option>
                                                 </select>
@@ -183,7 +183,7 @@
                                         </div>
                                         <div class="mb-0">
                                             <label class="form-label fw-semibold small">Assign Role</label>
-                                            <select name="role_name" class="form-select" style="border-radius: 10px; height: 44px;" required>
+                                            <select name="role_name" class="form-select" required>
                                                 @foreach($roles as $r)
                                                     <option value="{{ $r->name }}" @selected($u->role_name === $r->name)>{{ $r->name }}</option>
                                                 @endforeach
@@ -229,20 +229,20 @@
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="form-label fw-semibold small">Full Name</label>
-                        <input type="text" name="name" class="form-control" placeholder="Enter full name" style="border-radius: 10px; height: 44px;" required>
+                        <input type="text" name="name" class="form-control" placeholder="Enter full name" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold small">Email Address</label>
-                        <input type="email" name="email" class="form-control" placeholder="user@example.com" style="border-radius: 10px; height: 44px;" required>
+                        <input type="email" name="email" class="form-control" placeholder="user@example.com" required>
                     </div>
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
                             <label class="form-label fw-semibold small">Phone Number</label>
-                            <input type="text" name="phone" class="form-control" placeholder="01812-XXXXXX" style="border-radius: 10px; height: 44px;">
+                            <input type="text" name="phone" class="form-control" placeholder="01812-XXXXXX">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold small">Status</label>
-                            <select name="status" class="form-select" style="border-radius: 10px; height: 44px;">
+                            <select name="status" class="form-select">
                                 <option value="Active">Active</option>
                                 <option value="Inactive">Inactive</option>
                             </select>
@@ -250,7 +250,7 @@
                     </div>
                     <div class="mb-0">
                         <label class="form-label fw-semibold small">Assign Role</label>
-                        <select name="role_name" class="form-select" style="border-radius: 10px; height: 44px;" required>
+                        <select name="role_name" class="form-select" required>
                             @foreach($roles as $r)
                                 <option value="{{ $r->name }}">{{ $r->name }}</option>
                             @endforeach
@@ -282,13 +282,13 @@
                         <h6 class="fw-bold mb-2" style="color: #0F172A; font-size: 14px;"><i class="bi bi-plus-circle me-1" style="color: #EC134A;"></i>Create New Role</h6>
                         <div class="row g-2 align-items-center">
                             <div class="col-md-4">
-                                <input type="text" name="name" class="form-control form-control-sm" placeholder="Role Name" style="height: 38px; border-radius: 8px;" required>
+                                <input type="text" name="name" class="form-control form-control-sm" placeholder="Role Name" required>
                             </div>
                             <div class="col-md-5">
-                                <input type="text" name="description" class="form-control form-control-sm" placeholder="Short description..." style="height: 38px; border-radius: 8px;">
+                                <input type="text" name="description" class="form-control form-control-sm" placeholder="Short description...">
                             </div>
                             <div class="col-md-3">
-                                <button type="submit" class="btn btn-sm w-100 text-white fw-semibold" style="height: 38px; background: #EC134A; border-radius: 8px;">Add Role</button>
+                                <button type="submit" class="btn btn-sm w-100 text-white fw-semibold" style="height: var(--sb-control-h); background: #EC134A; border-radius: 10px;">Add Role</button>
                             </div>
                         </div>
                     </form>

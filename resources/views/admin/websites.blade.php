@@ -65,10 +65,10 @@
         <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
             <form action="{{ route('admin.websites') }}" method="GET" style="position: relative; width: 265px;">
                 <i class="bi bi-search" style="position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #64748B; font-size: 14px;"></i>
-                <input type="text" name="search" value="{{ $search }}" placeholder="Search by Website, Domain or Module..." style="width: 100%; height: 42px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 9px; padding: 0 14px 0 36px; font-size: 13px; color: #0F172A; outline: none;">
+                <input type="text" name="search" value="{{ $search }}" placeholder="Search by Website, Domain or Module..." class="form-control sb-search-input">
             </form>
 
-            <button type="button" data-bs-toggle="modal" data-bs-target="#addWebsiteModal" style="height: 42px; background: #D8125B; color: #FFFFFF; border: none; border-radius: 9px; padding: 0 18px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 10px rgba(216, 18, 91, 0.2);">
+            <button type="button" data-bs-toggle="modal" data-bs-target="#addWebsiteModal" style="height: var(--sb-control-h); background: #D8125B; color: #FFFFFF; border: none; border-radius: 10px; padding: 0 18px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 10px rgba(216, 18, 91, 0.2);">
                 <i class="bi bi-plus-lg"></i>
                 <span>Add Website</span>
             </button>
@@ -194,16 +194,16 @@
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="form-label fw-semibold small">Website Name</label>
-                        <input type="text" name="name" class="form-control" placeholder="e.g. Urban Estates" style="height: 44px; border-radius: 10px;" required>
+                        <input type="text" name="name" class="form-control" placeholder="e.g. Urban Estates" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold small">Domain</label>
-                        <input type="text" name="domain" class="form-control" placeholder="e.g. urbanestates.com" style="height: 44px; border-radius: 10px;" required>
+                        <input type="text" name="domain" class="form-control" placeholder="e.g. urbanestates.com" required>
                     </div>
                     <div class="row g-3 mb-0">
                         <div class="col-md-6">
                             <label class="form-label fw-semibold small">Module</label>
-                            <select name="module" class="form-select" style="height: 44px; border-radius: 10px;">
+                            <select name="module" class="form-select">
                                 <option value="Real Estate">Real Estate</option>
                                 <option value="Interior Design">Interior Design</option>
                                 <option value="Pharmacy">Pharmacy</option>
@@ -218,7 +218,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold small">Initial State</label>
-                            <select name="status" class="form-select" style="height: 44px; border-radius: 10px;">
+                            <select name="status" class="form-select">
                                 <option value="Published">Active (Published)</option>
                                 <option value="Draft">Turned Off (Draft)</option>
                             </select>

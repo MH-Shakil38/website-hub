@@ -54,7 +54,7 @@
 
     <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
         <div class="dropdown">
-            <button type="button" data-bs-toggle="dropdown" style="height: 42px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 9px; padding: 0 14px; font-size: 13px; font-weight: 500; color: #1E293B; display: inline-flex; align-items: center; gap: 10px;">
+            <button type="button" data-bs-toggle="dropdown" style="height: var(--sb-control-h); background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 10px; padding: 0 14px; font-size: 13px; font-weight: 500; color: #1E293B; display: inline-flex; align-items: center; gap: 10px;">
                 <i class="bi bi-calendar3" style="color: #475569;"></i>
                 <span>{{ request('type') ? 'Type: ' . request('type') : '12 Oct 2025 - 19 Oct 2025' }}</span>
                 <i class="bi bi-chevron-down" style="font-size: 11px; color: #64748B;"></i>
@@ -68,7 +68,7 @@
 
         <div style="position: relative; width: 265px;">
             <i class="bi bi-search" style="position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #64748B; font-size: 14px;"></i>
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by Txn ID, Wallet or Mobile..." style="width: 100%; height: 42px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 9px; padding: 0 14px 0 36px; font-size: 13px; color: #0F172A; outline: none;">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by Txn ID, Wallet or Mobile..." class="form-control sb-search-input">
         </div>
 
         <a href="{{ request()->url() }}" style="height: 42px; background: #D8125B; color: #FFFFFF; border: none; border-radius: 9px; padding: 0 18px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; text-decoration: none; box-shadow: 0 4px 10px rgba(216, 18, 91, 0.2);">

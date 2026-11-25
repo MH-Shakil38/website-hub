@@ -161,7 +161,7 @@
                                     <td class="text-end pe-4">
                                         <form action="{{ route('admin.reseller.kyc.update', $res->id) }}" method="POST" class="d-inline-flex align-items-center gap-1">
                                             @csrf
-                                            <select name="kyc_status" class="form-select form-select-sm" style="width: 110px; font-size: 11.5px;">
+                                            <select name="kyc_status" class="form-select form-select-sm" style="width: 110px;">
                                                 <option value="approved" {{ $res->kyc_status === 'approved' ? 'selected' : '' }}>Approved</option>
                                                 <option value="pending" {{ $res->kyc_status === 'pending' ? 'selected' : '' }}>Pending</option>
                                                 <option value="rejected" {{ $res->kyc_status === 'rejected' ? 'selected' : '' }}>Rejected</option>

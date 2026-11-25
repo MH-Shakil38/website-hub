@@ -705,6 +705,7 @@
             color: #64748B;
         }
     </style>
+    @include('admin.partials.form-system')
     @stack('module_styles')
 </head>
 <body>

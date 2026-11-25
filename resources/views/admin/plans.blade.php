@@ -113,12 +113,12 @@
                             <form action="{{ route('admin.plans.subscribe', $plan->id) }}" method="POST" class="d-grid gap-2">
                                 @csrf
                                 <div class="d-flex gap-2 mb-1">
-                                    <select name="billing_cycle" class="form-select form-select-sm" style="font-size: 12px;">
+                                    <select name="billing_cycle" class="form-select form-select-sm">
                                         <option value="monthly">Monthly ({{ $plan->currency }} {{ number_format($plan->price_monthly, 0) }})</option>
                                         <option value="yearly">Yearly ({{ $plan->currency }} {{ number_format($plan->price_yearly, 0) }})</option>
                                     </select>
                                     @if($accessibleTenants->isNotEmpty())
-                                        <select name="tenant_id" class="form-select form-select-sm" style="font-size: 12px;">
+                                        <select name="tenant_id" class="form-select form-select-sm">
                                             @foreach($accessibleTenants as $t)
                                                 <option value="{{ $t->id }}">{{ $t->name }}</option>
                                             @endforeach

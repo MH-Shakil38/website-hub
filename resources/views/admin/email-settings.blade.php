@@ -148,7 +148,7 @@
                     <div class="row g-3 mb-3">
                         <div class="col-md-4">
                             <label class="form-label fw-semibold small text-dark">Mail Driver / Transport</label>
-                            <select name="mail_mailer" id="input_mail_mailer" class="form-select" style="height: 46px; border-radius: 10px; background: #F8FAFC;">
+                            <select name="mail_mailer" id="input_mail_mailer" class="form-select">
                                 <option value="smtp" @selected($mailConfig['mail_mailer'] === 'smtp')>SMTP Server (Recommended)</option>
                                 <option value="sendmail" @selected($mailConfig['mail_mailer'] === 'sendmail')>Sendmail (Linux Server)</option>
                                 <option value="log" @selected($mailConfig['mail_mailer'] === 'log')>Log File (Local Testing)</option>
@@ -160,19 +160,19 @@
 
                         <div class="col-md-5">
                             <label class="form-label fw-semibold small text-dark">SMTP Host</label>
-                            <input type="text" name="mail_host" id="input_mail_host" value="{{ old('mail_host', $mailConfig['mail_host']) }}" placeholder="e.g. smtp.gmail.com" class="form-control" style="height: 46px; border-radius: 10px; background: #F8FAFC;">
+                            <input type="text" name="mail_host" id="input_mail_host" value="{{ old('mail_host', $mailConfig['mail_host']) }}" placeholder="e.g. smtp.gmail.com" class="form-control">
                         </div>
 
                         <div class="col-md-3">
                             <label class="form-label fw-semibold small text-dark">SMTP Port</label>
-                            <input type="number" name="mail_port" id="input_mail_port" value="{{ old('mail_port', $mailConfig['mail_port']) }}" placeholder="587" class="form-control" style="height: 46px; border-radius: 10px; background: #F8FAFC;">
+                            <input type="number" name="mail_port" id="input_mail_port" value="{{ old('mail_port', $mailConfig['mail_port']) }}" placeholder="587" class="form-control">
                         </div>
                     </div>
 
                     <div class="row g-3 mb-4">
                         <div class="col-md-4">
                             <label class="form-label fw-semibold small text-dark">Encryption</label>
-                            <select name="mail_encryption" id="input_mail_encryption" class="form-select" style="height: 46px; border-radius: 10px; background: #F8FAFC;">
+                            <select name="mail_encryption" id="input_mail_encryption" class="form-select">
                                 <option value="tls" @selected($mailConfig['mail_encryption'] === 'tls')>TLS (Port 587 / 2525)</option>
                                 <option value="ssl" @selected($mailConfig['mail_encryption'] === 'ssl')>SSL (Port 465)</option>
                                 <option value="none" @selected($mailConfig['mail_encryption'] === 'none')>None</option>
@@ -181,7 +181,7 @@
 
                         <div class="col-md-4">
                             <label class="form-label fw-semibold small text-dark">SMTP Username / Email</label>
-                            <input type="text" name="mail_username" id="input_mail_username" value="{{ old('mail_username', $mailConfig['mail_username']) }}" placeholder="yourname@gmail.com" class="form-control" style="height: 46px; border-radius: 10px; background: #F8FAFC;">
+                            <input type="text" name="mail_username" id="input_mail_username" value="{{ old('mail_username', $mailConfig['mail_username']) }}" placeholder="yourname@gmail.com" class="form-control">
                         </div>
 
                         <div class="col-md-4">
@@ -192,7 +192,7 @@
                                 @endif
                             </label>
                             <div class="input-group">
-                                <input type="password" name="mail_password" id="input_mail_password" value="{{ old('mail_password', $mailConfig['mail_password']) }}" placeholder="{{ !empty($mailConfig['mail_password']) ? '••••••••••••' : 'Enter SMTP / App Password' }}" class="form-control" style="height: 46px; border-radius: 10px 0 0 10px; background: #F8FAFC;">
+                                <input type="password" name="mail_password" id="input_mail_password" value="{{ old('mail_password', $mailConfig['mail_password']) }}" placeholder="{{ !empty($mailConfig['mail_password']) ? '••••••••••••' : 'Enter SMTP / App Password' }}" class="form-control">
                                 <button class="btn btn-outline-secondary" type="button" onclick="toggleSmtpPassword()" style="border-radius: 0 10px 10px 0;">
                                     <i class="bi bi-eye" id="smtp_pass_icon"></i>
                                 </button>
@@ -208,13 +208,13 @@
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
                             <label class="form-label fw-semibold small text-dark">Sender "From" Email Address <span class="text-danger">*</span></label>
-                            <input type="email" name="mail_from_address" id="input_mail_from_address" value="{{ old('mail_from_address', $mailConfig['mail_from_address']) }}" placeholder="support@yourdomain.com" class="form-control" style="height: 46px; border-radius: 10px; background: #F8FAFC;" required>
+                            <input type="email" name="mail_from_address" id="input_mail_from_address" value="{{ old('mail_from_address', $mailConfig['mail_from_address']) }}" placeholder="support@yourdomain.com" class="form-control" required>
                             <div class="form-text" style="font-size: 11px;">Must match your <strong>SMTP Username</strong> on Hostinger / Gmail.</div>
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label fw-semibold small text-dark">Sender "From" Name <span class="text-danger">*</span></label>
-                            <input type="text" name="mail_from_name" id="input_mail_from_name" value="{{ old('mail_from_name', $mailConfig['mail_from_name']) }}" placeholder="SiteBuilder Cloud" class="form-control" style="height: 46px; border-radius: 10px; background: #F8FAFC;" required>
+                            <input type="text" name="mail_from_name" id="input_mail_from_name" value="{{ old('mail_from_name', $mailConfig['mail_from_name']) }}" placeholder="SiteBuilder Cloud" class="form-control" required>
                             <div class="form-text" style="font-size: 11px;">Displayed as the sender name in your clients' inbox.</div>
                         </div>
                     </div>
@@ -222,12 +222,12 @@
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
                             <label class="form-label fw-semibold small text-dark">Reply-To Support Email</label>
-                            <input type="email" name="mail_reply_to" id="input_mail_reply_to" value="{{ old('mail_reply_to', $mailConfig['mail_reply_to']) }}" placeholder="support@yourdomain.com" class="form-control" style="height: 46px; border-radius: 10px; background: #F8FAFC;">
+                            <input type="email" name="mail_reply_to" id="input_mail_reply_to" value="{{ old('mail_reply_to', $mailConfig['mail_reply_to']) }}" placeholder="support@yourdomain.com" class="form-control">
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label fw-semibold small text-dark">Super Admin Alert Receiver Email</label>
-                            <input type="email" name="mail_admin_alert_email" id="input_mail_admin_alert_email" value="{{ old('mail_admin_alert_email', $mailConfig['mail_admin_alert_email']) }}" placeholder="admin@yourdomain.com" class="form-control" style="height: 46px; border-radius: 10px; background: #F8FAFC;">
+                            <input type="email" name="mail_admin_alert_email" id="input_mail_admin_alert_email" value="{{ old('mail_admin_alert_email', $mailConfig['mail_admin_alert_email']) }}" placeholder="admin@yourdomain.com" class="form-control">
                             <div class="form-text" style="font-size: 11px;">Receives admin alerts when a new client registers, submits manual payment, or opens a ticket.</div>
                         </div>
                     </div>
@@ -239,7 +239,7 @@
                         </div>
                         <div class="col-md-9">
                             <label class="form-label fw-semibold small text-dark">Email Footer Signature Text</label>
-                            <input type="text" name="mail_footer_text" value="{{ old('mail_footer_text', $mailConfig['mail_footer_text']) }}" class="form-control" style="height: 46px; border-radius: 10px; background: #F8FAFC;">
+                            <input type="text" name="mail_footer_text" value="{{ old('mail_footer_text', $mailConfig['mail_footer_text']) }}" class="form-control">
                         </div>
                     </div>
 
@@ -326,7 +326,7 @@
                         </label>
                     </div>
 
-                    <button type="submit" class="btn text-white fw-bold w-100" style="height: 48px; background: #EC134A; border-radius: 12px; box-shadow: 0 6px 16px rgba(236, 19, 74, 0.25);">
+                    <button type="submit" class="btn text-white fw-bold w-100" style="height: var(--sb-control-h); background: #EC134A; border-radius: 10px; box-shadow: 0 6px 16px rgba(236, 19, 74, 0.25);">
                         <i class="bi bi-check2-circle me-1"></i> Save Email &amp; Notification Settings
                     </button>
                 </form>
@@ -356,10 +356,10 @@
 
                     <div class="mb-3">
                         <label class="form-label fw-semibold small text-dark">Optional Custom Note</label>
-                        <input type="text" name="test_note" placeholder="e.g. Testing production SMTP configuration" class="form-control" style="height: 44px; border-radius: 10px; background: #F8FAFC;">
+                        <input type="text" name="test_note" placeholder="e.g. Testing production SMTP configuration" class="form-control">
                     </div>
 
-                    <button type="submit" class="btn btn-dark fw-semibold w-100" style="height: 44px; border-radius: 10px;">
+                    <button type="submit" class="btn btn-dark fw-semibold w-100" style="height: var(--sb-control-h); border-radius: 10px;">
                         <i class="bi bi-paperplane-fill me-1"></i> Send Test Email Now
                     </button>
                 </form>

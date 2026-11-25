@@ -62,42 +62,42 @@
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
                             <label class="form-label fw-semibold small text-dark">Module Website Title</label>
-                            <input type="text" name="site_title" value="{{ $moduleSettings['site_title'] ?? $modMeta['label'] . ' Studio' }}" class="form-control" style="height: 46px; border-radius: 10px; background: #F8FAFC;" required>
+                            <input type="text" name="site_title" value="{{ $moduleSettings['site_title'] ?? $modMeta['label'] . ' Studio' }}" class="form-control" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold small text-dark">Module Tagline</label>
-                            <input type="text" name="site_tagline" value="{{ $moduleSettings['site_tagline'] ?? 'Premium Standalone Website' }}" class="form-control" style="height: 46px; border-radius: 10px; background: #F8FAFC;">
+                            <input type="text" name="site_tagline" value="{{ $moduleSettings['site_tagline'] ?? 'Premium Standalone Website' }}" class="form-control">
                         </div>
                     </div>
 
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
                             <label class="form-label fw-semibold small text-dark">Contact Email</label>
-                            <input type="email" name="contact_email" value="{{ $moduleSettings['contact_email'] ?? 'info@' . $modMeta['slug'] . '.com' }}" class="form-control" style="height: 46px; border-radius: 10px; background: #F8FAFC;">
+                            <input type="email" name="contact_email" value="{{ $moduleSettings['contact_email'] ?? 'info@' . $modMeta['slug'] . '.com' }}" class="form-control">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold small text-dark">Hotline / Phone</label>
-                            <input type="text" name="contact_phone" value="{{ $moduleSettings['contact_phone'] ?? '+880 1812-000000' }}" class="form-control" style="height: 46px; border-radius: 10px; background: #F8FAFC;">
+                            <input type="text" name="contact_phone" value="{{ $moduleSettings['contact_phone'] ?? '+880 1812-000000' }}" class="form-control">
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-semibold small text-dark">Office Address</label>
-                        <input type="text" name="contact_address" value="{{ $moduleSettings['contact_address'] ?? 'Gulshan-2, Dhaka, Bangladesh' }}" class="form-control" style="height: 46px; border-radius: 10px; background: #F8FAFC;">
+                        <input type="text" name="contact_address" value="{{ $moduleSettings['contact_address'] ?? 'Gulshan-2, Dhaka, Bangladesh' }}" class="form-control">
                     </div>
 
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
                             <label class="form-label fw-semibold small text-dark">Module Logo (<code>Modules/{{ $modKey }}/Public</code>)</label>
-                            <input type="file" name="module_logo" class="form-control" style="height: 46px; padding-top: 10px; border-radius: 10px; background: #F8FAFC;">
+                            <input type="file" name="module_logo" class="form-control">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold small text-dark">Footer Copyright Text</label>
-                            <input type="text" name="footer_copyright" value="{{ $moduleSettings['footer_copyright'] ?? '© ' . date('Y') . ' ' . $modMeta['label'] . '. All rights reserved.' }}" class="form-control" style="height: 46px; border-radius: 10px; background: #F8FAFC;">
+                            <input type="text" name="footer_copyright" value="{{ $moduleSettings['footer_copyright'] ?? '© ' . date('Y') . ' ' . $modMeta['label'] . '. All rights reserved.' }}" class="form-control">
                         </div>
                     </div>
 
-                    <button type="submit" class="btn text-white fw-semibold w-100" style="height: 46px; background: #EC134A; border-radius: 10px; box-shadow: 0 4px 12px rgba(236, 19, 74, 0.22);">
+                    <button type="submit" class="btn text-white fw-semibold w-100" style="height: var(--sb-control-h); background: #EC134A; border-radius: 10px; box-shadow: 0 4px 12px rgba(236, 19, 74, 0.22);">
                         Save {{ $modMeta['label'] }} Settings ({{ $modMeta['prefix'] }}settings) <i class="bi bi-check2-circle ms-1"></i>
                     </button>
                 </form>
@@ -115,20 +115,20 @@
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
                             <label class="form-label fw-semibold small text-dark">Admin Panel Brand Name</label>
-                            <input type="text" name="site_name" value="{{ $globalSettings['site_name'] ?? 'SiteBuilder' }}" class="form-control" style="height: 46px; border-radius: 10px; background: #F8FAFC;" required>
+                            <input type="text" name="site_name" value="{{ $globalSettings['site_name'] ?? 'SiteBuilder' }}" class="form-control" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold small text-dark">Brand Subtitle</label>
-                            <input type="text" name="site_tagline" value="{{ $globalSettings['site_tagline'] ?? 'Website Management' }}" class="form-control" style="height: 46px; border-radius: 10px; background: #F8FAFC;" required>
+                            <input type="text" name="site_tagline" value="{{ $globalSettings['site_tagline'] ?? 'Website Management' }}" class="form-control" required>
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-semibold small text-dark">Admin Brand Logo</label>
-                        <input type="file" name="site_logo" class="form-control" style="height: 46px; padding-top: 10px; border-radius: 10px; background: #F8FAFC;">
+                        <input type="file" name="site_logo" class="form-control">
                     </div>
 
-                    <button type="submit" class="btn btn-dark fw-semibold w-100" style="height: 44px; border-radius: 10px;">
+                    <button type="submit" class="btn btn-dark fw-semibold w-100" style="height: var(--sb-control-h); border-radius: 10px;">
                         Update Global Admin Brand
                     </button>
                 </form>
@@ -192,7 +192,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold small text-dark">Profile Avatar</label>
-                            <input type="file" name="avatar" class="form-control" style="height: 46px; padding-top: 10px; border-radius: 10px; background: #F8FAFC;">
+                            <input type="file" name="avatar" class="form-control">
                         </div>
                     </div>
 
@@ -203,7 +203,7 @@
                         </label>
                     </div>
 
-                    <button type="submit" class="btn text-white fw-semibold w-100" style="height: 46px; background: #EC134A; border-radius: 10px; box-shadow: 0 4px 12px rgba(236, 19, 74, 0.22);">
+                    <button type="submit" class="btn text-white fw-semibold w-100" style="height: var(--sb-control-h); background: #EC134A; border-radius: 10px; box-shadow: 0 4px 12px rgba(236, 19, 74, 0.22);">
                         Save Profile Changes <i class="bi bi-arrow-right ms-1"></i>
                     </button>
                 </form>
@@ -220,20 +220,20 @@
                     @csrf
                     <div class="mb-3">
                         <label class="form-label fw-semibold small text-dark">Current Password</label>
-                        <input type="password" name="current_password" class="form-control" placeholder="Enter current password" style="height: 46px; border-radius: 10px; background: #F8FAFC;" required>
+                        <input type="password" name="current_password" class="form-control" placeholder="Enter current password" required>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-semibold small text-dark">New Password</label>
-                        <input type="password" name="password" class="form-control" placeholder="Enter new password (min 8 chars)" style="height: 46px; border-radius: 10px; background: #F8FAFC;" required>
+                        <input type="password" name="password" class="form-control" placeholder="Enter new password (min 8 chars)" required>
                     </div>
 
                     <div class="mb-4">
                         <label class="form-label fw-semibold small text-dark">Confirm New Password</label>
-                        <input type="password" name="password_confirmation" class="form-control" placeholder="Confirm new password" style="height: 46px; border-radius: 10px; background: #F8FAFC;" required>
+                        <input type="password" name="password_confirmation" class="form-control" placeholder="Confirm new password" required>
                     </div>
 
-                    <button type="submit" class="btn text-white fw-semibold w-100" style="height: 46px; background: #EC134A; border-radius: 10px; box-shadow: 0 4px 12px rgba(236, 19, 74, 0.22);">
+                    <button type="submit" class="btn text-white fw-semibold w-100" style="height: var(--sb-control-h); background: #EC134A; border-radius: 10px; box-shadow: 0 4px 12px rgba(236, 19, 74, 0.22);">
                         Update Password <i class="bi bi-shield-check ms-1"></i>
                     </button>
                 </form>

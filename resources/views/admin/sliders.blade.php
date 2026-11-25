@@ -49,10 +49,10 @@
             <form action="{{ route('admin.slider') }}" method="GET" style="position: relative; width: 250px;">
                 <input type="hidden" name="cms_module" value="{{ $modKey }}">
                 <i class="bi bi-search" style="position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #64748B; font-size: 14px;"></i>
-                <input type="text" name="search" value="{{ $search }}" placeholder="Search Slider Title..." style="width: 100%; height: 42px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 9px; padding: 0 14px 0 36px; font-size: 13px; color: #0F172A; outline: none;">
+                <input type="text" name="search" value="{{ $search }}" placeholder="Search Slider Title..." class="form-control sb-search-input">
             </form>
 
-            <button type="button" data-bs-toggle="modal" data-bs-target="#addSliderModal" style="height: 42px; background: #D8125B; color: #FFFFFF; border: none; border-radius: 9px; padding: 0 18px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 10px rgba(216, 18, 91, 0.2);">
+            <button type="button" data-bs-toggle="modal" data-bs-target="#addSliderModal" style="height: var(--sb-control-h); background: #D8125B; color: #FFFFFF; border: none; border-radius: 10px; padding: 0 18px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 10px rgba(216, 18, 91, 0.2);">
                 <i class="bi bi-plus-lg"></i>
                 <span>Add Hero Slider</span>
             </button>
@@ -131,7 +131,7 @@
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="form-label fw-semibold small">Hero Heading</label>
-                        <input type="text" name="title" class="form-control" placeholder="e.g. Bespoke Luxury Interior Architecture" style="height: 44px; border-radius: 10px;" required>
+                        <input type="text" name="title" class="form-control" placeholder="e.g. Bespoke Luxury Interior Architecture" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold small">Subtitle / Description</label>
@@ -140,16 +140,16 @@
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
                             <label class="form-label fw-semibold small">Button Text</label>
-                            <input type="text" name="button_text" value="Explore Now" class="form-control" style="height: 44px; border-radius: 10px;">
+                            <input type="text" name="button_text" value="Explore Now" class="form-control">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold small">Button Link</label>
-                            <input type="text" name="button_url" value="/contact" class="form-control" style="height: 44px; border-radius: 10px;">
+                            <input type="text" name="button_url" value="/contact" class="form-control">
                         </div>
                     </div>
                     <div class="mb-0">
                         <label class="form-label fw-semibold small">Upload Banner Image (Saved in <code>Modules/{{ $modKey }}/Public/uploads/sliders</code>)</label>
-                        <input type="file" name="image_file" class="form-control" accept="image/*" style="height: 44px; padding-top: 9px; border-radius: 10px;">
+                        <input type="file" name="image_file" class="form-control" accept="image/*">
                     </div>
                 </div>
                 <div class="modal-footer border-top px-4 py-3">

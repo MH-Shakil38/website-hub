@@ -49,10 +49,10 @@
             <form action="{{ route('admin.pages') }}" method="GET" style="position: relative; width: 250px;">
                 <input type="hidden" name="cms_module" value="{{ $modKey }}">
                 <i class="bi bi-search" style="position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #64748B; font-size: 14px;"></i>
-                <input type="text" name="search" value="{{ $search }}" placeholder="Search by Page Title or Slug..." style="width: 100%; height: 42px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 9px; padding: 0 14px 0 36px; font-size: 13px; color: #0F172A; outline: none;">
+                <input type="text" name="search" value="{{ $search }}" placeholder="Search by Page Title or Slug..." class="form-control sb-search-input">
             </form>
 
-            <button type="button" data-bs-toggle="modal" data-bs-target="#addPageModal" style="height: 42px; background: #D8125B; color: #FFFFFF; border: none; border-radius: 9px; padding: 0 18px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 10px rgba(216, 18, 91, 0.2);">
+            <button type="button" data-bs-toggle="modal" data-bs-target="#addPageModal" style="height: var(--sb-control-h); background: #D8125B; color: #FFFFFF; border: none; border-radius: 10px; padding: 0 18px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 10px rgba(216, 18, 91, 0.2);">
                 <i class="bi bi-plus-lg"></i>
                 <span>Create Page</span>
             </button>
@@ -134,15 +134,15 @@
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="form-label fw-semibold small">Page Title</label>
-                        <input type="text" name="title" class="form-control" placeholder="e.g. About Us" style="height: 44px; border-radius: 10px;" required>
+                        <input type="text" name="title" class="form-control" placeholder="e.g. About Us" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold small">Page Content / Summary</label>
-                        <textarea name="content" rows="3" class="form-control" placeholder="Write standalone page content..." style="border-radius: 10px;"></textarea>
+                        <textarea name="content" rows="3" class="form-control" placeholder="Write standalone page content..."></textarea>
                     </div>
                     <div class="mb-0">
                         <label class="form-label fw-semibold small">Status</label>
-                        <select name="status" class="form-select" style="height: 44px; border-radius: 10px;">
+                        <select name="status" class="form-select">
                             <option value="Published">Published</option>
                             <option value="Draft">Draft</option>
                             <option value="Private">Private</option>

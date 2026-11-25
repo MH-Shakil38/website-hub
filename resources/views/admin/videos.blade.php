@@ -53,10 +53,10 @@
             <form action="{{ route('admin.video-gallery') }}" method="GET" style="position: relative; width: 250px;">
                 <input type="hidden" name="cms_module" value="{{ $modKey }}">
                 <i class="bi bi-search" style="position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #64748B; font-size: 14px;"></i>
-                <input type="text" name="search" value="{{ $search }}" placeholder="Search Video Title..." style="width: 100%; height: 42px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 9px; padding: 0 14px 0 36px; font-size: 13px; color: #0F172A; outline: none;">
+                <input type="text" name="search" value="{{ $search }}" placeholder="Search Video Title..." class="form-control sb-search-input">
             </form>
 
-            <button type="button" data-bs-toggle="modal" data-bs-target="#addVideoModal" style="height: 42px; background: #D8125B; color: #FFFFFF; border: none; border-radius: 9px; padding: 0 18px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 10px rgba(216, 18, 91, 0.2);">
+            <button type="button" data-bs-toggle="modal" data-bs-target="#addVideoModal" style="height: var(--sb-control-h); background: #D8125B; color: #FFFFFF; border: none; border-radius: 10px; padding: 0 18px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 10px rgba(216, 18, 91, 0.2);">
                 <i class="bi bi-plus-lg"></i>
                 <span>Add New Video</span>
             </button>
@@ -135,12 +135,12 @@
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="form-label fw-semibold small">Video Title</label>
-                        <input type="text" name="title" class="form-control" placeholder="e.g. Khulshi Residence Full Walkthrough" style="height: 44px; border-radius: 10px;" required>
+                        <input type="text" name="title" class="form-control" placeholder="e.g. Khulshi Residence Full Walkthrough" required>
                     </div>
                     <div class="row g-3 mb-3">
                         <div class="col-md-7">
                             <label class="form-label fw-semibold small">Category Filter</label>
-                            <select name="category" class="form-select" style="height: 44px; border-radius: 10px;">
+                            <select name="category" class="form-select">
                                 <option value="walkthrough">Walkthrough</option>
                                 <option value="3d_tour">3D Tour</option>
                                 <option value="client_story">Client Story</option>
@@ -148,21 +148,21 @@
                         </div>
                         <div class="col-md-5">
                             <label class="form-label fw-semibold small">Duration Label</label>
-                            <input type="text" name="duration" value="02:45" class="form-control" placeholder="02:45" style="height: 44px; border-radius: 10px;">
+                            <input type="text" name="duration" value="02:45" class="form-control" placeholder="02:45">
                         </div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold small">Option A: Paste YouTube Video Link</label>
-                        <input type="text" name="video_url" class="form-control" placeholder="https://www.youtube.com/watch?v=..." style="height: 44px; border-radius: 10px;">
+                        <input type="text" name="video_url" class="form-control" placeholder="https://www.youtube.com/watch?v=...">
                         <small class="text-muted" style="font-size: 11px;">Normal YouTube watch links or short links work automatically!</small>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold small">OR Option B: Upload MP4 Video File</label>
-                        <input type="file" name="video_file" accept="video/mp4,video/webm" class="form-control" style="height: 44px; padding-top: 9px; border-radius: 10px;">
+                        <input type="file" name="video_file" accept="video/mp4,video/webm" class="form-control">
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold small">Cover Thumbnail Image (Optional — uses default if left blank)</label>
-                        <input type="file" name="thumbnail_file" accept="image/*" class="form-control" style="height: 44px; padding-top: 9px; border-radius: 10px;">
+                        <input type="file" name="thumbnail_file" accept="image/*" class="form-control">
                     </div>
                     <div class="mb-0">
                         <label class="form-label fw-semibold small">Video Description / Guide Details</label>
