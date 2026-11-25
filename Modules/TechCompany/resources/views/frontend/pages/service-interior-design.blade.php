@@ -1,7 +1,7 @@
 @extends('techcompany::frontend.layouts.master')
 
-@section('title')Interior & Architecture | YourCompany@endsection
-@section('meta_description')Portfolio websites and project management software for interior design, architecture and civil consultancy firms.@endsection
+@section('title', '')
+@section('meta_description', '')
 
 @section('content')
 <main>

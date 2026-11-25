@@ -24,7 +24,7 @@
                 <img src="{{ $blog->image ?: '/module-media/Portfolio/theme/blog-1.jpg' }}" alt="{{ $blog->title }}" style="width: 100%; max-height: 420px; object-fit: cover;">
             </div>
 
-            <div style="font-size: 15.5px; line-height: 1.85; color: var(--pf-text-dark);">
+            <div class="pf-rich-content" style="font-size: 15.5px; line-height: 1.85; color: var(--pf-text-dark);">
                 {!! \App\Support\HtmlSanitizer::clean($blog->content) ?: '<p>' . e($blog->short_description) . '</p>' !!}
             </div>
 

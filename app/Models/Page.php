@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Page extends Model
 {
+    protected $connection = 'central';
+
     protected $table = 'core_pages';
 
     protected $fillable = [

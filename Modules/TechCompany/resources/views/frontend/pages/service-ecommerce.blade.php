@@ -1,7 +1,7 @@
 @extends('techcompany::frontend.layouts.master')
 
-@section('title')E-commerce Solutions | YourCompany@endsection
-@section('meta_description')Single-vendor and multivendor online stores with payment gateways, courier integration, inventory sync and a powerful admin panel.@endsection
+@section('title', '')
+@section('meta_description', '')
 
 @section('content')
 <main>

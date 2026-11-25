@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 abstract class ClinicBaseModel extends Model
 {
+    protected $connection = 'tenant';
+
     protected string $modulePrefix = 'clinic_';
 
     public function getTable(): string

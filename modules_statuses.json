@@ -4,5 +4,10 @@
     "Pharmacy": true,
     "TechCompany": true,
     "Clinic": true,
-    "Portfolio": true
+    "Portfolio": true,
+    "IvfCenter": true,
+    "HajjUmrah": true,
+    "GymFitness": true,
+    "WonderLearn": true,
+    "EventManagement": true
 }

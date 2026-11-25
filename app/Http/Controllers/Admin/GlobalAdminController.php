@@ -125,6 +125,14 @@ class GlobalAdminController extends Controller
             'Clinic' => 'green',
             'Developer Portfolio' => 'blue',
             'Portfolio' => 'blue',
+            'Hajj & Umrah' => 'green',
+            'HajjUmrah' => 'green',
+            'Gym & Fitness' => 'green',
+            'GymFitness' => 'green',
+            'Kids Learning' => 'blue',
+            'WonderLearn' => 'blue',
+            'Event Management' => 'green',
+            'EventManagement' => 'green',
         ];
         $moduleMapping = [
             'Real Estate' => ['module_name' => 'RealEstate', 'slug' => 'real-estate', 'admin_route' => 'admin.realestate.properties.index'],
@@ -136,6 +144,14 @@ class GlobalAdminController extends Controller
             'Clinic' => ['module_name' => 'Clinic', 'slug' => 'fertility-clinic', 'admin_route' => 'admin.pages'],
             'Developer Portfolio' => ['module_name' => 'Portfolio', 'slug' => 'developer-portfolio', 'admin_route' => 'admin.portfolio.projects.index'],
             'Portfolio' => ['module_name' => 'Portfolio', 'slug' => 'developer-portfolio', 'admin_route' => 'admin.portfolio.projects.index'],
+            'Hajj & Umrah' => ['module_name' => 'HajjUmrah', 'slug' => 'hajj-umrah', 'admin_route' => 'admin.hajjumrah.packages.index'],
+            'HajjUmrah' => ['module_name' => 'HajjUmrah', 'slug' => 'hajj-umrah', 'admin_route' => 'admin.hajjumrah.packages.index'],
+            'Gym & Fitness' => ['module_name' => 'GymFitness', 'slug' => 'gym-fitness', 'admin_route' => 'admin.gymfitness.dashboard'],
+            'GymFitness' => ['module_name' => 'GymFitness', 'slug' => 'gym-fitness', 'admin_route' => 'admin.gymfitness.dashboard'],
+            'Kids Learning' => ['module_name' => 'WonderLearn', 'slug' => 'wonder-learn', 'admin_route' => 'admin.wonderlearn.dashboard'],
+            'WonderLearn' => ['module_name' => 'WonderLearn', 'slug' => 'wonder-learn', 'admin_route' => 'admin.wonderlearn.dashboard'],
+            'Event Management' => ['module_name' => 'EventManagement', 'slug' => 'event-management', 'admin_route' => 'admin.eventmanagement.dashboard'],
+            'EventManagement' => ['module_name' => 'EventManagement', 'slug' => 'event-management', 'admin_route' => 'admin.eventmanagement.dashboard'],
         ];
 
         $map = $moduleMapping[$validated['module']] ?? ['module_name' => null, 'slug' => Str::slug($validated['name']), 'admin_route' => 'admin.websites'];

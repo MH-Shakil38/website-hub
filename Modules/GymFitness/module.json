@@ -1,0 +1,11 @@
+{
+    "name": "GymFitness",
+    "alias": "gymfitness",
+    "description": "Gym & Fitness Industry Module with Membership Management, Class Booking, Attendance, Trainer Management, and Member Portal.",
+    "keywords": ["gym", "fitness", "membership", "workout", "trainer", "classes"],
+    "priority": 0,
+    "providers": [
+        "Modules\\GymFitness\\App\\Providers\\GymFitnessServiceProvider"
+    ],
+    "files": []
+}

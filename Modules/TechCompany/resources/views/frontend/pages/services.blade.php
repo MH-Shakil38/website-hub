@@ -1,7 +1,7 @@
 @extends('techcompany::frontend.layouts.master')
 
-@section('title')Solutions | YourCompany@endsection
-@section('meta_description')YourCompany solutions: e-commerce, POS, real estate, interior, hospital, HRM, manufacturing, accounting, education.@endsection
+@section('title', '')
+@section('meta_description', '')
 
 @section('content')
 <main>

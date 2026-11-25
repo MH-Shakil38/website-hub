@@ -1,0 +1,11 @@
+{
+    "name": "HajjUmrah",
+    "alias": "hajjumrah",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\HajjUmrah\\App\\Providers\\HajjUmrahServiceProvider"
+    ],
+    "files": []
+}

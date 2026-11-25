@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 abstract class InteriorBaseModel extends Model
 {
+    protected $connection = 'tenant';
+
     protected string $modulePrefix = 'int_';
 
     public function getTable(): string

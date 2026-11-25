@@ -11,16 +11,16 @@
             </a>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1.4fr 0.8fr; gap: 36px; align-items: start;">
+        <div class="pf-detail-grid" style="display: grid; grid-template-columns: 1.4fr 0.8fr; gap: 36px; align-items: start;">
             <div class="pf-process-card" style="padding: 36px;">
                 <div style="width: 56px; height: 56px; border-radius: 14px; background: rgba(7, 139, 255, 0.16); color: var(--pf-light-blue); display: flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 20px;">
                     <i class="{{ $service->icon_class ?: 'fa-solid fa-code' }}"></i>
                 </div>
                 <span class="pf-step-badge">{{ $service->subtitle }}</span>
                 <h1 class="pf-sec-heading" style="margin-bottom: 14px;">{{ $service->title }}</h1>
-                <p style="font-size: 15px; color: var(--pf-dark-sec-muted); line-height: 1.75; margin-bottom: 26px;">
-                    {{ $service->description ?: $service->short_description }}
-                </p>
+                <div class="pf-rich-content" style="font-size: 15px; color: var(--pf-dark-sec-muted); line-height: 1.75; margin-bottom: 26px;">
+                    {!! $service->description ?: e($service->short_description) !!}
+                </div>
 
                 @if(!empty($service->features))
                 <h4 style="font-size: 16px; font-weight: 700; margin-bottom: 14px;">What's Included in This Service</h4>

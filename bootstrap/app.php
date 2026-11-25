@@ -13,12 +13,23 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->redirectUsersTo(fn () => route('admin.dashboard'));
-        $middleware->alias([
-            'admin' => \App\Http\Middleware\EnsureAdminAccess::class,
+        $middleware->web(append: [
+            \App\Http\Middleware\TrackResellerReferral::class,
+            \App\Http\Middleware\IdentifyTenant::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
+
+        $exceptions->render(function (\Illuminate\Session\TokenMismatchException $e, Request $request) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Session expired. Please refresh and try again.'], 419);
+            }
+
+            return redirect()->back()
+                ->withInput($request->except('password', 'password_confirmation', '_token'))
+                ->withErrors(['session' => 'Your session expired (e.g. after logging out in another tab). Please try submitting again.']);
+        });
     })->create();

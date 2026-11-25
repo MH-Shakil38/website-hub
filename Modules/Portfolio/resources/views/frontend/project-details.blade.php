@@ -11,7 +11,7 @@
             </a>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1.45fr 0.85fr; gap: 36px; align-items: start;">
+        <div class="pf-detail-grid" style="display: grid; grid-template-columns: 1.45fr 0.85fr; gap: 36px; align-items: start;">
             <!-- Left: Main Image + Gallery + Full Description -->
             <div>
                 <div style="border-radius: 18px; overflow: hidden; border: 1px solid var(--pf-dark-border); margin-bottom: 20px;">
@@ -30,7 +30,7 @@
 
                 <h1 class="pf-sec-heading" style="margin-bottom: 14px;">{{ $project->title }}</h1>
                 <p style="font-size: 15.5px; color: var(--pf-light-blue); font-weight: 600; margin-bottom: 16px;">{{ $project->short_description }}</p>
-                <div style="font-size: 14.5px; color: var(--pf-dark-sec-muted); line-height: 1.8; white-space: pre-line;">{{ $project->description }}</div>
+                <div class="pf-rich-content" style="font-size: 15px; color: var(--pf-dark-sec-muted); line-height: 1.8;">{!! $project->description !!}</div>
             </div>
 
             <!-- Right: Project Metadata Card -->

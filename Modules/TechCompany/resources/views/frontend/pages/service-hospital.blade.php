@@ -1,7 +1,7 @@
 @extends('techcompany::frontend.layouts.master')
 
-@section('title')Hospital Management | YourCompany@endsection
-@section('meta_description')Complete HMS covering OPD, IPD, appointments, pharmacy, pathology, billing and doctor portals for hospitals and diagnostic centers.@endsection
+@section('title', '')
+@section('meta_description', '')
 
 @section('content')
 <main>

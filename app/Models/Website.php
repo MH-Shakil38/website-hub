@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Schema;
 
 class Website extends Model
 {
+    protected $connection = 'central';
+
     protected $table = 'core_websites';
 
     protected $fillable = [

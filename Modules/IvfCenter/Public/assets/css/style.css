@@ -1,0 +1,1245 @@
+/* =====================================================================
+   IVF CENTER.COM — Standalone Theme (Modules/IvfCenter)
+   Full-Width Fluid Design — Optimized for Monitor, Laptop, Tablet & Mobile
+   ===================================================================== */
+:root {
+    --purple: #4b1d8f;
+    --purple-mid: #5b25a8;
+    --purple-dark: #38126e;
+    --purple-soft: #ede5fa;
+    --teal: #0f9b8e;
+    --teal-dark: #0a6b74;
+    --teal-soft: #e2f5f2;
+    --navy: #18133b;
+    --text: #4a4f64;
+    --muted: #6c7288;
+    --line: #e9e4f3;
+    --pad-x: clamp(20px, 6vw, 110px);
+    --font: 'Poppins', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --ease: all .28s ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+    font-family: var(--font);
+    color: var(--text);
+    background: #ffffff;
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; transition: var(--ease); }
+img { display: block; max-width: 100%; }
+ul { list-style: none; }
+button { font-family: inherit; border: 0; background: none; cursor: pointer; }
+
+/* Full-width page & fluid container */
+.ivf-page {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    background: #ffffff;
+    overflow: hidden;
+    position: relative;
+}
+
+.ivf-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 var(--pad-x);
+    position: relative;
+}
+
+/* ---------- Shared: pills, titles, buttons ---------- */
+.ivf-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--purple-soft);
+    color: var(--purple);
+    font-size: clamp(12.5px, 0.95vw, 14.5px);
+    font-weight: 600;
+    padding: 7px 18px;
+    border-radius: 999px;
+    letter-spacing: -.1px;
+}
+.ivf-pill i { font-size: 12px; color: var(--purple); }
+.ivf-pill-teal {
+    background: var(--teal-soft);
+    color: #136f68;
+}
+.ivf-pill-teal i { color: var(--teal); }
+
+.ivf-title {
+    font-size: clamp(28px, 2.8vw, 46px);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--navy);
+    letter-spacing: -.6px;
+    margin: 14px 0 18px;
+}
+.ivf-title .t-hl {
+    color: var(--teal);
+    position: relative;
+    display: inline-block;
+    z-index: 1;
+}
+.ivf-title .t-hl::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 3px;
+    height: 8px;
+    background: rgba(15, 155, 142, .16);
+    border-radius: 4px;
+    z-index: -1;
+}
+
+.ivf-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: clamp(12px, 1vw, 15px) clamp(24px, 2vw, 32px);
+    border-radius: 999px;
+    font-size: clamp(13.5px, 1vw, 15.5px);
+    font-weight: 600;
+    transition: var(--ease);
+    white-space: nowrap;
+}
+.ivf-btn i { font-size: 12px; transition: transform .25s ease; }
+.ivf-btn:hover i { transform: translateX(3px); }
+
+.ivf-btn-purple {
+    background: linear-gradient(90deg, #471a88 0%, #6328b8 100%);
+    color: #fff;
+    box-shadow: 0 10px 22px rgba(75, 29, 143, .26);
+}
+.ivf-btn-purple:hover {
+    background: linear-gradient(90deg, #3c1475 0%, #531fa1 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 26px rgba(75, 29, 143, .34);
+}
+.ivf-btn-white {
+    background: #fff;
+    color: var(--navy);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .14);
+}
+.ivf-btn-white:hover {
+    color: var(--purple);
+    transform: translateY(-2px);
+}
+.ivf-btn-sm {
+    padding: 10px 22px;
+    font-size: clamp(13px, 0.95vw, 14.5px);
+}
+
+/* =====================================================================
+   1. HEADER & 2. HERO
+   ===================================================================== */
+.ivf-top-wrap {
+    position: relative;
+    background: linear-gradient(180deg, #f7f4fc 0%, #f2ecfb 65%, #f9f7fe 100%);
+    overflow: hidden;
+}
+.ivf-hero-waves {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.ivf-header {
+    position: relative;
+    z-index: 50;
+    background: rgba(255, 255, 255, .75);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(233, 228, 243, .7);
+}
+.ivf-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: clamp(74px, 5.5vw, 90px);
+}
+
+.ivf-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+.ivf-logo svg {
+    width: clamp(42px, 3.2vw, 52px);
+    height: clamp(40px, 3vw, 48px);
+    flex-shrink: 0;
+}
+.ivf-logo-txt {
+    font-size: clamp(23px, 1.9vw, 30px);
+    font-weight: 800;
+    color: var(--purple);
+    letter-spacing: -.5px;
+    line-height: 1;
+}
+.ivf-logo-txt small {
+    font-size: clamp(16px, 1.3vw, 21px);
+    font-weight: 600;
+    color: var(--teal);
+    letter-spacing: -.2px;
+    margin-left: 1px;
+}
+
+.ivf-menu {
+    display: flex;
+    align-items: center;
+    gap: clamp(22px, 2.4vw, 40px);
+    margin-left: auto;
+    margin-right: clamp(22px, 2.4vw, 40px);
+}
+.ivf-menu a {
+    font-size: clamp(14px, 1vw, 16px);
+    font-weight: 500;
+    color: var(--navy);
+}
+.ivf-menu a.active,
+.ivf-menu a:hover {
+    color: var(--purple);
+    font-weight: 600;
+}
+.ivf-burger {
+    display: none;
+    font-size: 22px;
+    color: var(--navy);
+    margin-left: 14px;
+}
+
+/* Hero Section */
+.ivf-hero {
+    position: relative;
+    z-index: 2;
+    padding: clamp(24px, 3vw, 48px) 0 clamp(54px, 5vw, 76px);
+}
+.ivf-hero-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    align-items: center;
+    gap: clamp(24px, 3vw, 48px);
+}
+.ivf-hero-text {
+    padding: 16px 0 24px;
+    position: relative;
+    z-index: 3;
+}
+.ivf-hero-text h1 {
+    font-size: clamp(38px, 4.3vw, 68px);
+    font-weight: 800;
+    line-height: 1.12;
+    color: var(--navy);
+    letter-spacing: -1.4px;
+    margin: 20px 0 20px;
+}
+.ivf-hero-text h1 span {
+    color: #541f9c;
+}
+.ivf-hero-text p {
+    font-size: clamp(15.5px, 1.2vw, 19px);
+    color: var(--text);
+    line-height: 1.65;
+    max-width: 580px;
+    margin-bottom: clamp(26px, 2.4vw, 38px);
+}
+.ivf-hero-btns {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+/* Watch Video pill button matching mockup */
+.ivf-watch {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 24px 6px 7px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .85);
+    border: 1px solid #dfd6f1;
+    box-shadow: 0 6px 18px rgba(75, 29, 143, .07);
+    font-size: clamp(13.5px, 1vw, 15.5px);
+    font-weight: 600;
+    color: var(--navy);
+}
+.ivf-watch .play {
+    width: clamp(36px, 2.6vw, 42px);
+    height: clamp(36px, 2.6vw, 42px);
+    border-radius: 50%;
+    background: #fff;
+    color: var(--navy);
+    border: 1px solid #ebe5f7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    box-shadow: 0 4px 10px rgba(75, 29, 143, .12);
+    transition: var(--ease);
+}
+.ivf-watch .play i { margin-left: 2px; }
+.ivf-watch:hover {
+    border-color: var(--purple);
+    transform: translateY(-2px);
+}
+.ivf-watch:hover .play {
+    background: var(--purple);
+    color: #fff;
+}
+
+/* Right Hero Visual — Seamless arch aura like the reference mockup */
+.ivf-hero-visual {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+.ivf-hero-aura {
+    position: absolute;
+    width: 92%;
+    height: 94%;
+    bottom: 0;
+    border-radius: 50% 50% 24px 24px;
+    background: radial-gradient(circle at 50% 45%, #e2d4f8 0%, rgba(231, 220, 249, .65) 62%, rgba(243, 237, 251, 0) 100%);
+    z-index: 0;
+}
+.ivf-hero-ring {
+    position: absolute;
+    left: 2%;
+    top: 4%;
+    width: 86%;
+    height: 90%;
+    border-radius: 50%;
+    border: 1.5px solid rgba(114, 69, 182, .12);
+    z-index: 0;
+}
+.ivf-hero-photo {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 640px;
+    height: clamp(390px, 35vw, 560px);
+    border-radius: 280px 280px 0 140px;
+    overflow: hidden;
+    mask-image: linear-gradient(180deg, #000 84%, transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg, #000 84%, transparent 100%);
+}
+.ivf-hero-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+}
+
+/* =====================================================================
+   FEATURE STRIP (Overlapping Hero bottom)
+   ===================================================================== */
+.ivf-strip-wrap {
+    position: relative;
+    z-index: 10;
+    margin-top: -46px;
+}
+.ivf-strip {
+    background: #fff;
+    border-radius: 18px;
+    border: 1px solid var(--line);
+    box-shadow: 0 14px 36px rgba(37, 20, 80, .07);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: clamp(20px, 1.8vw, 30px) 16px;
+}
+.ivf-strip-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 4px 12px;
+}
+.ivf-strip-item + .ivf-strip-item {
+    border-left: 1px solid var(--line);
+}
+.ivf-strip-ico {
+    width: clamp(42px, 3vw, 52px);
+    height: clamp(42px, 3vw, 52px);
+    border-radius: 12px;
+    background: #f3fbfa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.ivf-strip-ico svg {
+    width: clamp(30px, 2.2vw, 38px);
+    height: clamp(30px, 2.2vw, 38px);
+}
+.ivf-strip-item span:last-child {
+    font-size: clamp(13.5px, 1.05vw, 16px);
+    font-weight: 600;
+    color: var(--navy);
+    line-height: 1.35;
+}
+
+/* =====================================================================
+   3. ABOUT IVF CENTER (Left image bleeds from left edge just like mockup)
+   ===================================================================== */
+.ivf-about {
+    position: relative;
+    padding: clamp(64px, 6vw, 100px) 0 clamp(54px, 5vw, 84px);
+    background: #fff;
+}
+.ivf-about-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: clamp(36px, 4.5vw, 76px);
+    align-items: center;
+}
+.ivf-about-media {
+    position: relative;
+    margin-left: calc(-1 * var(--pad-x));
+}
+.ivf-about-circle-wrap {
+    position: relative;
+    width: 100%;
+}
+.ivf-about-circle {
+    width: 100%;
+    height: clamp(380px, 33vw, 520px);
+    border-radius: 0 280px 280px 0;
+    overflow: hidden;
+    border: 8px solid #f5f1fc;
+    border-left: 0;
+    box-shadow: 0 20px 44px rgba(37, 20, 80, .09);
+}
+.ivf-about-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+}
+.ivf-trust {
+    position: absolute;
+    right: clamp(0px, 2vw, 24px);
+    bottom: clamp(14px, 2vw, 28px);
+    z-index: 3;
+    width: clamp(140px, 11vw, 172px);
+    height: clamp(140px, 11vw, 172px);
+    border-radius: 50%;
+    background: #fff;
+    border: 5px solid #f7f4fc;
+    box-shadow: 0 16px 36px rgba(37, 20, 80, .15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 12px;
+}
+.ivf-trust i {
+    color: var(--purple);
+    font-size: clamp(18px, 1.5vw, 24px);
+    margin-bottom: 4px;
+}
+.ivf-trust span {
+    font-size: clamp(12.5px, 0.95vw, 14.5px);
+    color: var(--navy);
+    line-height: 1.25;
+    font-weight: 600;
+}
+.ivf-trust strong {
+    font-size: clamp(13.5px, 1.05vw, 16px);
+    color: var(--navy);
+    font-weight: 700;
+    line-height: 1.25;
+}
+.ivf-trust strong.teal {
+    color: var(--teal);
+}
+
+.ivf-about-text p {
+    font-size: clamp(15px, 1.1vw, 17.5px);
+    color: var(--text);
+    margin-bottom: 24px;
+    max-width: 640px;
+    line-height: 1.7;
+}
+.ivf-checks {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 32px;
+}
+.ivf-checks li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: clamp(14.5px, 1.05vw, 17px);
+    font-weight: 600;
+    color: var(--navy);
+}
+.ivf-checks li i {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--teal);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    flex-shrink: 0;
+}
+
+/* =====================================================================
+   4. OUR SERVICES
+   ===================================================================== */
+.ivf-services {
+    padding: clamp(54px, 5vw, 80px) 0 clamp(64px, 6vw, 90px);
+    background: linear-gradient(180deg, #ffffff 0%, #fbf9fe 100%);
+    text-align: center;
+}
+.ivf-svc-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(18px, 2vw, 28px);
+    margin-top: clamp(32px, 3vw, 46px);
+}
+.ivf-svc {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: clamp(28px, 2.6vw, 42px) 24px clamp(26px, 2.4vw, 38px);
+    transition: var(--ease);
+    box-shadow: 0 8px 24px rgba(37, 20, 80, .04);
+}
+.ivf-svc:hover {
+    transform: translateY(-5px);
+    border-color: #b7e4de;
+    box-shadow: 0 16px 34px rgba(15, 155, 142, .10);
+}
+.ivf-svc-ico {
+    width: clamp(52px, 4vw, 66px);
+    height: clamp(52px, 4vw, 66px);
+    margin: 0 auto 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ivf-svc-ico svg {
+    width: 100%;
+    height: 100%;
+}
+.ivf-svc h3 {
+    font-size: clamp(16.5px, 1.25vw, 20px);
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 4px;
+}
+.ivf-svc p {
+    font-size: clamp(13.5px, 1vw, 15.5px);
+    color: var(--muted);
+}
+
+/* =====================================================================
+   5. SUCCESS STORIES
+   ===================================================================== */
+.ivf-stories {
+    position: relative;
+    padding: clamp(56px, 5vw, 80px) 0 clamp(48px, 4.5vw, 68px);
+    background: #fff;
+}
+.ivf-stories-grid {
+    display: grid;
+    grid-template-columns: 1.08fr 0.92fr;
+    gap: clamp(30px, 3.5vw, 56px);
+    align-items: center;
+}
+.ivf-stories-text .ivf-title {
+    margin-bottom: 24px;
+}
+.ivf-quote-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: clamp(28px, 2.8vw, 42px) clamp(28px, 3vw, 44px);
+    box-shadow: 0 14px 36px rgba(37, 20, 80, .06);
+}
+.ivf-quote-mark {
+    display: inline-block;
+    width: clamp(32px, 2.5vw, 40px);
+    height: clamp(24px, 1.9vw, 30px);
+    margin-bottom: 14px;
+}
+.ivf-quote-mark svg {
+    width: 100%;
+    height: 100%;
+}
+.ivf-quote-card p {
+    font-size: clamp(15.5px, 1.2vw, 18.5px);
+    font-style: italic;
+    font-weight: 500;
+    color: var(--navy);
+    line-height: 1.72;
+    margin-bottom: 24px;
+    transition: opacity .2s ease;
+}
+.ivf-author {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+.ivf-author img {
+    width: clamp(50px, 3.8vw, 60px);
+    height: clamp(50px, 3.8vw, 60px);
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .12);
+}
+.ivf-author strong {
+    display: block;
+    font-size: clamp(15px, 1.1vw, 17px);
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.25;
+}
+.ivf-author span {
+    font-size: clamp(13px, 0.95vw, 14.5px);
+    color: var(--muted);
+}
+
+.ivf-stories-media {
+    display: flex;
+    justify-content: flex-end;
+}
+.ivf-stories-photo {
+    width: 100%;
+    height: clamp(340px, 29vw, 460px);
+    border-radius: 100px 28px 28px 28px;
+    overflow: hidden;
+    box-shadow: 0 18px 40px rgba(37, 20, 80, .08);
+    border: 6px solid #f7f4fc;
+}
+.ivf-stories-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.ivf-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 32px;
+}
+.ivf-dots span {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #d7d2e3;
+    cursor: pointer;
+    transition: var(--ease);
+}
+.ivf-dots span.active {
+    background: var(--purple);
+    transform: scale(1.18);
+}
+
+/* =====================================================================
+   6. WHY CHOOSE US (Seamless full-bleed lab background on right)
+   ===================================================================== */
+.ivf-why {
+    position: relative;
+    padding: clamp(68px, 6vw, 100px) 0;
+    background: #f4f9fc;
+    overflow: hidden;
+}
+.ivf-why-grid {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 30px;
+    align-items: center;
+}
+.ivf-why-text {
+    position: relative;
+    z-index: 3;
+}
+.ivf-why-list {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    margin: 26px 0 34px;
+}
+.ivf-why-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.ivf-why-item .ico {
+    width: clamp(48px, 3.6vw, 56px);
+    height: clamp(48px, 3.6vw, 56px);
+    border-radius: 50%;
+    background: #daf2ee;
+    color: var(--teal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(18px, 1.4vw, 22px);
+    flex-shrink: 0;
+    box-shadow: 0 6px 14px rgba(15, 155, 142, .10);
+}
+.ivf-why-item h4 {
+    font-size: clamp(16px, 1.2vw, 18.5px);
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.3;
+}
+.ivf-why-item p {
+    font-size: clamp(13.5px, 1vw, 15.5px);
+    color: var(--muted);
+}
+
+.ivf-why-media {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 65%;
+    z-index: 1;
+}
+.ivf-why-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: right center;
+}
+.ivf-why-media::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, #f4f9fc 0%, rgba(244, 249, 252, .85) 20%, rgba(244, 249, 252, 0) 52%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* =====================================================================
+   7. STATS BAR
+   ===================================================================== */
+.ivf-stats-sec {
+    padding: clamp(48px, 4.5vw, 68px) 0 20px;
+    background: #fff;
+}
+.ivf-stats {
+    background: linear-gradient(180deg, #e7f7f5 0%, #def3f0 100%);
+    border: 1px solid #cdebe6;
+    border-radius: 20px;
+    padding: clamp(28px, 2.6vw, 40px) 16px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    text-align: center;
+    box-shadow: 0 12px 30px rgba(15, 155, 142, .06);
+}
+.ivf-stat {
+    padding: 0 12px;
+}
+.ivf-stat + .ivf-stat {
+    border-left: 1px solid #bce2dc;
+}
+.ivf-stat-ico {
+    display: inline-flex;
+    width: clamp(44px, 3.4vw, 54px);
+    height: clamp(44px, 3.4vw, 54px);
+    margin-bottom: 10px;
+}
+.ivf-stat-ico svg {
+    width: 100%;
+    height: 100%;
+}
+.ivf-stat strong {
+    display: block;
+    font-size: clamp(28px, 2.5vw, 38px);
+    font-weight: 800;
+    color: var(--navy);
+    line-height: 1.18;
+}
+.ivf-stat span {
+    font-size: clamp(13.5px, 1vw, 15.5px);
+    font-weight: 500;
+    color: var(--text);
+}
+
+/* =====================================================================
+   8. TESTIMONIALS ("What Our Patients Say")
+   ===================================================================== */
+.ivf-testi {
+    position: relative;
+    padding: clamp(58px, 5vw, 80px) 0 clamp(64px, 5.5vw, 86px);
+    background: #fff;
+    text-align: center;
+    overflow: hidden;
+}
+.ivf-leaf {
+    position: absolute;
+    top: 24px;
+    width: clamp(140px, 13vw, 210px);
+    height: clamp(250px, 22vw, 350px);
+    opacity: .65;
+    pointer-events: none;
+}
+.ivf-leaf.left { left: -12px; }
+.ivf-leaf.right { right: -12px; transform: scaleX(-1); }
+
+.ivf-testi-wrap {
+    position: relative;
+    max-width: clamp(680px, 60vw, 920px);
+    margin: 34px auto 0;
+}
+.ivf-testi-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: clamp(32px, 3vw, 46px) clamp(44px, 4.5vw, 72px) clamp(28px, 2.6vw, 38px);
+    box-shadow: 0 14px 36px rgba(37, 20, 80, .06);
+}
+.ivf-testi-card .ivf-quote-mark {
+    margin: 0 auto 14px;
+}
+.ivf-testi-card p {
+    font-size: clamp(16px, 1.25vw, 19px);
+    font-style: italic;
+    font-weight: 500;
+    color: var(--navy);
+    line-height: 1.72;
+    max-width: 680px;
+    margin: 0 auto 24px;
+    transition: opacity .2s ease;
+}
+.ivf-testi-card .ivf-author {
+    justify-content: center;
+    text-align: left;
+}
+.ivf-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: #fff;
+    color: var(--navy);
+    border: 1px solid var(--line);
+    box-shadow: 0 8px 20px rgba(37, 20, 80, .10);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--ease);
+    z-index: 3;
+}
+.ivf-arrow:hover {
+    background: var(--purple);
+    color: #fff;
+    border-color: var(--purple);
+}
+.ivf-arrow.prev { left: -23px; }
+.ivf-arrow.next { right: -23px; }
+
+/* =====================================================================
+   9. CTA BANNER
+   ===================================================================== */
+.ivf-cta-sec {
+    padding: 10px 0 clamp(60px, 5.5vw, 84px);
+    background: #fff;
+}
+.ivf-cta {
+    position: relative;
+    overflow: hidden;
+    border-radius: 26px;
+    background: linear-gradient(105deg, #074f5b 0%, #0c7883 48%, #169fa4 100%);
+    min-height: clamp(280px, 24vw, 350px);
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+    box-shadow: 0 18px 40px rgba(8, 84, 96, .18);
+}
+.ivf-cta-text {
+    position: relative;
+    z-index: 3;
+    padding: clamp(38px, 3.8vw, 58px) clamp(38px, 4.5vw, 68px);
+    color: #fff;
+}
+.ivf-cta-text h2 {
+    font-size: clamp(30px, 2.8vw, 44px);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 14px;
+    letter-spacing: -.5px;
+}
+.ivf-cta-text p {
+    font-size: clamp(15px, 1.15vw, 17.5px);
+    color: rgba(255, 255, 255, .92);
+    margin-bottom: 28px;
+    line-height: 1.6;
+    max-width: 480px;
+}
+
+.ivf-cta-visual {
+    position: relative;
+    height: 100%;
+    min-height: clamp(280px, 24vw, 350px);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+.ivf-cta-circle {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: clamp(280px, 24vw, 350px);
+    border-radius: 220px 0 0 220px;
+    overflow: hidden;
+    box-shadow: -14px 0 0 rgba(255, 255, 255, .14), -28px 0 0 rgba(255, 255, 255, .07);
+}
+.ivf-cta-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+.ivf-cta-heart-svg {
+    position: absolute;
+    inset: 14% 18%;
+    width: 64%;
+    height: 72%;
+    pointer-events: none;
+}
+
+/* =====================================================================
+   10. FOOTER
+   ===================================================================== */
+.ivf-footer {
+    background: #fff;
+    padding-top: 36px;
+    position: relative;
+}
+.ivf-foot-grid {
+    display: grid;
+    grid-template-columns: 1.35fr 0.9fr 1.15fr;
+    padding-bottom: 54px;
+}
+.ivf-foot-brand {
+    padding-right: 36px;
+    border-right: 1px solid var(--line);
+}
+.ivf-foot-logo svg {
+    width: clamp(58px, 4.5vw, 72px);
+    height: clamp(54px, 4.2vw, 68px);
+}
+.ivf-foot-logo .ivf-logo-txt {
+    font-size: clamp(28px, 2.2vw, 35px);
+    line-height: 1.05;
+}
+.ivf-foot-logo .ivf-logo-txt small {
+    display: block;
+    font-size: clamp(22px, 1.8vw, 28px);
+    font-weight: 700;
+    margin-left: 0;
+}
+.ivf-foot-brand p {
+    margin-top: 12px;
+    font-size: clamp(13.5px, 1vw, 15px);
+    font-weight: 600;
+    color: var(--navy);
+    letter-spacing: .3px;
+}
+
+.ivf-foot-col {
+    padding: 0 clamp(24px, 3vw, 48px);
+}
+.ivf-foot-col:nth-child(2) {
+    border-right: 1px solid var(--line);
+}
+.ivf-foot-col:last-child {
+    padding-right: 0;
+}
+.ivf-foot-col h5 {
+    font-size: clamp(15px, 1.1vw, 17px);
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 16px;
+}
+.ivf-foot-col ul li {
+    margin-bottom: 10px;
+}
+.ivf-foot-col ul a {
+    font-size: clamp(13.5px, 1vw, 15px);
+    color: var(--text);
+    font-weight: 500;
+}
+.ivf-foot-col ul a:hover {
+    color: var(--purple);
+}
+.ivf-contact {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    font-size: clamp(13.5px, 1vw, 15px);
+    color: var(--navy);
+    font-weight: 500;
+    margin-bottom: 12px;
+}
+.ivf-contact i {
+    color: var(--purple);
+    width: 16px;
+    margin-top: 4px;
+}
+.ivf-social {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+}
+.ivf-social a {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--purple);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+}
+.ivf-social a:hover {
+    background: var(--teal);
+    transform: translateY(-2px);
+}
+
+.ivf-copy {
+    position: relative;
+    background: linear-gradient(90deg, #3a1370 0%, #4e1d94 50%, #5d25ac 100%);
+    color: #fff;
+    font-size: clamp(12.5px, 0.95vw, 14px);
+    padding: 18px 0 20px;
+    margin-top: 26px;
+}
+.ivf-copy-wave {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -42px;
+    width: 100%;
+    height: 44px;
+    display: block;
+}
+.ivf-copy-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+.ivf-copy-row .heart {
+    color: #f43f5e;
+    margin: 0 3px;
+}
+
+/* =====================================================================
+   11. CONSULTATION MODAL
+   ===================================================================== */
+.ivf-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(23, 18, 59, .6);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.ivf-modal.open { display: flex; }
+.ivf-modal-box {
+    background: #fff;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 520px;
+    padding: 32px;
+    position: relative;
+    max-height: 92vh;
+    overflow-y: auto;
+}
+.ivf-modal-box h3 { font-size: 22px; font-weight: 700; color: var(--navy); margin: 10px 0 4px; }
+.ivf-modal-box > p { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+.ivf-modal-close { position: absolute; top: 18px; right: 18px; font-size: 20px; color: var(--muted); }
+.ivf-field { margin-bottom: 14px; }
+.ivf-field label { display: block; font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+.ivf-field input, .ivf-field select, .ivf-field textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--navy);
+}
+.ivf-field input:focus, .ivf-field select:focus, .ivf-field textarea:focus {
+    outline: 0;
+    border-color: var(--purple);
+    box-shadow: 0 0 0 3px var(--purple-soft);
+}
+.ivf-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.ivf-feedback { display: none; padding: 10px 14px; border-radius: 10px; font-size: 13px; margin-bottom: 12px; }
+.ivf-feedback.ok { display: block; background: #e3f6f3; color: #0b6f78; }
+.ivf-feedback.err { display: block; background: #fdecec; color: #b42318; }
+
+/* =====================================================================
+   12. RESPONSIVE — Tablet (<= 991px) & Mobile (<= 767px)
+   ===================================================================== */
+@media (max-width: 991px) {
+    .ivf-burger { display: block; }
+    .ivf-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        margin: 0;
+        background: #fff;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+        padding: 10px 24px 20px;
+        box-shadow: 0 14px 24px rgba(0, 0, 0, .08);
+        border-top: 1px solid var(--line);
+    }
+    .ivf-menu.open { display: flex; }
+    .ivf-menu li { width: 100%; }
+    .ivf-menu a { display: block; padding: 12px 0; border-bottom: 1px solid var(--line); }
+    .ivf-nav-cta { margin-left: auto; }
+
+    /* Hero stacks cleanly */
+    .ivf-hero-grid { grid-template-columns: 1fr; text-align: center; gap: 20px; }
+    .ivf-hero-text { padding-bottom: 8px; }
+    .ivf-hero-text p { margin-left: auto; margin-right: auto; }
+    .ivf-hero-btns { justify-content: center; }
+    .ivf-hero-visual { justify-content: center; min-height: 0; }
+    .ivf-hero-photo { max-width: 480px; height: 420px; border-radius: 220px 220px 24px 24px; }
+    .ivf-hero-ring { display: none; }
+
+    /* Strip 2x2 on tablet */
+    .ivf-strip { grid-template-columns: repeat(2, 1fr); row-gap: 20px; }
+    .ivf-strip-item:nth-child(3) { border-left: 0; }
+    .ivf-strip-item { justify-content: flex-start; padding-left: 20px; }
+
+    /* About stacks cleanly */
+    .ivf-about-grid { grid-template-columns: 1fr; gap: 36px; }
+    .ivf-about-media { margin-left: 0; }
+    .ivf-about-circle-wrap { max-width: 520px; margin: 0 auto; }
+    .ivf-about-circle { border-radius: 220px 220px 32px 32px; border: 6px solid #f5f1fc; height: 390px; }
+    .ivf-about-text { text-align: center; }
+    .ivf-about-text p { margin-left: auto; margin-right: auto; }
+    .ivf-checks { align-items: center; }
+
+    /* Services 2 columns */
+    .ivf-svc-grid { grid-template-columns: repeat(2, 1fr); }
+
+    /* Stories stack */
+    .ivf-stories-grid { grid-template-columns: 1fr; gap: 32px; }
+    .ivf-stories-text { text-align: center; }
+    .ivf-quote-card { text-align: left; }
+    .ivf-stories-media { justify-content: center; }
+    .ivf-stories-photo { max-width: 520px; height: 350px; }
+
+    /* Why Choose Us stacks */
+    .ivf-why-grid { grid-template-columns: 1fr; gap: 32px; }
+    .ivf-why-media {
+        position: relative;
+        width: 100%;
+        height: 340px;
+        border-radius: 24px;
+        overflow: hidden;
+    }
+    .ivf-why-media::before { display: none; }
+
+    /* Stats 2x2 */
+    .ivf-stats { grid-template-columns: repeat(2, 1fr); row-gap: 26px; }
+    .ivf-stat:nth-child(3) { border-left: 0; }
+
+    /* Testimonials */
+    .ivf-testi-wrap { max-width: 90%; }
+
+    /* CTA stacks */
+    .ivf-cta { grid-template-columns: 1fr; text-align: center; }
+    .ivf-cta-text p { margin-left: auto; margin-right: auto; }
+    .ivf-cta-visual { min-height: 250px; }
+    .ivf-cta-circle { border-radius: 140px 140px 0 0; min-height: 250px; box-shadow: 0 -10px 0 rgba(255,255,255,.14); }
+
+    /* Footer */
+    .ivf-foot-grid { grid-template-columns: 1fr 1fr; row-gap: 32px; }
+    .ivf-foot-brand { grid-column: 1 / -1; border-right: 0; padding-right: 0; text-align: center; }
+    .ivf-foot-logo { justify-content: center; }
+    .ivf-foot-col:nth-child(2) { padding-left: 0; }
+}
+
+@media (max-width: 767px) {
+    .ivf-nav { height: 68px; }
+    .ivf-nav-cta { padding: 8px 14px; font-size: 12px; }
+    .ivf-hero { padding: 20px 0 56px; }
+    .ivf-hero-text h1 { font-size: 34px; letter-spacing: -1px; }
+    .ivf-hero-photo { max-width: 340px; height: 340px; border-radius: 170px 170px 24px 24px; }
+
+    /* Keep 2x2 compact grid for feature strip on mobile */
+    .ivf-strip { grid-template-columns: repeat(2, 1fr); padding: 16px 10px; gap: 14px 8px; }
+    .ivf-strip-item { border-left: 0 !important; padding: 4px 6px; gap: 9px; }
+    .ivf-strip-ico { width: 36px; height: 36px; }
+    .ivf-strip-item span:last-child { font-size: 12px; }
+
+    .ivf-about-circle { height: 310px; border-radius: 155px 155px 24px 24px; }
+    .ivf-trust { right: 8px; bottom: -10px; width: 122px; height: 122px; }
+    .ivf-checks { align-items: flex-start; text-align: left; display: inline-flex; }
+
+    .ivf-svc-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .ivf-svc { padding: 22px 14px 20px; }
+    .ivf-svc h3 { font-size: 15px; }
+    .ivf-svc p { font-size: 12px; }
+
+    .ivf-stories-photo { height: 280px; border-radius: 70px 20px 20px 20px; }
+    .ivf-quote-card { padding: 24px 20px; }
+
+    .ivf-why-media { height: 260px; }
+
+    .ivf-stats { padding: 22px 8px; row-gap: 20px; }
+    .ivf-stat strong { font-size: 24px; }
+
+    .ivf-leaf { width: 95px; opacity: .3; }
+    .ivf-testi-wrap { max-width: 100%; padding-bottom: 58px; }
+    .ivf-testi-card { padding: 26px 20px 22px; }
+    .ivf-arrow { top: auto; bottom: 0; transform: none; width: 42px; height: 42px; }
+    .ivf-arrow.prev { left: calc(50% - 50px); }
+    .ivf-arrow.next { right: calc(50% - 50px); }
+
+    .ivf-cta-text { padding: 32px 20px 24px; }
+    .ivf-cta-text h2 { font-size: 26px; }
+    .ivf-cta-visual, .ivf-cta-circle { min-height: 210px; }
+
+    .ivf-foot-grid { grid-template-columns: 1fr; text-align: center; gap: 26px; }
+    .ivf-foot-col { padding: 0; border-right: 0 !important; }
+    .ivf-contact { justify-content: center; text-align: left; }
+    .ivf-social { justify-content: center; }
+    .ivf-copy-row { flex-direction: column; text-align: center; gap: 6px; }
+
+    .ivf-field-row { grid-template-columns: 1fr; }
+    .ivf-modal-box { padding: 24px 18px; }
+}
+
+@media (max-width: 420px) {
+    .ivf-nav-cta { display: none; }
+    .ivf-svc-grid { grid-template-columns: 1fr; }
+}

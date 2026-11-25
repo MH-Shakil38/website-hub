@@ -1,7 +1,7 @@
 @extends('techcompany::frontend.layouts.master')
 
-@section('title')Home | YourCompany@endsection
-@section('meta_description')YourCompany builds websites, e-commerce, POS, ERP, HRM, hospital and accounting software.@endsection
+@section('title', 'Home | YourCompany')
+@section('meta_description', 'YourCompany builds websites, e-commerce, POS, ERP, HRM, hospital and accounting software.')
 
 @section('content')
 <main>

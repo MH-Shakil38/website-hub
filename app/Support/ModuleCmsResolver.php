@@ -41,6 +41,42 @@ class ModuleCmsResolver
             'slug' => 'developer-portfolio',
             'badge' => 'blue',
         ],
+        'HajjUmrah' => [
+            'label' => 'Hajj & Umrah',
+            'prefix' => 'hajj_',
+            'slug' => 'hajj-umrah',
+            'badge' => 'green',
+        ],
+        'GymFitness' => [
+            'label' => 'Gym & Fitness',
+            'prefix' => 'gym_',
+            'slug' => 'gym-fitness',
+            'badge' => 'green',
+        ],
+        'WonderLearn' => [
+            'label' => 'Kids Learning',
+            'prefix' => 'wl_',
+            'slug' => 'wonder-learn',
+            'badge' => 'blue',
+        ],
+        'EventManagement' => [
+            'label' => 'Event Management',
+            'prefix' => 'em_',
+            'slug' => 'event-management',
+            'badge' => 'green',
+        ],
+        'TechCompany' => [
+            'label' => 'Software Company',
+            'prefix' => 'tech_',
+            'slug' => 'software-company',
+            'badge' => 'blue',
+        ],
+        'IvfCenter' => [
+            'label' => 'IVF Center',
+            'prefix' => 'ivf_',
+            'slug' => 'ivf-center',
+            'badge' => 'pink',
+        ],
     ];
 
     /**
@@ -49,6 +85,17 @@ class ModuleCmsResolver
     public static function currentModule(?Request $request = null): string
     {
         $request = $request ?? request();
+
+        // 0. If a specific SaaS Tenant is connected and user is a Client/Reseller, lock to that tenant's theme module
+        if (app()->bound('tenant')) {
+            /** @var \App\Models\Tenant $tenant */
+            $tenant = app('tenant');
+            $user = auth()->user();
+            if (($user && !$user->isSuperAdmin()) || $request->filled('tenant_id')) {
+                session(['admin_cms_module' => $tenant->theme_module]);
+                return $tenant->theme_module;
+            }
+        }
 
         $activeWebsites = Website::activeModules();
         $activeModNames = $activeWebsites->pluck('module_name')->filter()->values()->all();
@@ -78,6 +125,22 @@ class ModuleCmsResolver
         if ($request->routeIs('admin.portfolio.*')) {
             session(['admin_cms_module' => 'Portfolio']);
             return 'Portfolio';
+        }
+        if ($request->routeIs('admin.hajjumrah.*')) {
+            session(['admin_cms_module' => 'HajjUmrah']);
+            return 'HajjUmrah';
+        }
+        if ($request->routeIs('admin.gymfitness.*')) {
+            session(['admin_cms_module' => 'GymFitness']);
+            return 'GymFitness';
+        }
+        if ($request->routeIs('admin.wonderlearn.*')) {
+            session(['admin_cms_module' => 'WonderLearn']);
+            return 'WonderLearn';
+        }
+        if ($request->routeIs('admin.eventmanagement.*')) {
+            session(['admin_cms_module' => 'EventManagement']);
+            return 'EventManagement';
         }
 
         // 2. If ONLY 1 module is active in Manage Websites, always lock to that 1 module
@@ -161,8 +224,8 @@ class ModuleCmsResolver
     }
 
     /**
-     * Store an uploaded file inside Modules/{Module}/Public/uploads/{folder}/
-     * and return its public URL (/module-media/{Module}/{folder}/{filename}).
+     * Store an uploaded file inside Modules/{Module}/Public/uploads/{t{tenant_id}/}{folder}/
+     * and return its public URL.
      */
     public static function storeModuleFile(UploadedFile $file, string $folder = 'media', ?string $module = null): string
     {

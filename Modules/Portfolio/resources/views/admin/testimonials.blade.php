@@ -48,96 +48,105 @@
                             </div>
                         </td>
                     </tr>
-
-                    <div class="modal fade" id="editTesti{{ $testi->id }}" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <form action="{{ route('admin.portfolio.testimonials.update', $testi->id) }}" method="POST" enctype="multipart/form-data" class="modal-content border-0 shadow" style="border-radius: 16px;">
-                                @csrf
-                                @method('PUT')
-                                <div class="modal-header">
-                                    <h5 class="modal-title fw-bold">Edit Testimonial</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <label class="form-label fw-semibold small">Client Name *</label>
-                                            <input type="text" name="client_name" value="{{ $testi->client_name }}" class="form-control" required>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label fw-semibold small">Designation</label>
-                                            <input type="text" name="designation" value="{{ $testi->designation }}" class="form-control">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label fw-semibold small">Company</label>
-                                            <input type="text" name="company" value="{{ $testi->company }}" class="form-control">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label fw-semibold small">Star Rating (1-5)</label>
-                                            <input type="number" name="rating" value="{{ $testi->rating }}" min="1" max="5" class="form-control">
-                                        </div>
-                                        <div class="col-12">
-                                            <label class="form-label fw-semibold small">Review Text *</label>
-                                            <textarea name="review_text" rows="3" class="form-control" required>{{ $testi->review_text }}</textarea>
-                                        </div>
-                                        <div class="col-12">
-                                            <label class="form-label fw-semibold small">Client Photo</label>
-                                            <input type="file" name="avatar_file" accept="image/*" class="form-control">
-                                        </div>
-                                        <input type="hidden" name="is_active" value="1">
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary fw-bold">Save Changes</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
                 @endforeach
             </tbody>
         </table>
     </div>
 
+    <!-- Edit Testimonial Modals (Outside table) -->
+    @foreach($testimonials as $testi)
+        <div class="modal fade" id="editTesti{{ $testi->id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-white border-0 shadow" style="border-radius: 16px;">
+                    <form action="{{ route('admin.portfolio.testimonials.update', $testi->id) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-header border-bottom px-4 py-3">
+                            <h5 class="modal-title fw-bold">Edit Testimonial</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body p-4">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">Client Name *</label>
+                                    <input type="text" name="client_name" value="{{ $testi->client_name }}" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">Designation</label>
+                                    <input type="text" name="designation" value="{{ $testi->designation }}" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">Company</label>
+                                    <input type="text" name="company" value="{{ $testi->company }}" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">Star Rating (1-5)</label>
+                                    <input type="number" name="rating" value="{{ $testi->rating }}" min="1" max="5" class="form-control">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold small">Review Text *</label>
+                                    <textarea name="review_text" rows="3" class="form-control" required>{{ $testi->review_text }}</textarea>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold small">Client Photo</label>
+                                    <input type="file" name="avatar_file" accept="image/*" class="form-control">
+                                </div>
+                                <input type="hidden" name="is_active" value="1">
+                            </div>
+                        </div>
+                        <div class="modal-footer border-top px-4 py-3">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary fw-bold">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endforeach
+
     <div class="modal fade" id="addTestiModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <form action="{{ route('admin.portfolio.testimonials.store') }}" method="POST" enctype="multipart/form-data" class="modal-content border-0 shadow" style="border-radius: 16px;">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold">Add Client Testimonial</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold small">Client Name *</label>
-                            <input type="text" name="client_name" class="form-control" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold small">Designation</label>
-                            <input type="text" name="designation" class="form-control" placeholder="CEO">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold small">Company</label>
-                            <input type="text" name="company" class="form-control" placeholder="DreamTech">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold small">Rating (1-5)</label>
-                            <input type="number" name="rating" value="5" min="1" max="5" class="form-control">
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label fw-semibold small">Review Text *</label>
-                            <textarea name="review_text" rows="3" class="form-control" required></textarea>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label fw-semibold small">Client Photo</label>
-                            <input type="file" name="avatar_file" accept="image/*" class="form-control">
+            <div class="modal-content bg-white border-0 shadow" style="border-radius: 16px;">
+                <form action="{{ route('admin.portfolio.testimonials.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-header border-bottom px-4 py-3">
+                        <h5 class="modal-title fw-bold">Add Client Testimonial</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Client Name *</label>
+                                <input type="text" name="client_name" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Designation</label>
+                                <input type="text" name="designation" class="form-control" placeholder="CEO">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Company</label>
+                                <input type="text" name="company" class="form-control" placeholder="DreamTech">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Rating (1-5)</label>
+                                <input type="number" name="rating" value="5" min="1" max="5" class="form-control">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold small">Review Text *</label>
+                                <textarea name="review_text" rows="3" class="form-control" required></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold small">Client Photo</label>
+                                <input type="file" name="avatar_file" accept="image/*" class="form-control">
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary fw-bold">Add Testimonial</button>
-                </div>
-            </form>
+                    <div class="modal-footer border-top px-4 py-3">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary fw-bold">Add Testimonial</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 @endsection

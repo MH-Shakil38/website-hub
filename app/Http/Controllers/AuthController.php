@@ -54,7 +54,12 @@ class AuthController extends Controller
         $request->validate(['email' => ['required', 'email']]);
 
         // Always answer the same way so the form can't be used to discover which emails exist.
-        Password::sendResetLink($request->only('email'));
+        Password::sendResetLink($request->only('email'), function (User $user, string $token) {
+            $resetUrl = route('password.reset', ['token' => $token, 'email' => $user->email]);
+            app(\App\Services\SaasMailService::class)->sendPasswordResetLink($user, $resetUrl);
+
+            return Password::RESET_LINK_SENT;
+        });
 
         return back()->with('status', 'If that email address is registered, we have emailed a password reset link to it.');
     }
@@ -104,8 +109,10 @@ class AuthController extends Controller
 
     public function resendVerification(Request $request)
     {
-        // Email verification is not enforced yet; do not mark accounts verified from a user request.
-        return back()->with('status', 'Email verification is not enabled for this installation.');
+        // Only send the mail; never mark the account verified just because the user asked.
+        app(\App\Services\SaasMailService::class)->sendEmailVerificationLink($request->user(), route('admin.dashboard'));
+
+        return back()->with('status', 'A fresh verification link has been sent to your email address.');
     }
 
     public function showTwoFactor()

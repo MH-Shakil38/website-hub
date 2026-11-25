@@ -1,7 +1,7 @@
 @extends('techcompany::frontend.layouts.master')
 
-@section('title')HRM & Payroll | YourCompany@endsection
-@section('meta_description')HR and payroll software with attendance device integration, leave, salary processing, loans and an employee self-service portal.@endsection
+@section('title', '')
+@section('meta_description', '')
 
 @section('content')
 <main>

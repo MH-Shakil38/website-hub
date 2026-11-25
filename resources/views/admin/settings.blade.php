@@ -133,6 +133,32 @@
                     </button>
                 </form>
             </div>
+
+            @if($user && $user->isSuperAdmin())
+                <!-- Super Admin SaaS Email & SMTP Setup Quick Access Card -->
+                <div class="sb-table-card p-4 mt-4" style="border: 1px solid #FFE4EC; background: linear-gradient(180deg, #FFFFFF 0%, #FFF8FA 100%);">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            <span class="badge rounded-pill mb-1" style="background: #FFE4EC; color: #EC134A; font-size: 10.5px; font-weight: 700;">
+                                <i class="bi bi-envelope-at-fill me-1"></i> SUPER ADMIN EMAIL GATEWAY
+                            </span>
+                            <h5 class="fw-bold mb-1" style="color: #0F172A;">SaaS Email &amp; SMTP Setup</h5>
+                            <p class="text-muted small mb-0">
+                                Configure the central sender email (<code>{{ $globalSettings['mail_from_address'] ?? config('mail.from.address') }}</code>) for client registration confirmation links, welcome emails, invoices, and notifications.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mt-3 pt-3 border-top">
+                        <div class="small text-muted">
+                            Driver: <strong class="text-dark">{{ strtoupper($globalSettings['mail_mailer'] ?? config('mail.default', 'smtp')) }}</strong> •
+                            Host: <strong class="text-dark">{{ $globalSettings['mail_host'] ?? config('mail.mailers.smtp.host', 'smtp.gmail.com') }}:{{ $globalSettings['mail_port'] ?? config('mail.mailers.smtp.port', 587) }}</strong>
+                        </div>
+                        <a href="{{ route('admin.email.settings') }}" class="btn btn-sm text-white fw-semibold px-3 py-2" style="background: #EC134A; border-radius: 9px;">
+                            <i class="bi bi-sliders2-vertical me-1"></i> Configure Email &amp; SMTP &rarr;
+                        </a>
+                    </div>
+                </div>
+            @endif
         </div>
 
         <!-- Right Column: My Profile & Change Password -->

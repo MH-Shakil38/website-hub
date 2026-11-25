@@ -48,96 +48,105 @@
                             </div>
                         </td>
                     </tr>
-
-                    <div class="modal fade" id="editBlog{{ $blog->id }}" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-dialog-centered">
-                            <form action="{{ route('admin.portfolio.blogs.update', $blog->id) }}" method="POST" enctype="multipart/form-data" class="modal-content border-0 shadow" style="border-radius: 16px;">
-                                @csrf
-                                @method('PUT')
-                                <div class="modal-header">
-                                    <h5 class="modal-title fw-bold">Edit Article</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row g-3">
-                                        <div class="col-md-8">
-                                            <label class="form-label fw-semibold small">Article Title *</label>
-                                            <input type="text" name="title" value="{{ $blog->title }}" class="form-control" required>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label class="form-label fw-semibold small">Category *</label>
-                                            <input type="text" name="category" value="{{ $blog->category }}" class="form-control" required>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label fw-semibold small">Published Date</label>
-                                            <input type="text" name="published_date" value="{{ $blog->published_date }}" class="form-control">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label fw-semibold small">Featured Image</label>
-                                            <input type="file" name="image_file" accept="image/*" class="form-control">
-                                        </div>
-                                        <div class="col-12">
-                                            <label class="form-label fw-semibold small">Short Summary</label>
-                                            <input type="text" name="short_description" value="{{ $blog->short_description }}" class="form-control">
-                                        </div>
-                                        <div class="col-12">
-                                            <label class="form-label fw-semibold small">Full Article Content (HTML supported)</label>
-                                            <textarea name="content" rows="5" class="form-control">{{ $blog->content }}</textarea>
-                                        </div>
-                                        <input type="hidden" name="is_active" value="1">
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary fw-bold">Update Article</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
                 @endforeach
             </tbody>
         </table>
     </div>
 
+    <!-- Edit Blog Modals (Outside table) -->
+    @foreach($blogs as $blog)
+        <div class="modal fade" id="editBlog{{ $blog->id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content bg-white border-0 shadow" style="border-radius: 16px;">
+                    <form action="{{ route('admin.portfolio.blogs.update', $blog->id) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-header border-bottom px-4 py-3">
+                            <h5 class="modal-title fw-bold">Edit Article</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body p-4">
+                            <div class="row g-3">
+                                <div class="col-md-8">
+                                    <label class="form-label fw-semibold small">Article Title *</label>
+                                    <input type="text" name="title" value="{{ $blog->title }}" class="form-control" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold small">Category *</label>
+                                    <input type="text" name="category" value="{{ $blog->category }}" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">Published Date</label>
+                                    <input type="text" name="published_date" value="{{ $blog->published_date }}" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">Featured Image</label>
+                                    <input type="file" name="image_file" accept="image/*" class="form-control">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold small">Short Summary</label>
+                                    <input type="text" name="short_description" value="{{ $blog->short_description }}" class="form-control">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold small">Full Article Content (HTML supported)</label>
+                                    <textarea name="content" rows="5" class="form-control">{{ $blog->content }}</textarea>
+                                </div>
+                                <input type="hidden" name="is_active" value="1">
+                            </div>
+                        </div>
+                        <div class="modal-footer border-top px-4 py-3">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary fw-bold">Update Article</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endforeach
+
     <div class="modal fade" id="addBlogModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
-            <form action="{{ route('admin.portfolio.blogs.store') }}" method="POST" enctype="multipart/form-data" class="modal-content border-0 shadow" style="border-radius: 16px;">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold">Publish New Blog Article</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row g-3">
-                        <div class="col-md-8">
-                            <label class="form-label fw-semibold small">Article Title *</label>
-                            <input type="text" name="title" class="form-control" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label fw-semibold small">Category *</label>
-                            <input type="text" name="category" class="form-control" value="Laravel" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold small">Published Date</label>
-                            <input type="text" name="published_date" class="form-control" value="{{ date('M d, Y') }}">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold small">Featured Image</label>
-                            <input type="file" name="image_file" accept="image/*" class="form-control">
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label fw-semibold small">Short Summary</label>
-                            <input type="text" name="short_description" class="form-control">
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label fw-semibold small">Full Article Content</label>
-                            <textarea name="content" rows="5" class="form-control"></textarea>
+            <div class="modal-content bg-white border-0 shadow" style="border-radius: 16px;">
+                <form action="{{ route('admin.portfolio.blogs.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-header border-bottom px-4 py-3">
+                        <h5 class="modal-title fw-bold">Publish New Blog Article</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label class="form-label fw-semibold small">Article Title *</label>
+                                <input type="text" name="title" class="form-control" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold small">Category *</label>
+                                <input type="text" name="category" class="form-control" value="Laravel" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Published Date</label>
+                                <input type="text" name="published_date" class="form-control" value="{{ date('M d, Y') }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Featured Image</label>
+                                <input type="file" name="image_file" accept="image/*" class="form-control">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold small">Short Summary</label>
+                                <input type="text" name="short_description" class="form-control">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold small">Full Article Content</label>
+                                <textarea name="content" rows="5" class="form-control"></textarea>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary fw-bold">Publish Article</button>
-                </div>
-            </form>
+                    <div class="modal-footer border-top px-4 py-3">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary fw-bold">Publish Article</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 @endsection

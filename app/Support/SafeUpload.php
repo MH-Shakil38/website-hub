@@ -47,13 +47,21 @@ class SafeUpload
 
         $safeModule = basename($module);
         $safeFolder = preg_replace('/[^A-Za-z0-9_\-]/', '', $folder) ?: 'media';
-        $targetDir = base_path("Modules/{$safeModule}/Public/uploads/{$safeFolder}");
+        // SaaS mode: each tenant gets its own upload folder (uploads/t{id}/{folder}).
+        $tenant = app()->bound('tenant') ? app('tenant') : null;
+        $tenantPrefix = ($tenant && config('app.mode', 'saas') === 'saas') ? "t{$tenant->id}/" : '';
+
+        $targetDir = base_path("Modules/{$safeModule}/Public/uploads/{$tenantPrefix}{$safeFolder}");
         File::ensureDirectoryExists($targetDir);
 
         $baseName = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) ?: 'file';
         $filename = $baseName . '-' . time() . '-' . Str::random(6) . '.' . $ext;
 
         $file->move($targetDir, $filename);
+
+        if ($tenantPrefix !== '') {
+            return url("/module-media/{$safeModule}/t{$tenant->id}/{$safeFolder}/{$filename}");
+        }
 
         return url("/module-media/{$safeModule}/{$safeFolder}/{$filename}");
     }

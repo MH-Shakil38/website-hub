@@ -1,0 +1,24 @@
+{
+    "name": "nwidart/eventmanagement",
+    "description": "Eventify Business Conference & Event Management Industry Module",
+    "authors": [
+        {
+            "name": "SiteBuilder",
+            "email": "admin@sitebuilder.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\EventManagement\\": "",
+            "Modules\\EventManagement\\App\\": "App/",
+            "Modules\\EventManagement\\Database\\Factories\\": "Database/Factories/",
+            "Modules\\EventManagement\\Database\\Seeders\\": "Database/Seeders/"
+        }
+    }
+}

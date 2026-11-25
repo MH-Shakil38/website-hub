@@ -1,7 +1,7 @@
 @extends('techcompany::frontend.layouts.master')
 
-@section('title')POS & Inventory | YourCompany@endsection
-@section('meta_description')Cloud POS for retail shops, super shops, pharmacies and restaurants with barcode billing, multi-branch stock and offline mode.@endsection
+@section('title', '')
+@section('meta_description', '')
 
 @section('content')
 <main>

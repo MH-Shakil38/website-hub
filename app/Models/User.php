@@ -13,8 +13,13 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    protected $connection = 'central';
+
     protected $fillable = [
         'role_id',
+        'type',
+        'reseller_id',
+        'referred_via',
         'name',
         'email',
         'phone',
@@ -44,6 +49,165 @@ class User extends Authenticatable
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function reseller(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'reseller_id');
+    }
+
+    public function resellerProfile(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Reseller::class, 'user_id');
+    }
+
+    public function ensureResellerProfile(): Reseller
+    {
+        return $this->resellerProfile()->firstOrCreate(
+            ['user_id' => $this->id],
+            [
+                'company_name' => $this->name . ' Agency',
+                'phone' => $this->phone,
+                'kyc_document_type' => 'NID',
+                'kyc_status' => 'approved',
+                'billing_mode' => 'reseller_collects',
+                'commission_rate' => 15.00,
+                'site_quota' => 10,
+                'sites_used' => 0,
+                'wallet_balance' => 0.00,
+            ]
+        );
+    }
+
+    public function clients(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(self::class, 'reseller_id');
+    }
+
+    public function tenants(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Tenant::class, 'owner_id');
+    }
+
+    public function subscriptions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Subscription::class, 'user_id');
+    }
+
+    public function invoices(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Invoice::class, 'user_id');
+    }
+
+    /**
+     * Get the user's currently active or trial subscription (with its Plan).
+     */
+    public function activeSubscription(): ?Subscription
+    {
+        return $this->subscriptions()
+            ->with('plan')
+            ->whereIn('status', ['trial', 'active'])
+            ->latest('id')
+            ->first();
+    }
+
+    /**
+     * Get the effective Plan for this user (or null if none).
+     */
+    public function currentPlan(): ?Plan
+    {
+        return $this->activeSubscription()?->plan;
+    }
+
+    /**
+     * Maximum number of websites (tenants) this user is allowed to create under their current plan.
+     */
+    public function allowedSiteLimit(): int
+    {
+        if ($this->isSuperAdmin()) {
+            return 999999;
+        }
+
+        $plan = $this->currentPlan();
+        return $plan ? (int) $plan->site_limit : 1;
+    }
+
+    /**
+     * Check whether the user's current plan allows custom domain connection.
+     */
+    public function canUseCustomDomain(): bool
+    {
+        if ($this->isSuperAdmin() || $this->isReseller()) {
+            return true;
+        }
+
+        $plan = $this->currentPlan();
+        return $plan ? (bool) $plan->custom_domain : true;
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->type === 'super_admin' || ($this->role && $this->role->slug === 'administrator' && empty($this->type));
+    }
+
+    public function isReseller(): bool
+    {
+        return $this->type === 'reseller';
+    }
+
+    public function isClient(): bool
+    {
+        return $this->type === 'client' || !$this->isSuperAdmin() && !$this->isReseller();
+    }
+
+    public function panelType(): string
+    {
+        if ($this->isSuperAdmin()) {
+            return 'super_admin';
+        }
+        if ($this->isReseller()) {
+            return 'reseller';
+        }
+
+        return 'client';
+    }
+
+    /**
+     * Query builder for Tenants accessible to this user depending on role (Super Admin, Reseller, or Client).
+     */
+    public function accessibleTenantsQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        if ($this->isSuperAdmin()) {
+            return Tenant::query();
+        }
+
+        if ($this->isReseller()) {
+            $clientIds = $this->clients()->pluck('id')->all();
+            return Tenant::query()->where(function ($q) use ($clientIds) {
+                $q->where('reseller_id', $this->id)
+                    ->orWhere('owner_id', $this->id);
+                if (!empty($clientIds)) {
+                    $q->orWhereIn('owner_id', $clientIds);
+                }
+            });
+        }
+
+        return Tenant::query()->where('owner_id', $this->id);
+    }
+
+    public function canAccessTenant(Tenant $tenant): bool
+    {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+
+        if ($this->isReseller()) {
+            return (int) $tenant->reseller_id === (int) $this->id
+                || (int) $tenant->owner_id === (int) $this->id
+                || ($tenant->owner && (int) $tenant->owner->reseller_id === (int) $this->id);
+        }
+
+        return (int) $tenant->owner_id === (int) $this->id;
     }
 
     public function hasPermission(string $permissionSlug): bool

@@ -8,9 +8,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const themeIcon = document.getElementById('pfThemeIcon');
 
     /* ----------------------------------------------------------------------
-       1. LIGHT / DARK / WAVE THEME SWITCHER
+       1. 3-MODE THEME SWITCHER (DARK WAVE / LIGHT MODE / FULL DARK)
        ---------------------------------------------------------------------- */
     function applyTheme(mode) {
+        if (mode !== 'light' && mode !== 'full-dark' && mode !== 'dark') {
+            mode = 'dark';
+        }
         htmlEl.setAttribute('data-theme', mode);
         localStorage.setItem('pf_theme_mode', mode);
         if (themeLabel && themeIcon) {
@@ -33,8 +36,33 @@ document.addEventListener('DOMContentLoaded', function () {
     if (themeToggleBtn) {
         themeToggleBtn.addEventListener('click', function () {
             const current = htmlEl.getAttribute('data-theme') || 'dark';
+            // Cycle all 3 modes: Dark Wave (Reference) -> Light Mode -> Full Dark -> Dark Wave
             const next = current === 'dark' ? 'light' : (current === 'light' ? 'full-dark' : 'dark');
             applyTheme(next);
+        });
+    }
+
+    /* ----------------------------------------------------------------------
+       1B. CONTACT MODAL POPUP (LET'S TALK / CONTACT ME)
+       ---------------------------------------------------------------------- */
+    const contactModal = document.getElementById('pfContactModal');
+    const closeContactModalBtn = document.getElementById('pfCloseContactModal');
+    document.querySelectorAll('[data-open-contact-modal="true"]').forEach(function (trigger) {
+        trigger.addEventListener('click', function (e) {
+            if (contactModal) {
+                e.preventDefault();
+                contactModal.style.display = 'flex';
+            }
+        });
+    });
+    if (closeContactModalBtn && contactModal) {
+        closeContactModalBtn.addEventListener('click', function () {
+            contactModal.style.display = 'none';
+        });
+        contactModal.addEventListener('click', function (e) {
+            if (e.target === contactModal) {
+                contactModal.style.display = 'none';
+            }
         });
     }
 

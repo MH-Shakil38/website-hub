@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 abstract class PortfolioBaseModel extends Model
 {
+    protected $connection = 'tenant';
+
     protected string $modulePrefix = 'port_';
 
     public function getTable(): string

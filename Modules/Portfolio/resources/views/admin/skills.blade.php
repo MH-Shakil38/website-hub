@@ -66,65 +66,6 @@
                                 </div>
                             </td>
                         </tr>
-
-                        <div class="modal fade" id="editSkill{{ $sk->id }}" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <form action="{{ route('admin.portfolio.skills.update', $sk->id) }}" method="POST" class="modal-content border-0 shadow" style="border-radius: 16px;">
-                                    @csrf
-                                    @method('PUT')
-                                    <div class="modal-header">
-                                        <h5 class="modal-title fw-bold">Edit Skill: {{ $sk->name }}</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="row g-3">
-                                            <div class="col-md-6">
-                                                <label class="form-label fw-semibold small">Skill Name *</label>
-                                                <input type="text" name="name" value="{{ $sk->name }}" class="form-control" required>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label fw-semibold small">Category *</label>
-                                                <select name="category" class="form-select">
-                                                    @foreach($categories as $c)
-                                                        <option value="{{ $c }}" {{ $sk->category === $c ? 'selected' : '' }}>{{ $c }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label fw-semibold small">Subtitle</label>
-                                                <input type="text" name="subtitle" value="{{ $sk->subtitle }}" class="form-control">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label fw-semibold small">FontAwesome Icon Class</label>
-                                                <input type="text" name="icon_class" value="{{ $sk->icon_class }}" class="form-control">
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label class="form-label fw-semibold small">Icon Hex Color</label>
-                                                <input type="text" name="icon_color" value="{{ $sk->icon_color }}" class="form-control">
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label class="form-label fw-semibold small">Proficiency (%)</label>
-                                                <input type="number" name="level_percent" value="{{ $sk->level_percent }}" min="1" max="100" class="form-control">
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label class="form-label fw-semibold small">Sort Order</label>
-                                                <input type="number" name="sort_order" value="{{ $sk->sort_order }}" class="form-control">
-                                            </div>
-                                            <div class="col-12">
-                                                <div class="form-check">
-                                                    <input type="checkbox" name="is_active" value="1" class="form-check-input" id="skAct{{ $sk->id }}" {{ $sk->is_active ? 'checked' : '' }}>
-                                                    <label class="form-check-label small fw-semibold" for="skAct{{ $sk->id }}">Active</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                                        <button type="submit" class="btn btn-primary fw-bold">Save Changes</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
                     @endforeach
                 </tbody>
             </table>
@@ -132,51 +73,117 @@
         <div class="p-3">{{ $skills->links() }}</div>
     </div>
 
+    <!-- Edit Skill Modals (Outside table) -->
+    @foreach($skills as $sk)
+        <div class="modal fade" id="editSkill{{ $sk->id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-white border-0 shadow" style="border-radius: 16px;">
+                    <form action="{{ route('admin.portfolio.skills.update', $sk->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-header border-bottom px-4 py-3">
+                            <h5 class="modal-title fw-bold">Edit Skill: {{ $sk->name }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body p-4">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">Skill Name *</label>
+                                    <input type="text" name="name" value="{{ $sk->name }}" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">Category *</label>
+                                    <select name="category" class="form-select">
+                                        @foreach($categories as $c)
+                                            <option value="{{ $c }}" {{ $sk->category === $c ? 'selected' : '' }}>{{ $c }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">Subtitle</label>
+                                    <input type="text" name="subtitle" value="{{ $sk->subtitle }}" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">FontAwesome Icon Class</label>
+                                    <input type="text" name="icon_class" value="{{ $sk->icon_class }}" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold small">Icon Hex Color</label>
+                                    <input type="text" name="icon_color" value="{{ $sk->icon_color }}" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold small">Proficiency (%)</label>
+                                    <input type="number" name="level_percent" value="{{ $sk->level_percent }}" min="1" max="100" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold small">Sort Order</label>
+                                    <input type="number" name="sort_order" value="{{ $sk->sort_order }}" class="form-control">
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input type="checkbox" name="is_active" value="1" class="form-check-input" id="skAct{{ $sk->id }}" {{ $sk->is_active ? 'checked' : '' }}>
+                                        <label class="form-check-label small fw-semibold" for="skAct{{ $sk->id }}">Active</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-top px-4 py-3">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary fw-bold">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endforeach
+
     <div class="modal fade" id="addSkillModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <form action="{{ route('admin.portfolio.skills.store') }}" method="POST" class="modal-content border-0 shadow" style="border-radius: 16px;">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold">Add New Skill</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold small">Skill Name *</label>
-                            <input type="text" name="name" class="form-control" placeholder="e.g. TypeScript" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold small">Category *</label>
-                            <select name="category" class="form-select">
-                                @foreach($categories as $c)
-                                    <option value="{{ $c }}">{{ $c }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold small">Subtitle</label>
-                            <input type="text" name="subtitle" class="form-control" placeholder="e.g. Type-Safe JS">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold small">FontAwesome Icon Class</label>
-                            <input type="text" name="icon_class" class="form-control" value="fa-solid fa-code">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold small">Icon Color</label>
-                            <input type="text" name="icon_color" class="form-control" value="#078BFF">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold small">Proficiency (%)</label>
-                            <input type="number" name="level_percent" class="form-control" value="95" min="1" max="100">
+            <div class="modal-content bg-white border-0 shadow" style="border-radius: 16px;">
+                <form action="{{ route('admin.portfolio.skills.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-header border-bottom px-4 py-3">
+                        <h5 class="modal-title fw-bold">Add New Skill</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Skill Name *</label>
+                                <input type="text" name="name" class="form-control" placeholder="e.g. TypeScript" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Category *</label>
+                                <select name="category" class="form-select">
+                                    @foreach($categories as $c)
+                                        <option value="{{ $c }}">{{ $c }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Subtitle</label>
+                                <input type="text" name="subtitle" class="form-control" placeholder="e.g. Type-Safe JS">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">FontAwesome Icon Class</label>
+                                <input type="text" name="icon_class" class="form-control" value="fa-solid fa-code">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Icon Color</label>
+                                <input type="text" name="icon_color" class="form-control" value="#078BFF">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Proficiency (%)</label>
+                                <input type="number" name="level_percent" class="form-control" value="95" min="1" max="100">
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary fw-bold">Add Skill</button>
-                </div>
-            </form>
+                    <div class="modal-footer border-top px-4 py-3">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary fw-bold">Add Skill</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 @endsection

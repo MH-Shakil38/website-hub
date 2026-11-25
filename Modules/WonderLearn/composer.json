@@ -1,0 +1,24 @@
+{
+    "name": "nwidart/wonderlearn",
+    "description": "WonderLearn Kids Learning Industry Module",
+    "authors": [
+        {
+            "name": "SiteBuilder",
+            "email": "admin@sitebuilder.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\WonderLearn\\": "",
+            "Modules\\WonderLearn\\App\\": "App/",
+            "Modules\\WonderLearn\\Database\\Factories\\": "Database/Factories/",
+            "Modules\\WonderLearn\\Database\\Seeders\\": "Database/Seeders/"
+        }
+    }
+}

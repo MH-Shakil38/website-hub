@@ -19,13 +19,30 @@ class ModuleStorageService
 
     /**
      * Clear all dynamically uploaded files inside Modules/{Module}/Public/uploads/
-     * when resetting a module to its original default state.
+     * when resetting a module or a specific tenant to its original default state.
      */
-    public function clearModuleUploads(string $module): void
+    public function clearModuleUploads(string $module, ?int $tenantId = null): void
     {
+        if ($tenantId === null && app()->bound('tenant') && config('app.mode', 'saas') === 'saas') {
+            $tenantId = app('tenant')->id;
+        }
+
+        if ($tenantId !== null) {
+            $tenantDir = base_path("Modules/{$module}/Public/uploads/t{$tenantId}");
+            if (File::isDirectory($tenantDir)) {
+                File::deleteDirectory($tenantDir);
+                File::ensureDirectoryExists($tenantDir);
+            }
+            return;
+        }
+
         $uploadsDir = base_path("Modules/{$module}/Public/uploads");
         if (File::isDirectory($uploadsDir)) {
             foreach (File::directories($uploadsDir) as $subDir) {
+                $base = basename($subDir);
+                if ($base === 'theme' || preg_match('/^t\d+$/', $base)) {
+                    continue;
+                }
                 File::deleteDirectory($subDir);
             }
             foreach (File::files($uploadsDir) as $file) {

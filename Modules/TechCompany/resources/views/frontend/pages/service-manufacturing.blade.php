@@ -1,7 +1,7 @@
 @extends('techcompany::frontend.layouts.master')
 
-@section('title')Manufacturing ERP | YourCompany@endsection
-@section('meta_description')ERP for garments, food, plastic and other factories — BOM, production planning, raw material, QC and costing in one system.@endsection
+@section('title', '')
+@section('meta_description', '')
 
 @section('content')
 <main>

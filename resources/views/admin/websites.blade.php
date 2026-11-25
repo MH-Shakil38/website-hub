@@ -209,6 +209,9 @@
                                 <option value="Pharmacy">Pharmacy</option>
                                 <option value="Fertility Clinic">Fertility Clinic</option>
                                 <option value="Developer Portfolio">Developer Portfolio</option>
+                                <option value="Hajj & Umrah">Hajj & Umrah</option>
+                                <option value="Gym & Fitness">Gym &amp; Fitness</option>
+                                <option value="Kids Learning">Kids Learning (WonderLearn)</option>
                                 <option value="Booking">Booking</option>
                                 <option value="Software">Software</option>
                             </select>

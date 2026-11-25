@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
+    protected $connection = 'central';
+
     protected $table = 'core_transactions';
 
     protected $fillable = [

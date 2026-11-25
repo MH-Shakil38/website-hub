@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Role extends Model
 {
+    protected $connection = 'central';
+
     protected $fillable = [
         'name',
         'slug',

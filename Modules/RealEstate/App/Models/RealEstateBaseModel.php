@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 abstract class RealEstateBaseModel extends Model
 {
+    protected $connection = 'tenant';
+
     protected string $modulePrefix = 're_';
 
     public function getTable(): string

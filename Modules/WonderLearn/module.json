@@ -1,0 +1,11 @@
+{
+    "name": "WonderLearn",
+    "alias": "wonderlearn",
+    "description": "WonderLearn Kids Learning Module — Explore by Topic, Magical Stories, Play & Learn Interactive Games, Featured Adventures, and Parent Testimonials.",
+    "keywords": ["kids", "learning", "education", "stories", "games", "wonderlearn"],
+    "priority": 0,
+    "providers": [
+        "Modules\\WonderLearn\\App\\Providers\\WonderLearnServiceProvider"
+    ],
+    "files": []
+}

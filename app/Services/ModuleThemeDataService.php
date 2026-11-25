@@ -24,7 +24,7 @@ class ModuleThemeDataService
         try {
             $meta = ModuleCmsResolver::moduleMeta($module);
             $prefix = $meta['prefix'];
-            if (!Schema::hasTable($prefix . 'settings')) {
+            if (!Schema::connection('tenant')->hasTable($prefix . 'settings')) {
                 return [];
             }
             $settingClass = ModuleCmsResolver::settingModel($module);
@@ -71,7 +71,7 @@ class ModuleThemeDataService
             $meta = ModuleCmsResolver::moduleMeta($module);
             $prefix = $meta['prefix'];
 
-            if (!Schema::hasTable($prefix . 'settings')) {
+            if (!Schema::connection('tenant')->hasTable($prefix . 'settings')) {
                 return $data;
             }
 
@@ -108,7 +108,7 @@ class ModuleThemeDataService
 
             // 3. Featured Projects from {prefix}projects (if user added custom projects)
             $projectModelClass = "Modules\\{$module}\\App\\Models\\Project";
-            if (class_exists($projectModelClass) && Schema::hasTable($prefix . 'projects')) {
+            if (class_exists($projectModelClass) && Schema::connection('tenant')->hasTable($prefix . 'projects')) {
                 $dbProjects = $projectModelClass::where('is_active', true)->orderBy('id')->get();
                 if ($dbProjects->isNotEmpty()) {
                     $customProjItems = [];
@@ -125,7 +125,7 @@ class ModuleThemeDataService
             }
 
             // 4. Custom Photo Gallery items from {prefix}media (if user added custom gallery photos)
-            if (!empty($savedSettings['use_custom_gallery']) && Schema::hasTable($prefix . 'media')) {
+            if (!empty($savedSettings['use_custom_gallery']) && Schema::connection('tenant')->hasTable($prefix . 'media')) {
                 $mediaClass = ModuleCmsResolver::mediaModel($module);
                 $dbMedia = $mediaClass::latest('id')->get();
                 if ($dbMedia->isNotEmpty()) {
@@ -145,7 +145,7 @@ class ModuleThemeDataService
 
             // 5. Video Gallery items from {prefix}videos (if user added custom videos)
             $videoModelClass = "Modules\\{$module}\\App\\Models\\ModuleVideo";
-            if (class_exists($videoModelClass) && Schema::hasTable($prefix . 'videos')) {
+            if (class_exists($videoModelClass) && Schema::connection('tenant')->hasTable($prefix . 'videos')) {
                 $dbVideos = $videoModelClass::where('is_active', true)->orderBy('sort_order')->latest('id')->get();
                 if ($dbVideos->isNotEmpty()) {
                     $customVideos = [];

@@ -160,9 +160,13 @@
                         <label class="form-label fw-semibold small">OR Option B: Upload MP4 Video File</label>
                         <input type="file" name="video_file" accept="video/mp4,video/webm" class="form-control" style="height: 44px; padding-top: 9px; border-radius: 10px;">
                     </div>
-                    <div class="mb-0">
+                    <div class="mb-3">
                         <label class="form-label fw-semibold small">Cover Thumbnail Image (Optional — uses default if left blank)</label>
                         <input type="file" name="thumbnail_file" accept="image/*" class="form-control" style="height: 44px; padding-top: 9px; border-radius: 10px;">
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label fw-semibold small">Video Description / Guide Details</label>
+                        <textarea name="description" rows="3" class="form-control sb-rich-editor sb-rte-compact" placeholder="Write video description or step-by-step instructions..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer border-top px-4 py-3">

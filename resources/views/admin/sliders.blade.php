@@ -134,8 +134,8 @@
                         <input type="text" name="title" class="form-control" placeholder="e.g. Bespoke Luxury Interior Architecture" style="height: 44px; border-radius: 10px;" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold small">Subtitle</label>
-                        <input type="text" name="subtitle" class="form-control" placeholder="Short tagline for the hero banner" style="height: 44px; border-radius: 10px;">
+                        <label class="form-label fw-semibold small">Subtitle / Description</label>
+                        <textarea name="subtitle" rows="2" class="form-control sb-rich-editor sb-rte-compact" placeholder="Short tagline or description for the hero banner"></textarea>
                     </div>
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
