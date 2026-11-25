@@ -56,12 +56,12 @@
             @csrf
 
             <div class="otp-inputs">
-                <input type="text" name="digits[]" maxlength="1" class="otp-box active-box" value="2" oninput="moveToNext(this, 0)">
-                <input type="text" name="digits[]" maxlength="1" class="otp-box" value="7" oninput="moveToNext(this, 1)">
-                <input type="text" name="digits[]" maxlength="1" class="otp-box" value="4" oninput="moveToNext(this, 2)">
-                <input type="text" name="digits[]" maxlength="1" class="otp-box" value="9" oninput="moveToNext(this, 3)">
-                <input type="text" name="digits[]" maxlength="1" class="otp-box" value="1" oninput="moveToNext(this, 4)">
-                <input type="text" name="digits[]" maxlength="1" class="otp-box" value="6" oninput="moveToNext(this, 5)">
+                <input type="text" name="digits[]" maxlength="1" class="otp-box active-box" oninput="moveToNext(this, 0)">
+                <input type="text" name="digits[]" maxlength="1" class="otp-box" oninput="moveToNext(this, 1)">
+                <input type="text" name="digits[]" maxlength="1" class="otp-box" oninput="moveToNext(this, 2)">
+                <input type="text" name="digits[]" maxlength="1" class="otp-box" oninput="moveToNext(this, 3)">
+                <input type="text" name="digits[]" maxlength="1" class="otp-box" oninput="moveToNext(this, 4)">
+                <input type="text" name="digits[]" maxlength="1" class="otp-box" oninput="moveToNext(this, 5)">
             </div>
 
             <label class="checkbox-row">
@@ -198,7 +198,7 @@
 
             <!-- OTP Display Box -->
             <rect x="16" y="132" width="110" height="40" rx="10" fill="#FFF0F4"/>
-            <text x="71" y="158" text-anchor="middle" font-family="Inter, sans-serif" font-size="20" font-weight="800" letter-spacing="2" fill="#0F172A">274916</text>
+            <text x="71" y="158" text-anchor="middle" font-family="Inter, sans-serif" font-size="20" font-weight="800" letter-spacing="2" fill="#0F172A">••••••</text>
 
             <!-- Timer Bar -->
             <rect x="24" y="186" width="94" height="5" rx="2.5" fill="#F1F5F9"/>

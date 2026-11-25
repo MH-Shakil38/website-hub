@@ -6,9 +6,10 @@ use App\Models\ActivityLog;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password as PasswordRule;
 
 class AuthController extends Controller
 {
@@ -39,7 +40,7 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'These credentials do not match our records. (Default: you@example.com / password)',
+            'email' => 'These credentials do not match our records.',
         ])->onlyInput('email');
     }
 
@@ -52,55 +53,50 @@ class AuthController extends Controller
     {
         $request->validate(['email' => ['required', 'email']]);
 
-        $user = User::where('email', $request->email)->first();
-        if (!$user) {
-            return back()->withErrors(['email' => 'We could not find a user with that email address.'])->onlyInput('email');
-        }
+        // Always answer the same way so the form can't be used to discover which emails exist.
+        Password::sendResetLink($request->only('email'), function (User $user, string $token) {
+            $resetUrl = route('password.reset', ['token' => $token, 'email' => $user->email]);
+            app(\App\Services\SaasMailService::class)->sendPasswordResetLink($user, $resetUrl);
 
-        $token = Str::random(64);
-        DB::table('password_reset_tokens')->updateOrInsert(
-            ['email' => $user->email],
-            ['token' => Hash::make($token), 'created_at' => now()]
-        );
+            return Password::RESET_LINK_SENT;
+        });
 
-        $resetUrl = route('password.reset', ['token' => $token, 'email' => $user->email]);
-        app(\App\Services\SaasMailService::class)->sendPasswordResetLink($user, $resetUrl);
-
-        return back()->with('status', 'We have emailed your password reset link! You can also reset directly at: ' . $resetUrl);
+        return back()->with('status', 'If that email address is registered, we have emailed a password reset link to it.');
     }
 
-    public function showResetPassword(Request $request, ?string $token = null)
+    public function showResetPassword(Request $request, string $token)
     {
         return view('auth.reset-password', [
-            'email' => $request->query('email', auth()->user()?->email ?? 'you@example.com'),
-            'token' => $token ?? 'demo-token',
+            'email' => (string) $request->query('email', ''),
+            'token' => $token,
         ]);
     }
 
     public function resetPassword(Request $request)
     {
-        $request->validate([
-            'email' => ['nullable', 'email'],
-            'password' => ['required', 'min:8', 'confirmed'],
+        $validated = $request->validate([
+            'token' => ['required', 'string'],
+            'email' => ['required', 'email'],
+            'password' => ['required', 'confirmed', PasswordRule::min(8)->letters()->numbers()],
         ]);
 
-        $email = $request->input('email') ?: (auth()->user()?->email ?? 'you@example.com');
-        $user = User::where('email', $email)->first() ?? User::first();
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function (User $user, string $password) {
+                $user->forceFill(['password' => $password, 'remember_token' => Str::random(60)])->save();
 
-        if ($user) {
-            $user->update([
-                'password' => Hash::make($request->password),
-            ]);
+                ActivityLog::record(
+                    'Password reset completed',
+                    $user->email,
+                    'bi-shield-lock-fill',
+                    '#FFE4EC',
+                    '#EC134A'
+                );
+            }
+        );
 
-            DB::table('password_reset_tokens')->where('email', $user->email)->delete();
-
-            ActivityLog::record(
-                'Password reset completed',
-                $user->email,
-                'bi-shield-lock-fill',
-                '#FFE4EC',
-                '#EC134A'
-            );
+        if ($status !== Password::PASSWORD_RESET) {
+            return back()->withErrors(['email' => 'This password reset link is invalid or has expired.'])->onlyInput('email');
         }
 
         return redirect()->route('login')->with('status', 'Your password has been reset successfully! Please sign in.');
@@ -113,13 +109,8 @@ class AuthController extends Controller
 
     public function resendVerification(Request $request)
     {
-        $user = $request->user() ?? User::first();
-        if ($user) {
-            if (!$user->hasVerifiedEmail()) {
-                $user->update(['email_verified_at' => now()]);
-            }
-            app(\App\Services\SaasMailService::class)->sendEmailVerificationLink($user, route('admin.dashboard'));
-        }
+        // Only send the mail; never mark the account verified just because the user asked.
+        app(\App\Services\SaasMailService::class)->sendEmailVerificationLink($request->user(), route('admin.dashboard'));
 
         return back()->with('status', 'A fresh verification link has been sent to your email address.');
     }
@@ -132,13 +123,12 @@ class AuthController extends Controller
     public function verifyTwoFactor(Request $request)
     {
         $digits = $request->input('digits', []);
-        $enteredCode = is_array($digits) ? implode('', $digits) : (string) $request->input('code', '274916');
+        $entered = is_array($digits) ? implode('', $digits) : (string) $request->input('code', '');
+        $expected = (string) ($request->user()->two_factor_code ?? '');
 
-        $user = auth()->user() ?? User::first();
-        $expectedCode = $user?->two_factor_code ?: '274916';
-
-        if ($enteredCode !== '' && $enteredCode !== $expectedCode && $enteredCode !== '274916') {
-            return back()->withErrors(['code' => 'Invalid 6-digit verification code. Default code is 274916.']);
+        // No code configured => nothing to verify against => never succeed.
+        if ($expected === '' || !hash_equals($expected, $entered)) {
+            return back()->withErrors(['code' => 'Invalid verification code.']);
         }
 
         $request->session()->put('two_factor_verified', true);
@@ -157,9 +147,7 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        $user = auth()->user() ?? User::first();
-
-        if ($user && !Hash::check($request->password, $user->password)) {
+        if (!Hash::check($request->password, $request->user()->password)) {
             return back()->withErrors([
                 'password' => 'The provided password does not match your current password.',
             ]);

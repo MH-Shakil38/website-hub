@@ -35,12 +35,22 @@ class ModuleCmsController extends Controller
             $safeFile = basename($filename);
             $path = base_path("Modules/{$module}/Public/uploads/{$safeFolder}/{$safeFile}");
         }
+        $mime = \App\Support\SafeUpload::mimeForFilename($safeFile);
 
-        if (!File::exists($path)) {
+        // Only serve known-safe file types, always with a fixed Content-Type (never sniffed / never HTML).
+        if ($mime === null || !File::isFile($path)) {
             abort(404);
         }
 
-        return response()->file($path);
+        $headers = [
+            'Content-Type' => $mime,
+            'X-Content-Type-Options' => 'nosniff',
+        ];
+        if ($mime !== 'application/pdf') {
+            $headers['Content-Security-Policy'] = "default-src 'none'; style-src 'unsafe-inline'; sandbox";
+        }
+
+        return response()->file($path, $headers);
     }
 
     // =========================================================================
@@ -597,7 +607,7 @@ class ModuleCmsController extends Controller
         $modMeta = ModuleCmsResolver::moduleMeta($modKey);
         $settingClass = ModuleCmsResolver::settingModel($modKey);
 
-        $user = Auth::user() ?? User::with('role')->first();
+        $user = Auth::user();
         $roles = Role::all();
         $globalSettings = Setting::pluck('value', 'key')->toArray();
         $moduleSettings = $settingClass::pluck('value', 'key')->toArray();
@@ -623,6 +633,8 @@ class ModuleCmsController extends Controller
             'hero_heading',
             'hero_subheading',
         ];
+
+        $request->validate(['module_logo' => 'nullable|image|max:4096']);
 
         foreach ($fields as $field) {
             if ($request->has($field)) {

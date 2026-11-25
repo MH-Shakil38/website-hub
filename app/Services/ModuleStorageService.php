@@ -14,23 +14,7 @@ class ModuleStorageService
      */
     public function store(UploadedFile $file, string $folder = 'media', string $module = 'Interior'): string
     {
-        $tenant = app()->bound('tenant') ? app('tenant') : null;
-        $tenantPrefix = ($tenant && config('app.mode', 'saas') === 'saas') ? "t{$tenant->id}/" : '';
-
-        $targetDir = base_path("Modules/{$module}/Public/uploads/{$tenantPrefix}{$folder}");
-        File::ensureDirectoryExists($targetDir);
-
-        $ext = $file->getClientOriginalExtension() ?: 'jpg';
-        $baseName = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) ?: 'file';
-        $filename = $baseName . '-' . time() . '-' . Str::random(4) . '.' . $ext;
-
-        $file->move($targetDir, $filename);
-
-        if ($tenantPrefix !== '') {
-            return url("/module-media/{$module}/t{$tenant->id}/{$folder}/{$filename}");
-        }
-
-        return url("/module-media/{$module}/{$folder}/{$filename}");
+        return \App\Support\SafeUpload::store($file, $folder, $module);
     }
 
     /**

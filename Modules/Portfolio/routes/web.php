@@ -28,7 +28,7 @@ Route::post('/portfolio/newsletter-submit', [HomeController::class, 'submitNewsl
 // GLOBAL ADMIN PANEL ROUTES FOR PORTFOLIO MODULE
 Route::prefix('admin/portfolio')
     ->name('admin.portfolio.')
-    ->middleware(['web', EnsureModuleIsActive::class . ':Portfolio'])
+    ->middleware(['web', \App\Http\Middleware\EnsureDashboardAccess::class, EnsureModuleIsActive::class . ':Portfolio'])
     ->group(function () {
         // Visual Section & Theme Settings (Hero, About, Process, Stats, General/SEO/Theme Mode)
         Route::get('settings', [PortfolioAdminController::class, 'settings'])->name('settings');

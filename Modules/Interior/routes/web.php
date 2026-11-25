@@ -7,7 +7,7 @@ use Modules\Interior\App\Http\Controllers\Admin\ProjectController;
 // GLOBAL ADMIN PANEL ROUTES FOR INTERIOR MODULE (Guarded by EnsureModuleIsActive)
 Route::prefix('admin/interior')
     ->name('admin.interior.')
-    ->middleware(['web', EnsureModuleIsActive::class . ':Interior'])
+    ->middleware(['web', \App\Http\Middleware\EnsureDashboardAccess::class, EnsureModuleIsActive::class . ':Interior'])
     ->group(function () {
         Route::resource('projects', ProjectController::class);
         Route::get('packages', [ProjectController::class, 'packages'])->name('packages.index');

@@ -47,18 +47,23 @@ Route::get('/{slug}/{subpage?}', [FrontendHubController::class, 'moduleRoute'])
     ->name('hub.module');
 
 // Global Authentication Routes
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
-Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
-Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
-Route::get('/reset-password/{token?}', [AuthController::class, 'showResetPassword'])->name('password.reset');
-Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
-Route::get('/verify-email', [AuthController::class, 'showVerifyEmail'])->name('verification.notice');
-Route::post('/email/verification-notification', [AuthController::class, 'resendVerification'])->name('verification.send');
-Route::get('/two-factor', [AuthController::class, 'showTwoFactor'])->name('two-factor.login');
-Route::post('/two-factor', [AuthController::class, 'verifyTwoFactor'])->name('two-factor.verify');
-Route::get('/confirm-password', [AuthController::class, 'showConfirmPassword'])->name('password.confirm');
-Route::post('/confirm-password', [AuthController::class, 'confirmPassword'])->name('password.confirm.submit');
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1')->name('login.submit');
+    Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
+    Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->middleware('throttle:5,1')->name('password.email');
+    Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
+    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware('throttle:5,1')->name('password.update');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/verify-email', [AuthController::class, 'showVerifyEmail'])->name('verification.notice');
+    Route::post('/email/verification-notification', [AuthController::class, 'resendVerification'])->middleware('throttle:3,1')->name('verification.send');
+    Route::get('/two-factor', [AuthController::class, 'showTwoFactor'])->name('two-factor.login');
+    Route::post('/two-factor', [AuthController::class, 'verifyTwoFactor'])->middleware('throttle:5,1')->name('two-factor.verify');
+    Route::get('/confirm-password', [AuthController::class, 'showConfirmPassword'])->name('password.confirm');
+    Route::post('/confirm-password', [AuthController::class, 'confirmPassword'])->middleware('throttle:5,1')->name('password.confirm.submit');
+});
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/logout', [AuthController::class, 'logout']);
 
@@ -134,12 +139,15 @@ Route::prefix('admin')->name('admin.')->middleware([EnsureDashboardAccess::class
     Route::post('/impersonate/leave', [SaasManagementController::class, 'leaveImpersonation'])->name('impersonate.leave');
     Route::post('/impersonate/{targetUser}', [SaasManagementController::class, 'impersonate'])->name('impersonate.start');
 
-    // Websites / Themes Management (Super Admin only)
-    Route::get('/websites', [GlobalAdminController::class, 'websites'])->name('websites');
-    Route::post('/websites', [GlobalAdminController::class, 'storeWebsite'])->name('websites.store');
-    Route::post('/websites/{website}/toggle', [GlobalAdminController::class, 'toggleWebsite'])->name('websites.toggle');
-    Route::post('/websites/{website}/reset', [GlobalAdminController::class, 'resetWebsite'])->name('websites.reset');
-    Route::delete('/websites/{website}', [GlobalAdminController::class, 'deleteWebsite'])->name('websites.destroy');
+    Route::middleware([EnsureDashboardAccess::class . ':super_admin'])->group(function () {
+        // Websites / Themes Management (Super Admin only)
+        Route::get('/websites', [GlobalAdminController::class, 'websites'])->name('websites');
+        Route::post('/websites', [GlobalAdminController::class, 'storeWebsite'])->name('websites.store');
+        Route::post('/websites/{website}/toggle', [GlobalAdminController::class, 'toggleWebsite'])->name('websites.toggle');
+        Route::post('/websites/{website}/reset', [GlobalAdminController::class, 'resetWebsite'])->name('websites.reset');
+        Route::delete('/websites/{website}', [GlobalAdminController::class, 'deleteWebsite'])->name('websites.destroy');
+
+    });
 
     // 1. Standalone Per-Module Pages Management (int_pages / re_pages / pharma_pages)
     Route::get('/pages', [ModuleCmsController::class, 'pages'])->name('pages');
@@ -173,20 +181,23 @@ Route::prefix('admin')->name('admin.')->middleware([EnsureDashboardAccess::class
     Route::delete('/themes/{id}', [ModuleCmsController::class, 'deleteTheme'])->name('themes.destroy');
 
     // 6. Standalone Per-Module Users + Roles & Permissions (int_users / re_users / pharma_users)
-    Route::get('/users', [ModuleCmsController::class, 'users'])->name('users');
-    Route::post('/users', [ModuleCmsController::class, 'storeModuleUser'])->name('users.store');
-    Route::put('/users/{id}', [ModuleCmsController::class, 'updateModuleUser'])->name('users.update');
-    Route::delete('/users/{id}', [ModuleCmsController::class, 'deleteModuleUser'])->name('users.destroy');
-    Route::post('/roles', [GlobalAdminController::class, 'storeRole'])->name('roles.store');
-    Route::put('/roles/{role}/permissions', [GlobalAdminController::class, 'updateRolePermissions'])->name('roles.permissions');
+    Route::middleware([EnsureDashboardAccess::class . ':super_admin'])->group(function () {
+        Route::get('/users', [ModuleCmsController::class, 'users'])->name('users');
+        Route::post('/users', [ModuleCmsController::class, 'storeModuleUser'])->name('users.store');
+        Route::put('/users/{id}', [ModuleCmsController::class, 'updateModuleUser'])->name('users.update');
+        Route::delete('/users/{id}', [ModuleCmsController::class, 'deleteModuleUser'])->name('users.destroy');
+        Route::post('/roles', [GlobalAdminController::class, 'storeRole'])->name('roles.store');
+        Route::put('/roles/{role}/permissions', [GlobalAdminController::class, 'updateRolePermissions'])->name('roles.permissions');
 
-    // Transactions & Filter Table (Screenshot 8)
-    Route::get('/transactions', [GlobalAdminController::class, 'transactions'])->name('transactions');
+        // Transactions & Filter Table (Screenshot 8)
+        Route::get('/transactions', [GlobalAdminController::class, 'transactions'])->name('transactions');
+
+    });
 
     // 7. Standalone Per-Module Settings + Profile & Password Change (int_settings / re_settings / pharma_settings)
     Route::get('/settings', [ModuleCmsController::class, 'settings'])->name('settings');
     Route::post('/settings/module', [ModuleCmsController::class, 'updateModuleSettings'])->name('settings.module');
     Route::post('/settings/profile', [GlobalAdminController::class, 'updateProfile'])->name('settings.profile');
     Route::post('/settings/password', [GlobalAdminController::class, 'updatePassword'])->name('settings.password');
-    Route::post('/settings/global', [GlobalAdminController::class, 'updateGlobalSettings'])->name('settings.global');
+    Route::post('/settings/global', [GlobalAdminController::class, 'updateGlobalSettings'])->middleware(EnsureDashboardAccess::class . ':super_admin')->name('settings.global');
 });

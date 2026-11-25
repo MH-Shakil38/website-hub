@@ -7,7 +7,7 @@ use Modules\RealEstate\App\Http\Controllers\Admin\PropertyController;
 // GLOBAL ADMIN PANEL ROUTES FOR REALESTATE MODULE (Guarded by EnsureModuleIsActive)
 Route::prefix('admin/realestate')
     ->name('admin.realestate.')
-    ->middleware(['web', EnsureModuleIsActive::class . ':RealEstate'])
+    ->middleware(['web', \App\Http\Middleware\EnsureDashboardAccess::class, EnsureModuleIsActive::class . ':RealEstate'])
     ->group(function () {
         Route::resource('properties', PropertyController::class);
         Route::get('inquiries', [PropertyController::class, 'inquiries'])->name('inquiries.index');

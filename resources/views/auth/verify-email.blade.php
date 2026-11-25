@@ -42,7 +42,7 @@
 
             <div style="display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: #FFF5F7; border: 1px solid #FFE4EC; border-radius: 10px; padding: clamp(7px, 1.2vh, 11px) 24px; margin-bottom: clamp(10px, 1.6vh, 16px); min-width: 250px;">
                 <i class="bi bi-envelope" style="color: #EC134A; font-size: 15px;"></i>
-                <strong style="font-size: 14px; color: #0F172A;">{{ auth()->user()->email ?? 'you@example.com' }}</strong>
+                <strong style="font-size: 14px; color: #0F172A;">{{ auth()->user()->email }}</strong>
             </div>
 
             <p style="font-size: 12.5px; color: #64748B; line-height: 1.48; max-width: 390px; margin: 0 auto clamp(12px, 2vh, 22px);">

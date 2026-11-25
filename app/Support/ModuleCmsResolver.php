@@ -230,20 +230,7 @@ class ModuleCmsResolver
     public static function storeModuleFile(UploadedFile $file, string $folder = 'media', ?string $module = null): string
     {
         $mod = $module ?? self::currentModule();
-        $tenant = app()->bound('tenant') ? app('tenant') : null;
-        $tenantPrefix = ($tenant && config('app.mode', 'saas') === 'saas') ? "t{$tenant->id}/" : '';
 
-        $targetDir = base_path("Modules/{$mod}/Public/uploads/{$tenantPrefix}{$folder}");
-        File::ensureDirectoryExists($targetDir);
-
-        $ext = $file->getClientOriginalExtension() ?: 'jpg';
-        $filename = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '-' . time() . '-' . Str::random(4) . '.' . $ext;
-        $file->move($targetDir, $filename);
-
-        if ($tenantPrefix !== '') {
-            return url("/module-media/{$mod}/t{$tenant->id}/{$folder}/{$filename}");
-        }
-
-        return url("/module-media/{$mod}/{$folder}/{$filename}");
+        return SafeUpload::store($file, $folder, $mod);
     }
 }

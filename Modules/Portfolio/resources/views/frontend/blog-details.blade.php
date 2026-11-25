@@ -25,7 +25,7 @@
             </div>
 
             <div class="pf-rich-content" style="font-size: 15.5px; line-height: 1.85; color: var(--pf-text-dark);">
-                {!! $blog->content ?: '<p>' . e($blog->short_description) . '</p>' !!}
+                {!! \App\Support\HtmlSanitizer::clean($blog->content) ?: '<p>' . e($blog->short_description) . '</p>' !!}
             </div>
 
             <!-- Social Share Bar -->

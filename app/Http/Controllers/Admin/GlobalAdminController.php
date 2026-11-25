@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class GlobalAdminController extends Controller
 {
@@ -306,7 +307,6 @@ class GlobalAdminController extends Controller
 
         $validated['password'] = Hash::make($validated['password']);
         $validated['email_verified_at'] = now();
-        $validated['two_factor_code'] = '274916';
 
         $user = User::create($validated);
 
@@ -404,7 +404,7 @@ class GlobalAdminController extends Controller
 
     public function settings()
     {
-        $user = Auth::user() ?? User::with('role')->first();
+        $user = Auth::user();
         $roles = Role::all();
         $settings = Setting::pluck('value', 'key')->toArray();
 
@@ -413,7 +413,7 @@ class GlobalAdminController extends Controller
 
     public function updateProfile(Request $request)
     {
-        $user = Auth::user() ?? User::first();
+        $user = Auth::user();
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -444,7 +444,7 @@ class GlobalAdminController extends Controller
 
     public function updatePassword(Request $request)
     {
-        $user = Auth::user() ?? User::first();
+        $user = Auth::user();
 
         $request->validate([
             'current_password' => 'required',
@@ -485,6 +485,8 @@ class GlobalAdminController extends Controller
             'date_range_label',
         ];
 
+        $request->validate(['site_logo' => 'nullable|image|max:4096']);
+
         if ($request->hasFile('site_logo')) {
             $logoPath = $request->file('site_logo')->store('branding', 'public');
             Setting::setValue('site_logo', $logoPath);
@@ -499,9 +501,14 @@ class GlobalAdminController extends Controller
         }
 
         if ($request->filled('active_module')) {
-            $targetMod = $request->input('active_module');
+            $targetMod = $request->validate([
+                'active_module' => ['string', Rule::in(array_keys(\App\Support\ModuleCmsResolver::SUPPORTED_MODULES))],
+            ])['active_module'];
+
             if (is_dir(base_path("Modules/{$targetMod}"))) {
-                \Illuminate\Support\Facades\Artisan::call('demo:activate', ['module' => $targetMod]);
+                Website::whereNotNull('module_name')->update(['is_active' => false, 'status' => 'Draft']);
+                Website::where('module_name', $targetMod)->update(['is_active' => true, 'status' => 'Published']);
+                Website::syncModuleStatuses();
             }
         }
 
