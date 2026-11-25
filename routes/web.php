@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\GlobalAdminController;
 use App\Http\Controllers\Admin\ModuleCmsController;
 use App\Http\Controllers\Admin\SaasBillingController;
+use App\Http\Controllers\Admin\SaasControlCenterController;
 use App\Http\Controllers\Admin\SaasManagementController;
 use App\Http\Controllers\Admin\SaasOperationsController;
 use App\Http\Controllers\Admin\SaasResellerController;
@@ -148,6 +149,9 @@ Route::prefix('admin')->name('admin.')->middleware([EnsureDashboardAccess::class
     Route::post('/impersonate/{targetUser}', [SaasManagementController::class, 'impersonate'])->name('impersonate.start');
 
     Route::middleware([EnsureDashboardAccess::class . ':super_admin'])->group(function () {
+        // SaaS Control Center: platform KPIs + approval queues (Super Admin only)
+        Route::get('/saas', [SaasControlCenterController::class, 'index'])->name('saas.control');
+
         // Websites / Themes Management (Super Admin only)
         Route::get('/websites', [GlobalAdminController::class, 'websites'])->name('websites');
         Route::post('/websites', [GlobalAdminController::class, 'storeWebsite'])->name('websites.store');

@@ -27,6 +27,12 @@ return [
                     'active' => 'admin.dashboard',
                 ],
                 [
+                    'title' => 'SaaS Control Center',
+                    'icon' => 'bi bi-speedometer2',
+                    'route' => 'admin.saas.control',
+                    'active' => 'admin.saas.control',
+                ],
+                [
                     'title' => 'SaaS Homepage Builder',
                     'icon' => 'bi bi-layout-text-window-reverse',
                     'route' => 'admin.saas.homepage',
