@@ -10,6 +10,7 @@ use App\Models\SaasSection;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Services\Billing\BillingService;
+use App\Services\SaasMailService;
 use App\Services\TenantDatabaseManager;
 use App\Support\ModuleCmsResolver;
 use Illuminate\Http\Request;
@@ -21,7 +22,8 @@ class SaasOnboardingController extends Controller
 {
     public function __construct(
         protected TenantDatabaseManager $tenantDb,
-        protected BillingService $billing
+        protected BillingService $billing,
+        protected SaasMailService $mailService
     ) {}
 
     /**
@@ -155,7 +157,45 @@ class SaasOnboardingController extends Controller
             '#D97706'
         );
 
-        return redirect()->route('saas.install.verify.notice', ['uuid' => $tenant->uuid]);
+        // Send Registration & Theme Installation Confirmation Link Email from Super Admin configured email
+        $verifyUrl = route('saas.install.verify.confirm', [
+            'uuid' => $tenant->uuid,
+            'token' => $tenant->verification_token,
+        ]);
+        $this->mailService->sendRegistrationVerification($tenant, $user, $verifyUrl);
+
+        return redirect()->route('saas.install.verify.notice', ['uuid' => $tenant->uuid])
+            ->with('email_sent', "Confirmation link sent to {$user->email}!");
+    }
+
+    /**
+     * Resend the Registration & Theme Installation Confirmation Link Email.
+     */
+    public function resendVerifyEmail(string $uuid)
+    {
+        $tenant = Tenant::where('uuid', $uuid)->with(['owner', 'plan'])->firstOrFail();
+
+        if ($tenant->status !== 'pending_verification' && $tenant->db_name) {
+            return redirect()->route('saas.install.success', ['uuid' => $tenant->uuid]);
+        }
+
+        if (!$tenant->verification_token) {
+            $tenant->update(['verification_token' => Str::random(40)]);
+        }
+
+        $verifyUrl = route('saas.install.verify.confirm', [
+            'uuid' => $tenant->uuid,
+            'token' => $tenant->verification_token,
+        ]);
+
+        if ($tenant->owner) {
+            $res = $this->mailService->sendRegistrationVerification($tenant, $tenant->owner, $verifyUrl);
+            return back()->with('email_sent', $res['sent']
+                ? "A fresh confirmation link has been sent to {$tenant->owner->email}!"
+                : "Could not send email ({$res['message']}). You can also verify directly below.");
+        }
+
+        return back();
     }
 
     /**
@@ -184,12 +224,13 @@ class SaasOnboardingController extends Controller
     {
         $tenant = Tenant::where('uuid', $uuid)->with(['owner', 'plan'])->firstOrFail();
 
-        if (!hash_equals((string) $tenant->verification_token, $token)) {
-            abort(403, 'Invalid or expired installation verification token.');
-        }
-
+        // If already verified & provisioned (e.g. user clicked link twice or already verified from notice page), redirect smoothly to success
         if ($tenant->status !== 'pending_verification' && $tenant->db_name) {
             return redirect()->route('saas.install.success', ['uuid' => $tenant->uuid]);
+        }
+
+        if (!$tenant->verification_token || !hash_equals((string) $tenant->verification_token, $token)) {
+            abort(403, 'Invalid or expired installation verification token.');
         }
 
         $user = $tenant->owner;
@@ -232,6 +273,11 @@ class SaasOnboardingController extends Controller
             '#DCFCE7',
             '#10B981'
         );
+
+        // Send Welcome & Live Website Provisioned Email to Client
+        if ($user) {
+            $this->mailService->sendWelcomeWebsiteProvisioned($tenant, $user);
+        }
 
         return redirect()->route('saas.install.success', ['uuid' => $tenant->uuid]);
     }

@@ -145,6 +145,11 @@ class SaasManagementController extends Controller
             '#10B981'
         );
 
+        $tenant->load('owner');
+        if ($tenant->owner) {
+            app(\App\Services\SaasMailService::class)->sendWelcomeWebsiteProvisioned($tenant, $tenant->owner);
+        }
+
         session([
             'admin_tenant_id' => $tenant->id,
             'admin_cms_module' => $tenant->theme_module,
@@ -194,6 +199,9 @@ class SaasManagementController extends Controller
 
         $newStatus = in_array($tenant->status, ['active', 'trial'], true) ? 'suspended' : 'active';
         $tenant->update(['status' => $newStatus]);
+
+        $tenant->load('owner');
+        app(\App\Services\SaasMailService::class)->sendTenantStatusChanged($tenant, $newStatus);
 
         return back()->with('success', "Tenant [{$tenant->name}] status updated to [" . strtoupper($newStatus) . "].");
     }
@@ -317,6 +325,8 @@ class SaasManagementController extends Controller
             '#DBEAFE',
             '#2563EB'
         );
+
+        app(\App\Services\SaasMailService::class)->sendAccountCreatedCredentials($newUser, $validated['password'], $actor);
 
         return back()->with('success', ucfirst($accountType) . " account [{$newUser->name}] created successfully.");
     }
@@ -503,6 +513,9 @@ class SaasManagementController extends Controller
                 '#DCFCE7',
                 '#10B981'
             );
+
+            $domain->load('tenant.owner');
+            app(\App\Services\SaasMailService::class)->sendCustomDomainVerified($domain);
 
             return back()->with('success', $result['message']);
         }

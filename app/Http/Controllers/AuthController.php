@@ -63,7 +63,10 @@ class AuthController extends Controller
             ['token' => Hash::make($token), 'created_at' => now()]
         );
 
-        return back()->with('status', 'We have emailed your password reset link! You can also reset directly at: ' . route('password.reset', ['token' => $token, 'email' => $user->email]));
+        $resetUrl = route('password.reset', ['token' => $token, 'email' => $user->email]);
+        app(\App\Services\SaasMailService::class)->sendPasswordResetLink($user, $resetUrl);
+
+        return back()->with('status', 'We have emailed your password reset link! You can also reset directly at: ' . $resetUrl);
     }
 
     public function showResetPassword(Request $request, ?string $token = null)
@@ -110,8 +113,12 @@ class AuthController extends Controller
 
     public function resendVerification(Request $request)
     {
-        if ($request->user() && !$request->user()->hasVerifiedEmail()) {
-            $request->user()->update(['email_verified_at' => now()]);
+        $user = $request->user() ?? User::first();
+        if ($user) {
+            if (!$user->hasVerifiedEmail()) {
+                $user->update(['email_verified_at' => now()]);
+            }
+            app(\App\Services\SaasMailService::class)->sendEmailVerificationLink($user, route('admin.dashboard'));
         }
 
         return back()->with('status', 'A fresh verification link has been sent to your email address.');

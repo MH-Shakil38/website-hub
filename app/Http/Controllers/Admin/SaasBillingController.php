@@ -236,6 +236,11 @@ class SaasBillingController extends Controller
             '#D97706'
         );
 
+        if (!empty($res['payment'])) {
+            $invoice->load('user');
+            app(\App\Services\SaasMailService::class)->sendManualPaymentSubmitted($res['payment'], $invoice);
+        }
+
         return back()->with('success', $res['message']);
     }
 
@@ -338,6 +343,9 @@ class SaasBillingController extends Controller
         if ($payment->invoice && $payment->invoice->status === 'pending_approval') {
             $payment->invoice->update(['status' => 'unpaid']);
         }
+
+        $payment->load(['user', 'invoice.user']);
+        app(\App\Services\SaasMailService::class)->sendPaymentRejected($payment, $payment->invoice);
 
         return back()->with('success', "Payment [{$payment->gateway_txn_id}] rejected.");
     }

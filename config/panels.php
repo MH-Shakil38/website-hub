@@ -92,6 +92,12 @@ return [
                     'route' => 'admin.support.tickets',
                     'active' => 'admin.support.*',
                 ],
+                [
+                    'title' => 'Email & SMTP Setup',
+                    'icon' => 'bi bi-envelope-at-fill',
+                    'route' => 'admin.email.settings',
+                    'active' => 'admin.email.*',
+                ],
             ],
         ],
 

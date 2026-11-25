@@ -20,6 +20,13 @@
             </p>
         </div>
 
+        @if(session('email_sent'))
+            <div class="alert alert-success py-2 px-3 small rounded-3 mb-3 d-flex align-items-center gap-2">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>{{ session('email_sent') }}</span>
+            </div>
+        @endif
+
         <div class="p-3 rounded-4 bg-light border mb-4 small">
             <div class="d-flex justify-content-between mb-1">
                 <span class="text-muted">Website Name:</span>
@@ -54,6 +61,13 @@
             @csrf
             <button type="submit" id="btnVerifyAndInstall" class="btn btn-danger btn-lg fw-bold py-3" style="background: #EC134A; border: none; border-radius: 12px;">
                 <i class="bi bi-patch-check-fill me-1"></i> Verify Email &amp; Install Theme Now
+            </button>
+        </form>
+
+        <form action="{{ route('saas.install.verify.resend', ['uuid' => $tenant->uuid]) }}" method="POST" class="d-grid mt-2">
+            @csrf
+            <button type="submit" class="btn btn-outline-secondary btn-sm fw-semibold py-2" style="border-radius: 10px;">
+                <i class="bi bi-envelope-arrow-up me-1"></i> Resend Confirmation Link to {{ $tenant->owner?->email }}
             </button>
         </form>
 

@@ -25,6 +25,9 @@ Route::post('/install/register', [SaasOnboardingController::class, 'registerPend
     ->name('saas.install.register');
 Route::get('/install/verify/{uuid}', [SaasOnboardingController::class, 'showVerifyNotice'])
     ->name('saas.install.verify.notice');
+Route::post('/install/verify/{uuid}/resend', [SaasOnboardingController::class, 'resendVerifyEmail'])
+    ->middleware('throttle:10,1')
+    ->name('saas.install.verify.resend');
 Route::match(['get', 'post'], '/install/verify/{uuid}/{token}', [SaasOnboardingController::class, 'verifyAndProvision'])
     ->name('saas.install.verify.confirm');
 Route::get('/install/success/{uuid}', [SaasOnboardingController::class, 'showInstallSuccess'])
@@ -118,6 +121,12 @@ Route::prefix('admin')->name('admin.')->middleware([EnsureDashboardAccess::class
     Route::post('/support-tickets', [SaasOperationsController::class, 'storeTicket'])->name('support.tickets.store');
     Route::post('/support-tickets/{ticket}/reply', [SaasOperationsController::class, 'replyTicket'])->name('support.tickets.reply');
     Route::post('/support-tickets/{ticket}/close', [SaasOperationsController::class, 'closeTicket'])->name('support.tickets.close');
+
+    // SaaS Super Admin Email & SMTP Setup + Client Notification Triggers & Test Mailer
+    Route::get('/email-settings', [SaasOperationsController::class, 'emailSettings'])->name('email.settings');
+    Route::post('/email-settings', [SaasOperationsController::class, 'updateEmailSettings'])->name('email.settings.update');
+    Route::post('/email-settings/test', [SaasOperationsController::class, 'sendTestEmail'])->name('email.settings.test');
+    Route::post('/email-settings/clear-logs', [SaasOperationsController::class, 'clearEmailLogs'])->name('email.settings.clear-logs');
 
     // SaaS Resellers & Clients Management + One-Click Impersonation (Phase 2)
     Route::get('/accounts', [SaasManagementController::class, 'accounts'])->name('saas.accounts');

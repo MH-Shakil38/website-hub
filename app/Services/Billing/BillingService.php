@@ -82,6 +82,12 @@ class BillingService
                 'due_date' => now()->addDays(3),
                 'notes' => "Subscription to {$plan->name} (" . ucfirst($billingCycle) . ")",
             ]);
+
+            try {
+                $invoice->load(['user', 'plan', 'tenant']);
+                app(\App\Services\SaasMailService::class)->sendInvoiceGenerated($invoice);
+            } catch (\Throwable) {
+            }
         }
 
         return [
@@ -163,6 +169,12 @@ class BillingService
             '#DCFCE7',
             '#10B981'
         );
+
+        try {
+            $payment->load(['user', 'invoice.user', 'invoice.plan', 'invoice.tenant']);
+            app(\App\Services\SaasMailService::class)->sendPaymentApproved($payment, $payment->invoice);
+        } catch (\Throwable) {
+        }
 
         return $payment->fresh();
     }

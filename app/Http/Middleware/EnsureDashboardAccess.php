@@ -16,7 +16,7 @@ class EnsureDashboardAccess
     {
         if (!Auth::check()) {
             // In local development, if auto-demo-login is enabled via env, sign in the first super_admin
-            if (app()->environment('local') && env('ADMIN_AUTO_LOGIN_LOCAL', true)) {
+            if (app()->environment('local') && filter_var(env('ADMIN_AUTO_LOGIN_LOCAL', false), FILTER_VALIDATE_BOOLEAN)) {
                 $defaultAdmin = \App\Models\User::where('type', 'super_admin')->first()
                     ?? \App\Models\User::first();
                 if ($defaultAdmin) {

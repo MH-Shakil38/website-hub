@@ -207,6 +207,9 @@ class SaasResellerController extends Controller
                 'admin_note' => $request->input('admin_note', 'Disbursed by Super Admin'),
             ]);
 
+            $payout->load('reseller.user');
+            app(\App\Services\SaasMailService::class)->sendResellerPayoutProcessed($payout);
+
             return back()->with('success', "Payout request #{$payout->id} (৳{$payout->amount}) marked as PAID.");
         }
 
@@ -226,6 +229,9 @@ class SaasResellerController extends Controller
             'processed_at' => now(),
             'admin_note' => $request->input('admin_note', 'Rejected & refunded to wallet'),
         ]);
+
+        $payout->load('reseller.user');
+        app(\App\Services\SaasMailService::class)->sendResellerPayoutProcessed($payout);
 
         return back()->with('success', "Payout request #{$payout->id} rejected and ৳{$payout->amount} refunded to reseller wallet.");
     }
@@ -268,6 +274,9 @@ class SaasResellerController extends Controller
             'site_quota' => $validated['site_quota'] ?? $reseller->site_quota,
             'commission_rate' => $validated['commission_rate'] ?? $reseller->commission_rate,
         ]);
+
+        $reseller->load('user');
+        app(\App\Services\SaasMailService::class)->sendResellerKycUpdated($reseller);
 
         return back()->with('success', "Reseller [{$reseller->company_name}] KYC status updated to [" . strtoupper($reseller->kyc_status) . "].");
     }

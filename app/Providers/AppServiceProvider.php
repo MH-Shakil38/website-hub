@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Setting;
 use App\Models\Website;
+use App\Services\SaasMailService;
 use App\Services\TenantDatabaseManager;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
@@ -18,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(TenantDatabaseManager::class, fn () => new TenantDatabaseManager());
+        $this->app->singleton(SaasMailService::class, fn () => new SaasMailService());
     }
 
     /**
@@ -25,6 +27,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Dynamically apply Super Admin Email & SMTP settings stored in core_settings
+        try {
+            app(SaasMailService::class)->applyMailConfig();
+        } catch (\Throwable) {
+            // Fallback to default config/mail.php if database is not yet migrated
+        }
         // Ensure all modules in Modules/ have their views and configs registered dynamically
         $modulesDir = base_path('Modules');
         if (File::isDirectory($modulesDir)) {
