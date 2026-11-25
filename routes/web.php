@@ -74,7 +74,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/confirm-password', [AuthController::class, 'confirmPassword'])->middleware('throttle:5,1')->name('password.confirm.submit');
 });
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-Route::get('/logout', [AuthController::class, 'logout']);
 
 // Global Admin Core Routes (Unified SaaS Dashboard for Super Admin, Reseller, and Client)
 Route::prefix('admin')->name('admin.')->middleware([EnsureDashboardAccess::class])->group(function () {

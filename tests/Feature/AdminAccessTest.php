@@ -24,6 +24,12 @@ class AdminAccessTest extends TestCase
         $this->post('/admin/settings/global', [])->assertRedirect(route('login'));
     }
 
+    public function test_logout_only_accepts_post(): void
+    {
+        // A GET logout could be triggered by any <img src="/logout"> on another site.
+        $this->get('/logout')->assertStatus(405);
+    }
+
     public function test_password_reset_requires_a_valid_token(): void
     {
         $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class);

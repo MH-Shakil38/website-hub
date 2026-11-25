@@ -3,10 +3,13 @@
 @section('title', 'Verify Email - SiteBuilder')
 
 @section('top_right')
-    <a href="{{ route('logout') }}" class="logout-top-link">
-        <i class="bi bi-box-arrow-right"></i>
-        <span>Logout</span>
-    </a>
+    <form method="POST" action="{{ route('logout') }}" class="m-0">
+        @csrf
+        <button type="submit" class="logout-top-link">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Logout</span>
+        </button>
+    </form>
 @endsection
 
 @section('left_content')

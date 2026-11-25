@@ -127,6 +127,10 @@
             color: var(--sb-muted);
             text-decoration: none;
             transition: color 0.15s;
+            background: none;
+            border: 0;
+            padding: 0;
+            cursor: pointer;
         }
 
         .logout-top-link:hover {

@@ -833,7 +833,7 @@
                             <li><a class="dropdown-item py-1" href="{{ route('two-factor.login') }}"><i class="bi bi-phone-flip me-2"></i>Two-Factor (2FA) UI</a></li>
                             <li><a class="dropdown-item py-1" href="{{ route('password.confirm') }}"><i class="bi bi-check2-circle me-2"></i>Confirm Password UI</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item py-2 text-danger" href="{{ route('logout') }}"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                            <li><form method="POST" action="{{ route('logout') }}" class="m-0">@csrf<button type="submit" class="dropdown-item py-2 text-danger"><i class="bi bi-box-arrow-right me-2"></i>Logout</button></form></li>
                         </ul>
                     </div>
                 </div>
