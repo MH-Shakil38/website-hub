@@ -107,11 +107,7 @@
 
         <div class="sb-table-footer">
             <div>Showing {{ $menus->firstItem() ?? 0 }} to {{ $menus->lastItem() ?? 0 }} of {{ $menus->total() }} menus in {{ $modMeta['prefix'] }}menus</div>
-            <div class="sb-pagination">
-                <a href="{{ $menus->previousPageUrl() ?? '#' }}" class="sb-page-btn"><i class="bi bi-chevron-left"></i></a>
-                <a href="#" class="sb-page-btn active">1</a>
-                <a href="{{ $menus->nextPageUrl() ?? '#' }}" class="sb-page-btn"><i class="bi bi-chevron-right"></i></a>
-            </div>
+            @include('admin.partials.sb-pagination', ['paginator' => $menus])
         </div>
     </div>
 

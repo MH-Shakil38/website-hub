@@ -110,11 +110,7 @@
 
         <div class="sb-table-footer">
             <div>Showing {{ $sliders->firstItem() ?? 0 }} to {{ $sliders->lastItem() ?? 0 }} of {{ $sliders->total() }} sliders in {{ $modMeta['prefix'] }}sliders</div>
-            <div class="sb-pagination">
-                <a href="{{ $sliders->previousPageUrl() ?? '#' }}" class="sb-page-btn"><i class="bi bi-chevron-left"></i></a>
-                <a href="#" class="sb-page-btn active">1</a>
-                <a href="{{ $sliders->nextPageUrl() ?? '#' }}" class="sb-page-btn"><i class="bi bi-chevron-right"></i></a>
-            </div>
+            @include('admin.partials.sb-pagination', ['paginator' => $sliders])
         </div>
     </div>
 

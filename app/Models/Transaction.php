@@ -32,4 +32,19 @@ class Transaction extends Model
             'cashback_amount' => 'decimal:2',
         ];
     }
+
+    /** Money received (Payments) minus money already paid out (Settlements). */
+    public static function availableBalance(): float
+    {
+        try {
+            $row = static::query()
+                ->selectRaw("COALESCE(SUM(CASE WHEN type = 'Settlement' THEN 0 ELSE net_amount END), 0) as received")
+                ->selectRaw("COALESCE(SUM(CASE WHEN type = 'Settlement' THEN net_amount ELSE 0 END), 0) as settled")
+                ->first();
+
+            return (float) $row->received - (float) $row->settled;
+        } catch (\Throwable) {
+            return 0.0;
+        }
+    }
 }

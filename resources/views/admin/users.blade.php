@@ -208,11 +208,7 @@
 
         <div class="sb-table-footer">
             <div>Showing {{ $moduleUsers->firstItem() ?? 0 }} to {{ $moduleUsers->lastItem() ?? 0 }} of {{ $moduleUsers->total() }} users in {{ $modMeta['prefix'] }}users</div>
-            <div class="sb-pagination">
-                <a href="{{ $moduleUsers->previousPageUrl() ?? '#' }}" class="sb-page-btn"><i class="bi bi-chevron-left"></i></a>
-                <a href="#" class="sb-page-btn active">1</a>
-                <a href="{{ $moduleUsers->nextPageUrl() ?? '#' }}" class="sb-page-btn"><i class="bi bi-chevron-right"></i></a>
-            </div>
+            @include('admin.partials.sb-pagination', ['paginator' => $moduleUsers])
         </div>
     </div>
 

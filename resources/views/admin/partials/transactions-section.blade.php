@@ -1,8 +1,9 @@
 @php
     $txnsList = $transactions ?? \App\Models\Transaction::orderByDesc('transacted_at')->paginate(10);
-    $mAcc = $merchantAccount ?? \App\Models\Setting::getValue('merchant_account', '01812-XXXXXX');
-    $cRate = $chargesRate ?? \App\Models\Setting::getValue('charges_rate', '1.80% + ৳5.00');
-    $aBal = $availableBalance ?? \App\Models\Setting::getValue('available_balance', '125,482.36');
+    $mAcc = $merchantAccount ?? (\App\Models\Setting::getValue('merchant_account') ?: 'Not set');
+    $cRate = $chargesRate ?? (\App\Models\Setting::getValue('charges_rate') ?: 'Not set');
+    $aBal = $availableBalance ?? number_format(\App\Models\Transaction::availableBalance(), 2);
+    $txnRange = $transactionRange ?? null;
 @endphp
 
 <!-- Top 3-Column Summary Card (Exact Match to Screenshot 8) -->
@@ -56,7 +57,7 @@
         <div class="dropdown">
             <button type="button" data-bs-toggle="dropdown" style="height: var(--sb-control-h); background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 10px; padding: 0 14px; font-size: 13px; font-weight: 500; color: #1E293B; display: inline-flex; align-items: center; gap: 10px;">
                 <i class="bi bi-calendar3" style="color: #475569;"></i>
-                <span>{{ request('type') ? 'Type: ' . request('type') : '12 Oct 2025 - 19 Oct 2025' }}</span>
+                <span>{{ request('type') ? 'Type: ' . request('type') : ($txnRange ?: 'All Transactions') }}</span>
                 <i class="bi bi-chevron-down" style="font-size: 11px; color: #64748B;"></i>
             </button>
             <ul class="dropdown-menu shadow-sm border-0" style="font-size: 13px; border-radius: 10px;">
@@ -122,17 +123,7 @@
     </div>
 
     <div class="sb-table-footer">
-        <div>Showing {{ $txnsList->firstItem() ?? 0 }} to {{ $txnsList->lastItem() ?? 0 }} of 125 transactions</div>
-        <div class="sb-pagination">
-            <a href="{{ $txnsList->previousPageUrl() ?? '#' }}" class="sb-page-btn"><i class="bi bi-chevron-left"></i></a>
-            <a href="{{ request()->fullUrlWithQuery(['page' => 1]) }}" class="sb-page-btn active">1</a>
-            <a href="#" class="sb-page-btn">2</a>
-            <a href="#" class="sb-page-btn">3</a>
-            <a href="#" class="sb-page-btn">4</a>
-            <a href="#" class="sb-page-btn">5</a>
-            <span style="padding: 0 4px; color: #94A3B8;">...</span>
-            <a href="#" class="sb-page-btn">13</a>
-            <a href="{{ $txnsList->nextPageUrl() ?? '#' }}" class="sb-page-btn"><i class="bi bi-chevron-right"></i></a>
-        </div>
+        <div>Showing {{ $txnsList->firstItem() ?? 0 }} to {{ $txnsList->lastItem() ?? 0 }} of {{ number_format($txnsList->total()) }} transactions</div>
+        @include('admin.partials.sb-pagination', ['paginator' => $txnsList])
     </div>
 </div>

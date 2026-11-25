@@ -131,11 +131,7 @@
 
         <div class="sb-table-footer">
             <div>Showing {{ $themes->firstItem() ?? 0 }} to {{ $themes->lastItem() ?? 0 }} of {{ $themes->total() }} themes in {{ $modMeta['prefix'] }}themes</div>
-            <div class="sb-pagination">
-                <a href="{{ $themes->previousPageUrl() ?? '#' }}" class="sb-page-btn"><i class="bi bi-chevron-left"></i></a>
-                <a href="#" class="sb-page-btn active">1</a>
-                <a href="{{ $themes->nextPageUrl() ?? '#' }}" class="sb-page-btn"><i class="bi bi-chevron-right"></i></a>
-            </div>
+            @include('admin.partials.sb-pagination', ['paginator' => $themes])
         </div>
     </div>
 

@@ -111,13 +111,7 @@
 
         <div class="sb-table-footer">
             <div>Showing {{ $pages->firstItem() ?? 0 }} to {{ $pages->lastItem() ?? 0 }} of {{ $pages->total() }} pages in {{ $modMeta['prefix'] }}pages</div>
-            <div class="sb-pagination">
-                <a href="{{ $pages->previousPageUrl() ?? '#' }}" class="sb-page-btn"><i class="bi bi-chevron-left"></i></a>
-                @for($p = 1; $p <= min(5, max(1, $pages->lastPage())); $p++)
-                    <a href="{{ $pages->url($p) }}" class="sb-page-btn {{ $pages->currentPage() === $p ? 'active' : '' }}">{{ $p }}</a>
-                @endfor
-                <a href="{{ $pages->nextPageUrl() ?? '#' }}" class="sb-page-btn"><i class="bi bi-chevron-right"></i></a>
-            </div>
+            @include('admin.partials.sb-pagination', ['paginator' => $pages])
         </div>
     </div>
 

@@ -113,11 +113,7 @@
 
         <div class="sb-table-footer">
             <div>Showing {{ $mediaItems->firstItem() ?? 0 }} to {{ $mediaItems->lastItem() ?? 0 }} of {{ $mediaItems->total() }} files in {{ $modMeta['prefix'] }}media</div>
-            <div class="sb-pagination">
-                <a href="{{ $mediaItems->previousPageUrl() ?? '#' }}" class="sb-page-btn"><i class="bi bi-chevron-left"></i></a>
-                <a href="#" class="sb-page-btn active">1</a>
-                <a href="{{ $mediaItems->nextPageUrl() ?? '#' }}" class="sb-page-btn"><i class="bi bi-chevron-right"></i></a>
-            </div>
+            @include('admin.partials.sb-pagination', ['paginator' => $mediaItems])
         </div>
     </div>
 
