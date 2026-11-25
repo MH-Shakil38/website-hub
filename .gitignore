@@ -27,3 +27,6 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Per-tenant uploads are customer data, never commit them (theme demo assets in uploads/theme stay tracked)
+/Modules/*/Public/uploads/t[0-9]*/
