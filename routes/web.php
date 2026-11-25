@@ -206,6 +206,7 @@ Route::prefix('admin')->name('admin.')->middleware([EnsureDashboardAccess::class
 
         // Transactions & Filter Table (Screenshot 8)
         Route::get('/transactions', [GlobalAdminController::class, 'transactions'])->name('transactions');
+        Route::get('/activity', [GlobalAdminController::class, 'activity'])->name('activity');
 
         // Language of the public SaaS landing page (Bangla default, English, Arabic RTL)
         Route::get('/saas-language', [\App\Http\Controllers\Admin\SaasLanguageController::class, 'edit'])->name('saas.language');

@@ -108,6 +108,22 @@ class DashboardRealDataTest extends TestCase
         $admin = $this->makeUser('super_admin');
         $this->actingAs($admin)->get(route('admin.dashboard'))->assertOk();
         $this->assertSame($count + 1, SiteVisit::count());
+    }
 
+    public function test_transactions_and_activity_pages_use_real_totals(): void
+    {
+        $admin = $this->makeUser('super_admin');
+
+        $res = $this->actingAs($admin)->get(route('admin.transactions'));
+        $res->assertOk();
+        $res->assertSee('of ' . number_format(\App\Models\Transaction::count()) . ' transactions');
+        $res->assertDontSee('12 Oct 2025 - 19 Oct 2025');
+        $res->assertDontSee('125,482.36');
+        $res->assertSee(number_format(\App\Models\Transaction::availableBalance(), 2));
+
+        $this->actingAs($admin)->get(route('admin.activity'))->assertOk()->assertSee('Activity Log');
+
+        $client = $this->makeUser('client');
+        $this->assertNotSame(200, $this->actingAs($client)->get(route('admin.activity'))->getStatusCode());
     }
 }

@@ -605,7 +605,7 @@
                     <h4>Recent Activities</h4>
                     <p>Latest actions on your websites.</p>
                 </div>
-                <a href="{{ route('admin.transactions') }}" class="view-all-link">
+                <a href="{{ auth()->user()?->isSuperAdmin() ? route('admin.activity') : route('admin.dashboard') }}" class="view-all-link">
                     <span>View all</span>
                     <i class="bi bi-arrow-right"></i>
                 </a>

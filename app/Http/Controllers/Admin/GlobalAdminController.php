@@ -100,18 +100,32 @@ class GlobalAdminController extends Controller
             $query->where('type', $type);
         }
 
+        // Date span of the transactions in the current filter (shown on the date button).
+        $span = (clone $query)->reorder()->selectRaw('MIN(transacted_at) as first_at, MAX(transacted_at) as last_at')->first();
+        $transactionRange = ($span && $span->first_at)
+            ? \Illuminate\Support\Carbon::parse($span->first_at)->format('d M Y') . ' - ' . \Illuminate\Support\Carbon::parse($span->last_at)->format('d M Y')
+            : null;
+
         $transactions = $query->paginate(10)->withQueryString();
-        $merchantAccount = Setting::getValue('merchant_account', '01812-XXXXXX');
-        $chargesRate = Setting::getValue('charges_rate', '1.80% + ৳5.00');
-        $availableBalance = Setting::getValue('available_balance', '125,482.36');
+        $merchantAccount = Setting::getValue('merchant_account') ?: 'Not set';
+        $chargesRate = Setting::getValue('charges_rate') ?: 'Not set';
+        $availableBalance = number_format(Transaction::availableBalance(), 2);
 
         return view('admin.transactions', compact(
             'transactions',
             'search',
             'merchantAccount',
             'chargesRate',
-            'availableBalance'
+            'availableBalance',
+            'transactionRange'
         ));
+    }
+
+    public function activity()
+    {
+        $activities = ActivityLog::with('user')->latest('id')->paginate(20);
+
+        return view('admin.activity', compact('activities'));
     }
 
     public function websites(Request $request)
@@ -501,9 +515,6 @@ class GlobalAdminController extends Controller
             'support_email',
             'merchant_account',
             'charges_rate',
-            'available_balance',
-            'media_files_count',
-            'date_range_label',
         ];
 
         $request->validate(['site_logo' => 'nullable|image|max:4096']);

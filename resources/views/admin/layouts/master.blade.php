@@ -789,13 +789,16 @@
                     <div class="dropdown">
                         <button type="button" class="sb-notif-btn" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
                             <i class="bi bi-bell"></i>
-                            <span class="sb-notif-badge">{{ $notifLogs->count() ?: 3 }}</span>
+                            @php $notifNewCount = \App\Models\ActivityLog::where('created_at', '>=', now()->subDay())->count(); @endphp
+                            @if($notifNewCount > 0)
+                                <span class="sb-notif-badge" title="Activity in the last 24 hours">{{ $notifNewCount > 9 ? '9+' : $notifNewCount }}</span>
+                            @endif
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2 p-2" style="border-radius: 12px; width: 290px;">
                             <li class="px-2 py-1 fw-bold small text-dark border-bottom mb-1">Recent Notifications</li>
                             @foreach($notifLogs as $nLog)
                                 <li>
-                                    <a class="dropdown-item rounded py-2 d-flex align-items-center gap-2" href="{{ route('admin.dashboard') }}">
+                                    <a class="dropdown-item rounded py-2 d-flex align-items-center gap-2" href="{{ auth()->user()?->isSuperAdmin() ? route('admin.activity') : route('admin.dashboard') }}">
                                         <span class="d-inline-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 30px; height: 30px; background: {{ $nLog->bg_color }}; color: {{ $nLog->text_color }}; font-size: 13px;">
                                             <i class="bi {{ $nLog->icon }}"></i>
                                         </span>
@@ -806,6 +809,9 @@
                                     </a>
                                 </li>
                             @endforeach
+                            @if($notifLogs->isEmpty())
+                                <li class="px-2 py-2 small text-muted">No notifications yet.</li>
+                            @endif
                         </ul>
                     </div>
 
