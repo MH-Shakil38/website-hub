@@ -92,6 +92,6 @@ class Tenant extends Model
 
     public function generateDefaultDbName(): string
     {
-        return sprintf('hub_t_%04d', $this->id);
+        return sprintf('%s%04d', config('app.tenant_db_prefix', 'hub_t_'), $this->id);
     }
 }

@@ -17,6 +17,9 @@ return [
 
     'mode' => env('APP_MODE', 'saas'),
 
+    // Prefix for per-tenant MySQL databases (hub_t_0001 ...). Tests override it so they never collide with real tenant DBs.
+    'tenant_db_prefix' => env('TENANT_DB_PREFIX', 'hub_t_'),
+
     'central_domains' => array_filter(array_map('trim', explode(',', env('CENTRAL_DOMAINS', 'localhost,127.0.0.1,multi-website-hub.test')))),
 
     'dashboard_domain' => env('DASHBOARD_DOMAIN', 'app.multi-website-hub.test'),
