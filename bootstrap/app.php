@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\TrackResellerReferral::class,
             \App\Http\Middleware\IdentifyTenant::class,
+            \App\Http\Middleware\RecordSiteVisit::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

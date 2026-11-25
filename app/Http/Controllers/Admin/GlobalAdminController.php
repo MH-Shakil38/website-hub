@@ -48,6 +48,8 @@ class GlobalAdminController extends Controller
         ];
         $mediaFilesCount = number_format($kpis['media']['total']);
 
+        $traffic = DashboardStats::traffic();
+
         $pageDonut = DashboardStats::donut([
             'published' => $publishedPages,
             'draft' => $draftPages,
@@ -74,7 +76,8 @@ class GlobalAdminController extends Controller
             'selectedWebsiteId',
             'recentActivities',
             'kpis',
-            'pageDonut'
+            'pageDonut',
+            'traffic'
         ));
     }
 

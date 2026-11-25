@@ -137,6 +137,62 @@ class DashboardStats
         return $out;
     }
 
+    /**
+     * Website traffic (visitors and page views) for the dashboard chart, for
+     * four ranges: last 24 hours, 7 days, 30 days and 12 months.
+     *
+     * @return array<string, array{labels: array<int,string>, visitors: array<int,int>, views: array<int,int>}>
+     */
+    public static function traffic(?CarbonImmutable $now = null): array
+    {
+        $now = $now ?? CarbonImmutable::now();
+
+        $ranges = [
+            'day' => ['buckets' => 24, 'unit' => 'hour', 'fmt' => '%Y-%m-%d %H', 'key' => 'Y-m-d H', 'label' => 'ga'],
+            'week' => ['buckets' => 7, 'unit' => 'day', 'fmt' => '%Y-%m-%d', 'key' => 'Y-m-d', 'label' => 'D'],
+            'month' => ['buckets' => 30, 'unit' => 'day', 'fmt' => '%Y-%m-%d', 'key' => 'Y-m-d', 'label' => 'M j'],
+            'year' => ['buckets' => 12, 'unit' => 'month', 'fmt' => '%Y-%m', 'key' => 'Y-m', 'label' => 'M'],
+        ];
+
+        $out = [];
+        foreach ($ranges as $name => $r) {
+            $first = match ($r['unit']) {
+                'hour' => $now->startOfHour()->subHours($r['buckets'] - 1),
+                'day' => $now->startOfDay()->subDays($r['buckets'] - 1),
+                'month' => $now->startOfMonth()->subMonths($r['buckets'] - 1),
+            };
+
+            $rows = collect();
+            try {
+                $rows = \App\Models\SiteVisit::query()
+                    ->where('visited_at', '>=', $first)
+                    ->selectRaw("DATE_FORMAT(visited_at, '{$r['fmt']}') as bucket, COUNT(*) as views, COUNT(DISTINCT visitor_hash) as visitors")
+                    ->groupBy('bucket')
+                    ->get()
+                    ->keyBy('bucket');
+            } catch (\Throwable) {
+                // Table not migrated yet: show an empty chart.
+            }
+
+            $labels = $visitors = $views = [];
+            for ($i = 0; $i < $r['buckets']; $i++) {
+                $at = match ($r['unit']) {
+                    'hour' => $first->addHours($i),
+                    'day' => $first->addDays($i),
+                    'month' => $first->addMonths($i),
+                };
+                $row = $rows->get($at->format($r['key']));
+                $labels[] = $at->format($r['label']);
+                $visitors[] = (int) ($row->visitors ?? 0);
+                $views[] = (int) ($row->views ?? 0);
+            }
+
+            $out[$name] = ['labels' => $labels, 'visitors' => $visitors, 'views' => $views];
+        }
+
+        return $out;
+    }
+
     public static function monthRangeLabel(?CarbonImmutable $now = null): string
     {
         $now = $now ?? CarbonImmutable::now();

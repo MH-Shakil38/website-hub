@@ -445,10 +445,10 @@
                     <p>Overview of your website visitors and activity.</p>
                 </div>
                 <div class="time-tabs" id="trafficTabs">
-                    <button type="button" class="time-tab" onclick="setTrafficTab(this)">Day</button>
-                    <button type="button" class="time-tab active" onclick="setTrafficTab(this)">Week</button>
-                    <button type="button" class="time-tab" onclick="setTrafficTab(this)">Month</button>
-                    <button type="button" class="time-tab" onclick="setTrafficTab(this)">Year</button>
+                    <button type="button" class="time-tab" data-range="day" onclick="setTrafficTab(this)">Day</button>
+                    <button type="button" class="time-tab active" data-range="week" onclick="setTrafficTab(this)">Week</button>
+                    <button type="button" class="time-tab" data-range="month" onclick="setTrafficTab(this)">Month</button>
+                    <button type="button" class="time-tab" data-range="year" onclick="setTrafficTab(this)">Year</button>
                 </div>
             </div>
 
@@ -457,59 +457,9 @@
                 <span><i class="legend-dot" style="background: #3B82F6;"></i>Page Views</span>
             </div>
 
-            <!-- Dual Area Spline SVG Chart -->
-            <svg viewBox="0 0 680 215" width="100%" height="215" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="blueGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#3B82F6" stop-opacity="0.16"/>
-                        <stop offset="100%" stop-color="#3B82F6" stop-opacity="0.0"/>
-                    </linearGradient>
-                    <linearGradient id="redGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#EC134A" stop-opacity="0.22"/>
-                        <stop offset="100%" stop-color="#EC134A" stop-opacity="0.0"/>
-                    </linearGradient>
-                </defs>
-
-                <!-- Horizontal Grid Lines & Y-Axis Labels -->
-                <g stroke="#F1F5F9" stroke-width="1">
-                    <line x1="36" y1="20" x2="665" y2="20"/>
-                    <line x1="36" y1="60" x2="665" y2="60"/>
-                    <line x1="36" y1="100" x2="665" y2="100"/>
-                    <line x1="36" y1="140" x2="665" y2="140"/>
-                    <line x1="36" y1="180" x2="665" y2="180"/>
-                </g>
-
-                <g fill="#94A3B8" font-family="Inter, sans-serif" font-size="11">
-                    <text x="4" y="24">4K</text>
-                    <text x="4" y="64">3K</text>
-                    <text x="4" y="104">2K</text>
-                    <text x="4" y="144">1K</text>
-                    <text x="10" y="184">0</text>
-                </g>
-
-                <!-- Blue Area & Line (Page Views) -->
-                <path d="M36 146 C75 142, 95 102, 130 105 C165 108, 190 132, 225 120 C260 108, 285 82, 325 86 C365 90, 390 112, 430 92 C470 72, 495 58, 535 66 C575 74, 615 55, 665 28 L665 180 L36 180 Z" fill="url(#blueGrad)"/>
-                <path d="M36 146 C75 142, 95 102, 130 105 C165 108, 190 132, 225 120 C260 108, 285 82, 325 86 C365 90, 390 112, 430 92 C470 72, 495 58, 535 66 C575 74, 615 55, 665 28" stroke="#3B82F6" stroke-width="2.2" fill="none"/>
-
-                <!-- Red Area & Line (Visitors) -->
-                <path d="M36 162 C75 158, 95 126, 130 128 C165 130, 190 148, 225 140 C260 132, 285 118, 325 122 C365 126, 390 138, 430 122 C470 106, 495 96, 535 104 C575 112, 615 82, 665 92 L665 180 L36 180 Z" fill="url(#redGrad)"/>
-                <path d="M36 162 C75 158, 95 126, 130 128 C165 130, 190 148, 225 140 C260 132, 285 118, 325 122 C365 126, 390 138, 430 122 C470 106, 495 96, 535 104 C575 112, 615 82, 665 92" stroke="#EC134A" stroke-width="2.2" fill="none"/>
-
-                <!-- X-Axis Labels -->
-                <g fill="#94A3B8" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">
-                    <text x="48" y="202">Mar 1</text>
-                    <text x="108" y="202">Mar 4</text>
-                    <text x="168" y="202">Mar 7</text>
-                    <text x="228" y="202">Mar 10</text>
-                    <text x="288" y="202">Mar 13</text>
-                    <text x="348" y="202">Mar 16</text>
-                    <text x="408" y="202">Mar 19</text>
-                    <text x="468" y="202">Mar 22</text>
-                    <text x="528" y="202">Mar 25</text>
-                    <text x="588" y="202">Mar 28</text>
-                    <text x="648" y="202">Mar 31</text>
-                </g>
-            </svg>
+            <!-- Visitors & page views from core_site_visits (drawn by the script below) -->
+            <svg id="trafficChart" viewBox="0 0 680 215" width="100%" height="215" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Website traffic chart"></svg>
+            <p id="trafficEmpty" class="text-muted small text-center mb-0" style="display: none; margin-top: -120px; position: relative;">No visits recorded in this period yet.</p>
         </div>
 
         <!-- Page Overview Donut Panel -->
@@ -683,9 +633,86 @@
 
 @push('module_scripts')
 <script>
+    const TRAFFIC = @json($traffic ?? []);
+
+    function niceMax(v) {
+        if (v <= 4) return 4;
+        const pow = Math.pow(10, Math.floor(Math.log10(v)));
+        const steps = [1, 2, 2.5, 5, 10];
+        for (const s of steps) { if (s * pow >= v) return s * pow; }
+        return 10 * pow;
+    }
+
+    function fmtTick(v) {
+        if (v >= 1000000) return (v / 1000000).toFixed(v % 1000000 ? 1 : 0) + 'M';
+        if (v >= 1000) return (v / 1000).toFixed(v % 1000 ? 1 : 0) + 'K';
+        return String(Math.round(v));
+    }
+
+    function drawTraffic(range) {
+        const svg = document.getElementById('trafficChart');
+        const data = TRAFFIC[range];
+        if (!svg || !data) return;
+
+        const L = 40, R = 665, T = 20, B = 180;
+        const n = data.labels.length;
+        const max = niceMax(Math.max(1, ...data.visitors, ...data.views));
+        const x = i => n > 1 ? L + (R - L) * i / (n - 1) : (L + R) / 2;
+        const y = v => B - (B - T) * v / max;
+        const ns = 'http://www.w3.org/2000/svg';
+        const el = (tag, attrs, text) => {
+            const e = document.createElementNS(ns, tag);
+            Object.entries(attrs).forEach(([k, v]) => e.setAttribute(k, v));
+            if (text !== undefined) e.textContent = text;
+            return e;
+        };
+        const smooth = vals => vals.map((v, i) => {
+            if (i === 0) return `M${x(0)} ${y(v)}`;
+            const cx = (x(i - 1) + x(i)) / 2;
+            return `C${cx} ${y(vals[i - 1])}, ${cx} ${y(v)}, ${x(i)} ${y(v)}`;
+        }).join(' ');
+
+        svg.innerHTML = '';
+        const defs = el('defs', {});
+        [['blueGrad', '#3B82F6'], ['redGrad', '#EC134A']].forEach(([id, c]) => {
+            const g = el('linearGradient', { id, x1: 0, y1: 0, x2: 0, y2: 1 });
+            g.appendChild(el('stop', { offset: '0%', 'stop-color': c, 'stop-opacity': 0.18 }));
+            g.appendChild(el('stop', { offset: '100%', 'stop-color': c, 'stop-opacity': 0 }));
+            defs.appendChild(g);
+        });
+        svg.appendChild(defs);
+
+        for (let k = 0; k <= 4; k++) {
+            const v = max * k / 4, yy = y(v);
+            svg.appendChild(el('line', { x1: L, y1: yy, x2: R, y2: yy, stroke: '#F1F5F9', 'stroke-width': 1 }));
+            svg.appendChild(el('text', { x: L - 6, y: yy + 4, 'text-anchor': 'end', fill: '#94A3B8', 'font-size': 11, 'font-family': 'Inter, sans-serif' }, fmtTick(v)));
+        }
+
+        [['views', '#3B82F6', 'blueGrad'], ['visitors', '#EC134A', 'redGrad']].forEach(([key, color, grad]) => {
+            const line = smooth(data[key]);
+            svg.appendChild(el('path', { d: `${line} L${x(n - 1)} ${B} L${x(0)} ${B} Z`, fill: `url(#${grad})` }));
+            svg.appendChild(el('path', { d: line, stroke: color, 'stroke-width': 2.5, fill: 'none', 'stroke-linecap': 'round' }));
+        });
+
+        const every = Math.max(1, Math.ceil(n / 11));
+        data.labels.forEach((lab, i) => {
+            if (i % every !== 0 && i !== n - 1) return;
+            svg.appendChild(el('text', { x: x(i), y: 202, 'text-anchor': 'middle', fill: '#94A3B8', 'font-size': 11, 'font-family': 'Inter, sans-serif' }, lab));
+            const tip = el('circle', { cx: x(i), cy: y(data.views[i]), r: 3, fill: '#3B82F6' });
+            tip.appendChild(el('title', {}, `${lab}: ${data.visitors[i]} visitors, ${data.views[i]} page views`));
+            svg.appendChild(tip);
+        });
+
+        const empty = document.getElementById('trafficEmpty');
+        if (empty) empty.style.display = data.views.some(v => v > 0) ? 'none' : 'block';
+    }
+
     function setTrafficTab(btn) {
         document.querySelectorAll('#trafficTabs .time-tab').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
+        drawTraffic(btn.dataset.range || 'week');
     }
+
+    drawTraffic('week');
 </script>
 @endpush
