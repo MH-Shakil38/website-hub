@@ -256,13 +256,17 @@ class SaasBillingController extends Controller
             abort(403);
         }
 
+        if ($invoice->status === 'paid') {
+            return back()->withErrors(['payment' => 'This invoice is already paid.']);
+        }
+
         $res = $this->billing->gateway('sslcommerz')->initiate($invoice);
 
         if (!empty($res['redirect_url'])) {
             return redirect()->to($res['redirect_url']);
         }
 
-        return back()->with('success', $res['message']);
+        return back()->withErrors(['payment' => $res['message']]);
     }
 
     /**
@@ -270,8 +274,25 @@ class SaasBillingController extends Controller
      */
     public function sslCommerzCheckout(Payment $payment)
     {
+        $this->authorizeSimulatorPayment($payment);
+
         $payment->load(['invoice.plan', 'invoice.tenant', 'user']);
         return view('admin.sslcommerz-checkout', compact('payment'));
+    }
+
+    /**
+     * The built-in SSLCommerz checkout simulator lets the payer confirm their own payment, so it is
+     * only reachable in local/testing without live credentials, only by the payment owner (or Super Admin),
+     * and only while the payment is still pending.
+     */
+    protected function authorizeSimulatorPayment(Payment $payment): void
+    {
+        abort_unless(\App\Services\Billing\SslCommerzPaymentDriver::simulatorAllowed(), 404);
+
+        /** @var User $user */
+        $user = Auth::user();
+        abort_unless($user && ($user->isSuperAdmin() || (int) $payment->user_id === (int) $user->id), 403);
+        abort_unless($payment->gateway === 'sslcommerz' && $payment->status === 'pending', 409, 'This payment is no longer pending.');
     }
 
     /**
@@ -279,6 +300,8 @@ class SaasBillingController extends Controller
      */
     public function sslCommerzCallback(Request $request, Payment $payment)
     {
+        $this->authorizeSimulatorPayment($payment);
+
         $outcome = $request->input('outcome', 'success');
 
         if ($outcome === 'success') {

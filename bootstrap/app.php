@@ -13,6 +13,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->redirectUsersTo(fn () => route('admin.dashboard'));
+        // SSLCommerz posts back from its own domain, so these cannot carry our CSRF token.
+        $middleware->validateCsrfTokens(except: ['payments/sslcommerz/*']);
         $middleware->web(append: [
             \App\Http\Middleware\TrackResellerReferral::class,
             \App\Http\Middleware\IdentifyTenant::class,

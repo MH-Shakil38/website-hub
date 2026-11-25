@@ -9,12 +9,21 @@ use App\Http\Controllers\Admin\SaasResellerController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FrontendHubController;
 use App\Http\Controllers\SaasOnboardingController;
+use App\Http\Controllers\SslCommerzWebhookController;
 use App\Http\Middleware\EnsureDashboardAccess;
 use Illuminate\Support\Facades\Route;
 
 // Caddy On-Demand TLS Domain Verification Endpoint (Phase 3: returns 200 if domain is verified & active, 404 otherwise)
 Route::get('/internal/domain-check', [SaasManagementController::class, 'caddyDomainCheck'])
     ->name('saas.caddy.domain-check');
+
+// SSLCommerz return URLs + IPN (public, CSRF-exempt; payments are confirmed via the SSLCommerz Validation API)
+Route::prefix('payments/sslcommerz')->name('payments.sslcommerz.')->middleware('throttle:60,1')->group(function () {
+    Route::post('/success', [SslCommerzWebhookController::class, 'success'])->name('success');
+    Route::post('/fail', [SslCommerzWebhookController::class, 'fail'])->name('fail');
+    Route::post('/cancel', [SslCommerzWebhookController::class, 'cancel'])->name('cancel');
+    Route::post('/ipn', [SslCommerzWebhookController::class, 'ipn'])->name('ipn');
+});
 
 // Public Step-by-Step Theme Installation Wizard & Email Verification Onboarding (Phase 6 + Phase 7 Rate Limiting)
 Route::get('/install/check-subdomain', [SaasOnboardingController::class, 'checkSubdomain'])

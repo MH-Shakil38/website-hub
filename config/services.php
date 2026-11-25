@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+
+    // SSLCommerz (Bangladesh). Leave the store id/password empty to use the local-only simulator.
+    'sslcommerz' => [
+        'store_id' => env('SSLCOMMERZ_STORE_ID'),
+        'store_password' => env('SSLCOMMERZ_STORE_PASSWORD'),
+        'sandbox' => env('SSLCOMMERZ_SANDBOX', true),
+    ],
+
 ];
