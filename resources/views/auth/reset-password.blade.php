@@ -58,8 +58,8 @@
 
         <form action="{{ route('password.update') }}" method="POST">
             @csrf
-            <input type="hidden" name="token" value="{{ $token ?? 'demo-token' }}">
-            <input type="hidden" name="email" value="{{ $email ?? 'you@example.com' }}">
+            <input type="hidden" name="token" value="{{ $token }}">
+            <input type="hidden" name="email" value="{{ $email }}">
 
             @if($errors->any())
                 <div class="soft-info-box" style="margin-top: 0; margin-bottom: 12px; padding: 9px 12px;">

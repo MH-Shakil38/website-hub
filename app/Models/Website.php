@@ -90,7 +90,7 @@ class Website extends Model
     }
 
     /**
-     * Synchronize modules_statuses.json and .env ACTIVE_MODULE with database state.
+     * Synchronize modules_statuses.json with database state.
      */
     public static function syncModuleStatuses(): void
     {
@@ -106,32 +106,7 @@ class Website extends Model
 
         File::put($statusFile, json_encode($statuses, JSON_PRETTY_PRINT));
 
-        // Update ACTIVE_MODULE in .env to the first active module
-        $firstActive = $allSites->firstWhere('is_active', true);
-        if ($firstActive && $firstActive->module_name) {
-            $module = $firstActive->module_name;
-            $envPath = base_path('.env');
-            if (File::exists($envPath)) {
-                $envContent = File::get($envPath);
-                if (preg_match('/^ACTIVE_MODULE=/m', $envContent)) {
-                    $envContent = preg_replace('/^ACTIVE_MODULE=.*/m', "ACTIVE_MODULE={$module}", $envContent);
-                } else {
-                    $envContent .= "\nACTIVE_MODULE={$module}\n";
-                }
-                File::put($envPath, $envContent);
-            }
-
-            // Ensure symlink for primary active module
-            $linkPath = public_path('module-assets');
-            $targetPath = base_path("Modules/{$module}/Public");
-            File::ensureDirectoryExists($targetPath . '/assets');
-            File::ensureDirectoryExists($targetPath . '/uploads');
-
-            if (is_link($linkPath) || File::exists($linkPath)) {
-                @unlink($linkPath);
-                @rmdir($linkPath);
-            }
-            @app('files')->link($targetPath, $linkPath);
-        }
+        // NOTE: .env and public/module-assets are intentionally NOT touched at runtime.
+        // Active modules live in the core_websites table (+ modules_statuses.json); use `php artisan demo:activate` for CLI/dev switching.
     }
 }

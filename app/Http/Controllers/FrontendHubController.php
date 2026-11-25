@@ -82,11 +82,15 @@ class FrontendHubController extends Controller
             'properties' => 'properties',
             'catalog' => 'catalog',
             'contact' => 'contact',
+            'sitemap.xml' => 'sitemap',
         ];
 
         $method = $methodMap[$action] ?? $action;
 
-        if (!method_exists($controller, $method)) {
+        // Only these public actions may be reached from a URL segment; never arbitrary controller methods.
+        $allowedActions = ['index', 'portfolio', 'properties', 'catalog', 'contact', 'projects', 'blog', 'sitemap'];
+
+        if (!in_array($method, $allowedActions, true) || !method_exists($controller, $method)) {
             // Modules with many static pages (e.g. TechCompany) expose a generic page($page) handler
             if (method_exists($controller, 'page')) {
                 return app()->call([$controller, 'page'], ['page' => $action]);

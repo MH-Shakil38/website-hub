@@ -8,6 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // MODIFY is MySQL/MariaDB syntax; SQLite text columns are already unbounded.
+        if (!in_array(DB::getDriverName(), ['mysql', 'mariadb'], true)) {
+            return;
+        }
+
         $tables = ['settings', 'int_settings', 're_settings', 'pharma_settings'];
 
         foreach ($tables as $table) {

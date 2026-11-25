@@ -12,7 +12,7 @@ use App\Models\User;
 use App\Models\Website;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -76,19 +76,24 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // 3. Seed 12 Users (Primary Admin: John Doe / you@example.com)
-        $mainAdmin = User::updateOrCreate(
-            ['email' => 'you@example.com'],
-            [
+        $adminEmail = env('ADMIN_EMAIL', 'admin@example.com');
+        $mainAdmin = User::where('email', $adminEmail)->first();
+        if (!$mainAdmin) {
+            $adminPassword = env('ADMIN_PASSWORD') ?: Str::password(16, symbols: false);
+            $mainAdmin = User::create([
                 'role_id' => $adminRole->id,
-                'name' => 'John Doe',
+                'name' => env('ADMIN_NAME', 'Administrator'),
+                'email' => $adminEmail,
                 'phone' => '01812-100001',
                 'status' => 'Active',
-                'password' => Hash::make('password'),
-                'two_factor_enabled' => true,
-                'two_factor_code' => '274916',
+                'password' => $adminPassword,
+                'two_factor_enabled' => false,
                 'email_verified_at' => now(),
-            ]
-        );
+            ]);
+            if (!env('ADMIN_PASSWORD')) {
+                $this->command?->warn("Admin created: {$adminEmail} / {$adminPassword}  (shown once - change it after first login, or set ADMIN_EMAIL / ADMIN_PASSWORD in .env before seeding)");
+            }
+        }
 
         $extraUsers = [
             ['name' => 'Sarah Jenkins', 'email' => 'sarah@example.com', 'phone' => '01712-200893', 'role_id' => $managerRole->id, 'status' => 'Active'],
@@ -108,8 +113,8 @@ class DatabaseSeeder extends Seeder
             User::updateOrCreate(
                 ['email' => $u['email']],
                 array_merge($u, [
-                    'password' => Hash::make('password'),
-                    'two_factor_code' => '274916',
+                    // Demo users get a random password they cannot know; use "Forgot password" to activate one.
+                    'password' => Str::password(32),
                     'email_verified_at' => now(),
                 ])
             );

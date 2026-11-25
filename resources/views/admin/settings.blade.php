@@ -36,7 +36,7 @@
             <div>
                 <div class="sb-summary-label">Two-Factor Security</div>
                 <div class="sb-summary-value">
-                    <span>{{ $user->two_factor_enabled ? 'Enabled (Code: ' . ($user->two_factor_code ?? '274916') . ')' : 'Disabled' }}</span>
+                    <span>{{ $user->two_factor_enabled ? 'Enabled' : 'Disabled' }}</span>
                 </div>
             </div>
         </div>

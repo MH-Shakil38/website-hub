@@ -546,7 +546,7 @@
                             <li class="px-3 py-1 text-uppercase text-muted" style="font-size: 10.5px; font-weight: 700;">Auth Pages Preview</li>
                             <li><a class="dropdown-item py-1" href="{{ route('login') }}"><i class="bi bi-person-lock me-2"></i>Login UI</a></li>
                             <li><a class="dropdown-item py-1" href="{{ route('password.request') }}"><i class="bi bi-key me-2"></i>Forgot Password UI</a></li>
-                            <li><a class="dropdown-item py-1" href="{{ route('password.reset') }}"><i class="bi bi-shield-check me-2"></i>Reset Password UI</a></li>
+                            <li><a class="dropdown-item py-1" href="{{ route('admin.settings') }}"><i class="bi bi-shield-check me-2"></i>Reset Password UI</a></li>
                             <li><a class="dropdown-item py-1" href="{{ route('verification.notice') }}"><i class="bi bi-envelope-check me-2"></i>Verify Email UI</a></li>
                             <li><a class="dropdown-item py-1" href="{{ route('two-factor.login') }}"><i class="bi bi-phone-flip me-2"></i>Two-Factor (2FA) UI</a></li>
                             <li><a class="dropdown-item py-1" href="{{ route('password.confirm') }}"><i class="bi bi-check2-circle me-2"></i>Confirm Password UI</a></li>

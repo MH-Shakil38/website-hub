@@ -30,7 +30,7 @@
                 </div>
                 <div class="input-wrapper">
                     <span class="input-icon-left"><i class="bi bi-envelope"></i></span>
-                    <input type="email" id="email" name="email" class="form-control-sb" placeholder="you@example.com" value="{{ old('email', 'you@example.com') }}" required>
+                    <input type="email" id="email" name="email" class="form-control-sb" placeholder="you@example.com" value="{{ old('email') }}" required>
                 </div>
             </div>
 
