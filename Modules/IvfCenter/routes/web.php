@@ -8,7 +8,7 @@ use Modules\IvfCenter\App\Http\Controllers\Frontend\HomeController;
 if (config('app.mode') === 'single' && config('app.active_module') === 'IvfCenter') {
     Route::middleware('web')->group(function () {
         Route::get('/', [HomeController::class, 'index'])->name('ivfcenter.home');
-        Route::post('/book-consultation', [HomeController::class, 'bookConsultation'])->name('ivfcenter.consultation.submit');
+        Route::post('/book-consultation', [HomeController::class, 'bookConsultation'])->middleware('throttle:10,1')->name('ivfcenter.consultation.submit');
     });
 }
 
@@ -24,7 +24,7 @@ Route::get('ivfcenter-media/{folder}/{file}', [HomeController::class, 'media'])
 
 // Consultation Submission Route (available always)
 Route::post('ivfcenter/book-consultation', [HomeController::class, 'bookConsultation'])
-    ->middleware('web')
+    ->middleware(['web', 'throttle:10,1'])
     ->name('ivfcenter.consultation.post');
 
 // 3. GLOBAL ADMIN PANEL ROUTES FOR IVF CENTER MODULE

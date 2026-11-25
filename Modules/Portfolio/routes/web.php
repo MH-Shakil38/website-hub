@@ -22,8 +22,8 @@ Route::prefix('developer-portfolio')->name('portfolio.')->group(function () {
 });
 
 // Public Form Submissions (Contact Form & Newsletter Subscription)
-Route::post('/portfolio/contact-submit', [HomeController::class, 'submitContact'])->name('portfolio.contact.submit');
-Route::post('/portfolio/newsletter-submit', [HomeController::class, 'submitNewsletter'])->name('portfolio.newsletter.submit');
+Route::post('/portfolio/contact-submit', [HomeController::class, 'submitContact'])->middleware('throttle:10,1')->name('portfolio.contact.submit');
+Route::post('/portfolio/newsletter-submit', [HomeController::class, 'submitNewsletter'])->middleware('throttle:10,1')->name('portfolio.newsletter.submit');
 
 // GLOBAL ADMIN PANEL ROUTES FOR PORTFOLIO MODULE
 Route::prefix('admin/portfolio')

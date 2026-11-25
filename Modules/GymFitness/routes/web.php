@@ -19,7 +19,7 @@ Route::get('/gym-fitness/lang/{locale}', [HomeController::class, 'switchLanguage
 Route::prefix('gym-fitness')->name('gymfitness.')->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/portal', [HomeController::class, 'portal'])->name('portal');
-    Route::post('/portal/login', [HomeController::class, 'portalLogin'])->name('portal.login');
+    Route::post('/portal/login', [HomeController::class, 'portalLogin'])->middleware('throttle:5,1')->name('portal.login');
     Route::get('/portal/logout', [HomeController::class, 'portalLogout'])->name('portal.logout');
     Route::post('/portal/renew', [HomeController::class, 'portalRenew'])->name('portal.renew');
     Route::post('/portal/book-class', [HomeController::class, 'portalBookClass'])->name('portal.book_class');
@@ -30,8 +30,8 @@ Route::prefix('gym-fitness')->name('gymfitness.')->group(function () {
 });
 
 // Public Form Submissions (Membership Registration & Newsletter)
-Route::post('/gym-fitness/register-submit', [HomeController::class, 'registerMember'])->name('gymfitness.register.submit');
-Route::post('/gym-fitness/newsletter-submit', [HomeController::class, 'submitNewsletter'])->name('gymfitness.newsletter.submit');
+Route::post('/gym-fitness/register-submit', [HomeController::class, 'registerMember'])->middleware('throttle:10,1')->name('gymfitness.register.submit');
+Route::post('/gym-fitness/newsletter-submit', [HomeController::class, 'submitNewsletter'])->middleware('throttle:10,1')->name('gymfitness.newsletter.submit');
 
 // GLOBAL ADMIN PANEL ROUTES FOR GYM & FITNESS MODULE
 Route::prefix('admin/gymfitness')

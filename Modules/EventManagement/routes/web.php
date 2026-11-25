@@ -13,7 +13,7 @@ Route::get('eventmanagement-assets/{type}/{file}', [HomeController::class, 'asse
 // Public Frontend Routes for EventManagement (Supports both Single-Module Root Mode & Multi-Module Hub Mode)
 Route::prefix('event-management')->name('eventmanagement.')->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
-    Route::post('/book-ticket', [HomeController::class, 'submitBooking'])->name('book.submit');
+    Route::post('/book-ticket', [HomeController::class, 'submitBooking'])->middleware('throttle:10,1')->name('book.submit');
     Route::get('/sitemap.xml', [HomeController::class, 'sitemap'])->name('sitemap');
 });
 

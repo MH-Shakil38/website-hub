@@ -26,8 +26,8 @@ Route::prefix('hajj-umrah')->name('hajjumrah.')->group(function () {
 });
 
 // Public Form Submissions (Package Booking Inquiry & Newsletter Subscription)
-Route::post('/hajj-umrah/inquiry-submit', [HomeController::class, 'submitInquiry'])->name('hajjumrah.inquiry.submit');
-Route::post('/hajj-umrah/newsletter-submit', [HomeController::class, 'submitNewsletter'])->name('hajjumrah.newsletter.submit');
+Route::post('/hajj-umrah/inquiry-submit', [HomeController::class, 'submitInquiry'])->middleware('throttle:10,1')->name('hajjumrah.inquiry.submit');
+Route::post('/hajj-umrah/newsletter-submit', [HomeController::class, 'submitNewsletter'])->middleware('throttle:10,1')->name('hajjumrah.newsletter.submit');
 
 // GLOBAL ADMIN PANEL ROUTES FOR HAJJ & UMRAH MODULE
 Route::prefix('admin/hajjumrah')

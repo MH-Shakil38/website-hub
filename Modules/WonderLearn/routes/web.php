@@ -13,8 +13,8 @@ Route::get('wonderlearn-assets/{type}/{file}', [HomeController::class, 'asset'])
 // Public Frontend Routes for WonderLearn (Supports both Single-Module Root Mode & Multi-Module Hub Mode)
 Route::prefix('wonder-learn')->name('wonderlearn.')->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
-    Route::post('/join', [HomeController::class, 'submitEnrollment'])->name('join.submit');
-    Route::post('/newsletter', [HomeController::class, 'submitNewsletter'])->name('newsletter.submit');
+    Route::post('/join', [HomeController::class, 'submitEnrollment'])->middleware('throttle:10,1')->name('join.submit');
+    Route::post('/newsletter', [HomeController::class, 'submitNewsletter'])->middleware('throttle:10,1')->name('newsletter.submit');
     Route::get('/sitemap.xml', [HomeController::class, 'sitemap'])->name('sitemap');
 });
 
