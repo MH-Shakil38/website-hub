@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ $landingLocale ?? 'bn' }}" dir="{{ $landingDir ?? 'ltr' }}">
 <head>
     @php
         $sec = isset($saasSections) ? $saasSections : \App\Models\SaasSection::getLandingMap();
@@ -20,19 +20,26 @@
             ? $clientPlans
             : collect();
         $baseCentralDomain = config('app.central_domains')[0] ?? 'localhost';
+        // Translate built-in text; text the admin typed in the Homepage Builder has no translation and shows as typed.
+        $t = fn ($v) => (is_string($v) && $v !== '') ? __($v) : $v;
+        $isRtl = ($landingDir ?? 'ltr') === 'rtl';
     @endphp
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $globalSiteName ?? 'SiteBuilder' }} Cloud — {{ $seoC['meta_title'] ?? 'Modern Multi-Industry SaaS Website Platform' }}</title>
-    <meta name="description" content="{{ $seoC['meta_description'] ?? 'Launch production-ready industry websites in seconds. Multi-module SaaS website builder with isolated databases, visual CMS, and instant deployment.' }}">
+    <title>{{ $globalSiteName ?? 'SiteBuilder' }} Cloud — {{ $t($seoC['meta_title'] ?? 'Modern Multi-Industry SaaS Website Platform') }}</title>
+    <meta name="description" content="{{ $t($seoC['meta_description'] ?? 'Launch production-ready industry websites in seconds. Multi-module SaaS website builder with isolated databases, visual CMS, and instant deployment.') }}">
 
     <!-- Google Fonts: Plus Jakarta Sans & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Bootstrap 5.3 & Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    @if($isRtl)
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    @else
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    @endif
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
@@ -715,6 +722,44 @@
         .saas-footer-links a:hover {
             color: #FFFFFF;
         }
+
+        /* =====================================================================
+           LANGUAGE (Bangla / Arabic fonts, RTL fixes, visitor switcher)
+           ===================================================================== */
+        html[lang="bn"] body,
+        html[lang="bn"] h1, html[lang="bn"] h2, html[lang="bn"] h3, html[lang="bn"] h4, html[lang="bn"] h5, html[lang="bn"] h6,
+        html[lang="bn"] .font-display, html[lang="bn"] button, html[lang="bn"] input {
+            font-family: 'Noto Sans Bengali', 'Inter', sans-serif;
+            letter-spacing: 0;
+        }
+
+        html[lang="ar"] body,
+        html[lang="ar"] h1, html[lang="ar"] h2, html[lang="ar"] h3, html[lang="ar"] h4, html[lang="ar"] h5, html[lang="ar"] h6,
+        html[lang="ar"] .font-display, html[lang="ar"] button, html[lang="ar"] input {
+            font-family: 'Cairo', 'Inter', sans-serif;
+            letter-spacing: 0;
+        }
+
+        [dir="rtl"] .console-body { text-align: right; }
+        [dir="rtl"] .template-category-badge { right: auto; left: 12px; }
+        [dir="rtl"] .demo-search-icon { left: auto !important; right: 14px; }
+        [dir="rtl"] .bi-arrow-right, [dir="rtl"] .bi-arrow-left,
+        [dir="rtl"] .bi-arrow-up-right, [dir="rtl"] .bi-box-arrow-up-right {
+            display: inline-block;
+            transform: scaleX(-1);
+        }
+        [dir="rtl"] code, [dir="rtl"] .console-url-bar, [dir="rtl"] .template-domain-chip { direction: ltr; unicode-bidi: isolate; }
+
+        .landing-lang-switch .dropdown-toggle {
+            border: 1px solid var(--saas-border);
+            background: #FFFFFF;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 999px;
+            padding: 7px 14px;
+        }
+        .landing-lang-switch .dropdown-item.active { background: var(--saas-primary); }
     </style>
 </head>
 <body>
@@ -740,30 +785,46 @@
                         <span class="fw-bolder fs-5 text-dark font-display">{{ $globalSiteName ?? 'SiteBuilder' }}</span>
                         <span class="saas-brand-badge">Cloud SaaS</span>
                     </div>
-                    <small class="text-muted d-block" style="font-size: 11px; line-height: 1;">{{ $globalSiteTagline ?? 'Multi-Website SaaS Engine' }}</small>
+                    <small class="text-muted d-block" style="font-size: 11px; line-height: 1;">{{ $t($globalSiteTagline ?? 'Multi-Website SaaS Engine') }}</small>
                 </div>
             </a>
 
             <ul class="saas-nav-links d-none d-lg-flex">
                 <li>
                     <a href="#themes">
-                        <span>Industry Themes</span>
-                        <span class="nav-count-pill">{{ $activeSites->count() }} Live</span>
+                        <span>{{ __('Industry Themes') }}</span>
+                        <span class="nav-count-pill">{{ __(':count Live', ['count' => $activeSites->count()]) }}</span>
                     </a>
                 </li>
-                <li><a href="#features">Platform Features</a></li>
-                <li><a href="#how-it-works">How It Works</a></li>
-                <li><a href="#pricing">Pricing</a></li>
-                <li><a href="#faq">FAQ</a></li>
+                <li><a href="#features">{{ __('Platform Features') }}</a></li>
+                <li><a href="#how-it-works">{{ __('How It Works') }}</a></li>
+                <li><a href="#pricing">{{ __('Pricing') }}</a></li>
+                <li><a href="#faq">{{ __('FAQ') }}</a></li>
             </ul>
 
             <div class="d-flex align-items-center gap-2">
-                <a href="{{ route('login') }}" class="btn-saas-ghost d-none d-sm-inline-block">Sign In</a>
+                @if(!empty($landingSwitcher) && !empty($landingLanguages))
+                    <div class="dropdown landing-lang-switch">
+                        <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{{ __('Language') }}">
+                            <i class="bi bi-translate me-1"></i> {{ $landingLanguages[$landingLocale]['native'] ?? strtoupper($landingLocale) }}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                            @foreach($landingLanguages as $langCode => $langInfo)
+                                <li>
+                                    <a class="dropdown-item {{ $langCode === $landingLocale ? 'active' : '' }}" href="{{ url('/') }}?lang={{ $langCode }}" hreflang="{{ $langCode }}">
+                                        {{ $langInfo['flag'] }} {{ $langInfo['native'] }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                <a href="{{ route('login') }}" class="btn-saas-ghost d-none d-sm-inline-block">{{ __('Sign In') }}</a>
                 <a href="{{ route('admin.dashboard') }}" class="btn-saas-ghost d-none d-md-inline-block">
-                    <i class="bi bi-grid-1x2-fill me-1 text-danger"></i> Admin Console
+                    <i class="bi bi-grid-1x2-fill me-1 text-danger"></i> {{ __('Admin Console') }}
                 </a>
                 <a href="#themes" class="btn-saas-primary">
-                    <span>Start Free Trial</span>
+                    <span>{{ __('Start Free Trial') }}</span>
                     <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
@@ -780,36 +841,36 @@
 
         <div class="container position-relative" style="z-index: 5;">
             <a href="#themes" class="hero-pill-announcement">
-                <span class="hero-pill-tag">{{ $heroC['pill_tag'] ?? 'New v3.5 Cloud' }}</span>
-                <span>{{ $activeSites->count() }}+ {{ $heroC['pill_text'] ?? 'Ready-to-Deploy Industry Websites in One SaaS Hub' }}</span>
+                <span class="hero-pill-tag">{{ $t($heroC['pill_tag'] ?? 'New v3.5 Cloud') }}</span>
+                <span>{{ $activeSites->count() }}+ {{ $t($heroC['pill_text'] ?? 'Ready-to-Deploy Industry Websites in One SaaS Hub') }}</span>
                 <i class="bi bi-arrow-right text-danger"></i>
             </a>
 
             <h1 class="saas-hero-title">
-                {{ $heroC['heading_line_1'] ?? 'Launch Production-Ready' }} <br class="d-none d-md-inline">
-                <span class="text-gradient-saas">{{ $heroC['heading_gradient'] ?? 'Industry Websites in Seconds' }}</span>
+                {{ $t($heroC['heading_line_1'] ?? 'Launch Production-Ready') }} <br class="d-none d-md-inline">
+                <span class="text-gradient-saas">{{ $t($heroC['heading_gradient'] ?? 'Industry Websites in Seconds') }}</span>
             </h1>
 
             <p class="saas-hero-sub">
-                {{ $heroC['subheading'] ?? 'The all-in-one modular SaaS website platform for agencies, enterprises, and creators. Activate any industry niche with isolated databases, visual CMS, and instant domain routing.' }}
+                {{ $t($heroC['subheading'] ?? 'The all-in-one modular SaaS website platform for agencies, enterprises, and creators. Activate any industry niche with isolated databases, visual CMS, and instant domain routing.') }}
             </p>
 
             <div class="d-flex align-items-center justify-content-center flex-wrap gap-3">
                 <a href="#themes" class="btn-saas-primary btn-hero-lg">
                     <i class="bi bi-rocket-takeoff-fill"></i>
-                    <span>{{ $heroC['primary_btn_text'] ?? ('Explore ' . $activeSites->count() . ' Live Demos') }}</span>
+                    <span>{{ $t($heroC['primary_btn_text'] ?? ('Explore ' . $activeSites->count() . ' Live Demos')) }}</span>
                 </a>
                 <a href="#pricing" class="btn-hero-lg btn-hero-secondary">
                     <i class="bi bi-tags-fill"></i>
-                    <span>{{ $heroC['secondary_btn_text'] ?? 'View Pricing & Free Trial' }}</span>
+                    <span>{{ $t($heroC['secondary_btn_text'] ?? 'View Pricing & Free Trial') }}</span>
                 </a>
             </div>
 
             <!-- Trust Checks Under CTA -->
             <div class="d-flex align-items-center justify-content-center flex-wrap gap-4 mt-4 pt-2 text-white-50 small fw-medium">
-                <span><i class="bi bi-check-circle-fill text-success me-1"></i> Instant 1-Click Deployment</span>
-                <span><i class="bi bi-check-circle-fill text-success me-1"></i> 100% Isolated Tenant Tables</span>
-                <span><i class="bi bi-check-circle-fill text-success me-1"></i> Custom Domain &amp; White-Label Ready</span>
+                <span><i class="bi bi-check-circle-fill text-success me-1"></i> {{ __('Instant 1-Click Deployment') }}</span>
+                <span><i class="bi bi-check-circle-fill text-success me-1"></i> {{ __('100% Isolated Tenant Tables') }}</span>
+                <span><i class="bi bi-check-circle-fill text-success me-1"></i> {{ __('Custom Domain & White-Label Ready') }}</span>
             </div>
 
             <!-- Interactive SaaS Cloud Console Preview Frame -->
@@ -826,7 +887,7 @@
                     </div>
                     <div class="d-none d-sm-flex align-items-center gap-2">
                         <span class="badge bg-success-subtle text-success rounded-pill px-2 py-1" style="font-size: 11px;">
-                            ● {{ $activeSites->count() }} Active Modules
+                            ● {{ __(':count Active Modules', ['count' => $activeSites->count()]) }}
                         </span>
                     </div>
                 </div>
@@ -835,30 +896,30 @@
                     <div class="row g-3 mb-3">
                         <div class="col-md-3 col-6">
                             <div class="console-stat-card">
-                                <div class="text-white-50 small mb-1">Active Industry Modules</div>
-                                <div class="fs-3 fw-bolder text-white font-display">{{ $activeSites->count() }} Websites</div>
-                                <div class="small text-success mt-1"><i class="bi bi-lightning-charge-fill"></i> Multi-Tenant Hub Mode</div>
+                                <div class="text-white-50 small mb-1">{{ __('Active Industry Modules') }}</div>
+                                <div class="fs-3 fw-bolder text-white font-display">{{ __(':count Websites', ['count' => $activeSites->count()]) }}</div>
+                                <div class="small text-success mt-1"><i class="bi bi-lightning-charge-fill"></i> {{ __('Multi-Tenant Hub Mode') }}</div>
                             </div>
                         </div>
                         <div class="col-md-3 col-6">
                             <div class="console-stat-card">
-                                <div class="text-white-50 small mb-1">Database Isolation</div>
-                                <div class="fs-3 fw-bolder text-white font-display">100% Prefixed</div>
-                                <div class="small text-info mt-1"><i class="bi bi-shield-lock-fill"></i> Zero Schema Collision</div>
+                                <div class="text-white-50 small mb-1">{{ __('Database Isolation') }}</div>
+                                <div class="fs-3 fw-bolder text-white font-display">{{ __('100% Prefixed') }}</div>
+                                <div class="small text-info mt-1"><i class="bi bi-shield-lock-fill"></i> {{ __('Zero Schema Collision') }}</div>
                             </div>
                         </div>
                         <div class="col-md-3 col-6">
                             <div class="console-stat-card">
-                                <div class="text-white-50 small mb-1">Global Admin &amp; CMS</div>
-                                <div class="fs-3 fw-bolder text-white font-display">Unified Hub</div>
-                                <div class="small text-warning mt-1"><i class="bi bi-palette-fill"></i> Visual Theme Builder</div>
+                                <div class="text-white-50 small mb-1">{{ __('Global Admin & CMS') }}</div>
+                                <div class="fs-3 fw-bolder text-white font-display">{{ __('Unified Hub') }}</div>
+                                <div class="small text-warning mt-1"><i class="bi bi-palette-fill"></i> {{ __('Visual Theme Builder') }}</div>
                             </div>
                         </div>
                         <div class="col-md-3 col-6">
                             <div class="console-stat-card">
-                                <div class="text-white-50 small mb-1">Cloud Uptime SLA</div>
+                                <div class="text-white-50 small mb-1">{{ __('Cloud Uptime SLA') }}</div>
                                 <div class="fs-3 fw-bolder text-white font-display">99.99%</div>
-                                <div class="small text-success mt-1"><i class="bi bi-check2-all"></i> Production Ready</div>
+                                <div class="small text-success mt-1"><i class="bi bi-check2-all"></i> {{ __('Production Ready') }}</div>
                             </div>
                         </div>
                     </div>
@@ -866,7 +927,7 @@
                     <!-- Quick Live Module Pills inside Console Preview -->
                     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 pt-2 border-top border-secondary border-opacity-25">
                         <div class="d-flex align-items-center flex-wrap gap-2">
-                            <span class="text-white-50 small fw-semibold me-1">Quick Launch:</span>
+                            <span class="text-white-50 small fw-semibold me-1">{{ __('Quick Launch:') }}</span>
                             @foreach($activeSites as $quickSite)
                                 <a href="{{ url('/' . $quickSite->slug) }}" class="badge text-decoration-none rounded-pill px-3 py-2"
                                    style="background: rgba(255,255,255,0.08); color: #E2E8F0; border: 1px solid rgba(255,255,255,0.12); font-weight: 600;">
@@ -875,7 +936,7 @@
                             @endforeach
                         </div>
                         <a href="{{ route('admin.websites') }}" class="text-info small fw-bold text-decoration-none">
-                            Manage All Tenants <i class="bi bi-arrow-up-right"></i>
+                            {{ __('Manage All Tenants') }} <i class="bi bi-arrow-up-right"></i>
                         </a>
                     </div>
                 </div>
@@ -893,25 +954,25 @@
                 <div class="col-6 col-md-3">
                     <div class="metric-item">
                         <div class="metric-value">{{ $activeSites->count() }}+</div>
-                        <div class="metric-label">Turnkey Industry Modules</div>
+                        <div class="metric-label">{{ __('Turnkey Industry Modules') }}</div>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="metric-item">
-                        <div class="metric-value">&lt; 30 Sec</div>
-                        <div class="metric-label">Average Website Deployment</div>
+                        <div class="metric-value">&lt; {{ __('30 Sec') }}</div>
+                        <div class="metric-label">{{ __('Average Website Deployment') }}</div>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="metric-item">
                         <div class="metric-value">100%</div>
-                        <div class="metric-label">Self-Contained Assets &amp; DB</div>
+                        <div class="metric-label">{{ __('Self-Contained Assets & DB') }}</div>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="metric-item">
                         <div class="metric-value">EN / বাংলা / AR</div>
-                        <div class="metric-label">Multilingual &amp; RTL Ready</div>
+                        <div class="metric-label">{{ __('Multilingual & RTL Ready') }}</div>
                     </div>
                 </div>
             </div>
@@ -928,49 +989,50 @@
             <div class="text-center mb-4">
                 <div class="section-eyebrow">
                     <i class="bi bi-collection-play-fill"></i>
-                    <span>{{ $themesC['eyebrow'] ?? 'Live Interactive Demos' }}</span>
+                    <span>{{ $t($themesC['eyebrow'] ?? 'Live Interactive Demos') }}</span>
                 </div>
-                <h2 class="section-heading">{{ $themesC['heading'] ?? 'Explore Ready-to-Use Industry Websites' }}</h2>
+                <h2 class="section-heading">{{ $t($themesC['heading'] ?? 'Explore Ready-to-Use Industry Websites') }}</h2>
                 <p class="section-subheading">
-                    {{ $themesC['subheading'] ?? 'Every module below is a complete, standalone business application with its own bespoke frontend theme, isolated database, and dedicated Admin CRUD suite.' }}
+                    {{ $t($themesC['subheading'] ?? 'Every module below is a complete, standalone business application with its own bespoke frontend theme, isolated database, and dedicated Admin CRUD suite.') }}
                 </p>
             </div>
 
             <!-- Selected Plan Banner (Appears when user clicks a Pricing Card) -->
             <div id="selectedPlanBanner" class="d-none alert border-0 shadow-sm rounded-4 p-3 px-4 mb-4 d-flex align-items-center justify-content-between flex-wrap gap-2" style="background: linear-gradient(135deg, #090D16 0%, #1E1B4B 100%); color: #FFFFFF;">
                 <div class="d-flex align-items-center gap-2">
-                    <span class="badge bg-danger rounded-pill px-3 py-2">STEP 1: SELECT YOUR THEME</span>
+                    <span class="badge bg-danger rounded-pill px-3 py-2">{{ __('STEP 1: SELECT YOUR THEME') }}</span>
                     <span class="small">
-                        Selected Plan: <strong id="bannerPlanName" class="text-warning">Single Theme Starter (14-Day Free Trial)</strong> — Now click <strong>"Install Theme (Free Trial)"</strong> on your favorite industry theme below!
+                        {{ __('Selected Plan:') }} <strong id="bannerPlanName" class="text-warning">{{ __('Single Theme Starter (14-Day Free Trial)') }}</strong> —
+                        {!! __('Now click :button on your favorite industry theme below!', ['button' => '<strong>"' . e(__('Install Theme (Free Trial)')) . '"</strong>']) !!}
                     </span>
                 </div>
-                <button type="button" class="btn btn-sm btn-outline-light rounded-pill px-3" onclick="clearSelectedPlan()">Change Plan</button>
+                <button type="button" class="btn btn-sm btn-outline-light rounded-pill px-3" onclick="clearSelectedPlan()">{{ __('Change Plan') }}</button>
             </div>
 
             <!-- Interactive Category Filter Pills & Search -->
             <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-3 mb-4">
                 <div class="filter-pills-wrap mb-0">
                     <button type="button" class="filter-pill-btn active" onclick="filterDemos('all', this)">
-                        All Industries ({{ $activeSites->count() }})
+                        {{ __('All Industries') }} ({{ $activeSites->count() }})
                     </button>
                     <button type="button" class="filter-pill-btn" onclick="filterDemos('property', this)">
-                        Real Estate &amp; Interior
+                        {{ __('Real Estate & Interior') }}
                     </button>
                     <button type="button" class="filter-pill-btn" onclick="filterDemos('health', this)">
-                        Healthcare &amp; Medical
+                        {{ __('Healthcare & Medical') }}
                     </button>
                     <button type="button" class="filter-pill-btn" onclick="filterDemos('lifestyle', this)">
-                        Fitness, Travel &amp; Kids
+                        {{ __('Fitness, Travel & Kids') }}
                     </button>
                     <button type="button" class="filter-pill-btn" onclick="filterDemos('tech', this)">
-                        Tech &amp; Portfolio
+                        {{ __('Tech & Portfolio') }}
                     </button>
                 </div>
 
                 <div class="position-relative" style="min-width: 260px;">
-                    <i class="bi bi-search position-absolute text-muted" style="left: 14px; top: 50%; transform: translateY(-50%);"></i>
+                    <i class="bi bi-search position-absolute text-muted demo-search-icon" style="left: 14px; top: 50%; transform: translateY(-50%);"></i>
                     <input type="text" id="demoSearchInput" class="form-control rounded-pill ps-5 py-2"
-                           placeholder="Search industry or domain..."
+                           placeholder="{{ __('Search industry or domain...') }}"
                            oninput="searchDemos(this.value)">
                 </div>
             </div>
@@ -978,10 +1040,10 @@
             @if($activeSites->isEmpty())
                 <div class="text-center bg-white border rounded-4 p-5 shadow-sm mx-auto" style="max-width: 560px;">
                     <i class="bi bi-power text-danger" style="font-size: 48px;"></i>
-                    <h4 class="fw-bold mt-3">No Modules Currently Active</h4>
-                    <p class="text-muted small mb-4">Open the SaaS Admin Panel &rarr; Websites and toggle at least one industry module to launch your live demos.</p>
+                    <h4 class="fw-bold mt-3">{{ __('No Modules Currently Active') }}</h4>
+                    <p class="text-muted small mb-4">{{ __('Open the SaaS Admin Panel → Websites and toggle at least one industry module to launch your live demos.') }}</p>
                     <a href="{{ route('admin.websites') }}" class="btn-saas-primary">
-                        <i class="bi bi-globe2"></i> Open Manage Websites
+                        <i class="bi bi-globe2"></i> {{ __('Open Manage Websites') }}
                     </a>
                 </div>
             @else
@@ -1013,7 +1075,7 @@
                                         <i class="bi bi-globe2 text-primary"></i>
                                         {{ $site->domain }}
                                     </span>
-                                    <span class="status-pulse-dot" title="Live & Operational"></span>
+                                    <span class="status-pulse-dot" title="{{ __('Live & Operational') }}"></span>
                                 </div>
 
                                 <!-- Preview Image -->
@@ -1030,16 +1092,16 @@
                                                 {{ $site->name }}
                                             </h4>
                                             <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1" style="font-size: 11px;">
-                                                Live Demo
+                                                {{ __('Live Demo') }}
                                             </span>
                                         </div>
 
                                         <p class="text-muted small mb-3" style="line-height: 1.55;">
-                                            {{ $site->description ?? 'Turnkey industry website module with standalone frontend theme, isolated database, and full admin CRUD.' }}
+                                            {{ $t($site->description ?? 'Turnkey industry website module with standalone frontend theme, isolated database, and full admin CRUD.') }}
                                         </p>
 
                                         <div class="mb-3 px-3 py-2 rounded-3 bg-light border d-flex align-items-center justify-content-between small">
-                                            <span class="text-muted fw-medium">Tenant Endpoint:</span>
+                                            <span class="text-muted fw-medium">{{ __('Tenant Endpoint:') }}</span>
                                             <code class="fw-bold text-dark">/{{ $site->slug }}</code>
                                         </div>
                                     </div>
@@ -1048,16 +1110,16 @@
                                         <a href="{{ url('/' . $site->slug) }}"
                                            class="btn btn-outline-dark rounded-3 px-3 py-2 fw-semibold d-inline-flex align-items-center justify-content-center gap-1 flex-grow-1"
                                            style="font-size: 13px; white-space: nowrap;">
-                                            <span>Live Preview</span>
+                                            <span>{{ __('Live Preview') }}</span>
                                             <i class="bi bi-box-arrow-up-right" style="font-size: 12px;"></i>
                                         </a>
                                         <button type="button"
                                                 class="btn-saas-primary flex-grow-1 justify-content-center py-2 px-3"
                                                 style="font-size: 13px; white-space: nowrap;"
                                                 onclick="openInstallWizard(@js($site->module_name ?: 'Interior'), @js($site->name), @js($site->module), @js($site->thumbnail), @js(url('/' . $site->slug)))"
-                                                title="Install This Theme with 14-Day Free Trial">
+                                                title="{{ __('Install This Theme with 14-Day Free Trial') }}">
                                             <i class="bi bi-rocket-takeoff-fill"></i>
-                                            <span>Install Theme</span>
+                                            <span>{{ __('Install Theme') }}</span>
                                         </button>
                                     </div>
                                 </div>
@@ -1079,11 +1141,11 @@
             <div class="text-center mb-5">
                 <div class="section-eyebrow">
                     <i class="bi bi-cpu-fill"></i>
-                    <span>{{ $featC['eyebrow'] ?? 'Enterprise SaaS Architecture' }}</span>
+                    <span>{{ $t($featC['eyebrow'] ?? 'Enterprise SaaS Architecture') }}</span>
                 </div>
-                <h2 class="section-heading">{{ $featC['heading'] ?? 'Built for Multi-Tenant Scale & Speed' }}</h2>
+                <h2 class="section-heading">{{ $t($featC['heading'] ?? 'Built for Multi-Tenant Scale & Speed') }}</h2>
                 <p class="section-subheading">
-                    {{ $featC['subheading'] ?? 'Engineered with strict modular isolation so you can host dozens of industry vertical websites or deploy single-tenant client projects with zero friction.' }}
+                    {{ $t($featC['subheading'] ?? 'Engineered with strict modular isolation so you can host dozens of industry vertical websites or deploy single-tenant client projects with zero friction.') }}
                 </p>
             </div>
 
@@ -1093,9 +1155,9 @@
                         <div class="bento-icon-box" style="background: #FFE4EC; color: #EC134A;">
                             <i class="bi bi-diagram-3-fill"></i>
                         </div>
-                        <h4 class="fw-bold fs-5 mb-2">Dual Routing Engine</h4>
+                        <h4 class="fw-bold fs-5 mb-2">{{ __('Dual Routing Engine') }}</h4>
                         <p class="text-muted small mb-0" style="line-height: 1.65;">
-                            Run all modules simultaneously as a <strong>Multi-Theme SaaS Showcase</strong> (`/{slug}`), or toggle a single module active to take over the root domain (`/`) automatically.
+                            {!! __('Run all modules simultaneously as a <strong>Multi-Theme SaaS Showcase</strong> (`/{slug}`), or toggle a single module active to take over the root domain (`/`) automatically.') !!}
                         </p>
                     </div>
                 </div>
@@ -1105,9 +1167,9 @@
                         <div class="bento-icon-box" style="background: #E0E7FF; color: #4F46E5;">
                             <i class="bi bi-database-fill-lock"></i>
                         </div>
-                        <h4 class="fw-bold fs-5 mb-2">Zero-Collision Prefixed DB</h4>
+                        <h4 class="fw-bold fs-5 mb-2">{{ __('Zero-Collision Prefixed DB') }}</h4>
                         <p class="text-muted small mb-0" style="line-height: 1.65;">
-                            Every industry module enforces its own table namespace (`int_`, `re_`, `pharma_`, `gym_`, `hajj_`, `wl_`) and self-contained media storage folder.
+                            {{ __('Every industry module enforces its own table namespace (`int_`, `re_`, `pharma_`, `gym_`, `hajj_`, `wl_`) and self-contained media storage folder.') }}
                         </p>
                     </div>
                 </div>
@@ -1117,9 +1179,9 @@
                         <div class="bento-icon-box" style="background: #DCFCE7; color: #16A34A;">
                             <i class="bi bi-magic"></i>
                         </div>
-                        <h4 class="fw-bold fs-5 mb-2">Unified Visual CMS</h4>
+                        <h4 class="fw-bold fs-5 mb-2">{{ __('Unified Visual CMS') }}</h4>
                         <p class="text-muted small mb-0" style="line-height: 1.65;">
-                            Manage Menus, Sliders, Media Galleries, Video Libraries, Custom Pages, Color Themes, and SEO settings from one intuitive global admin shell.
+                            {{ __('Manage Menus, Sliders, Media Galleries, Video Libraries, Custom Pages, Color Themes, and SEO settings from one intuitive global admin shell.') }}
                         </p>
                     </div>
                 </div>
@@ -1129,9 +1191,9 @@
                         <div class="bento-icon-box" style="background: #FEF3C7; color: #D97706;">
                             <i class="bi bi-arrow-counterclockwise"></i>
                         </div>
-                        <h4 class="fw-bold fs-5 mb-2">1-Click Default Restore</h4>
+                        <h4 class="fw-bold fs-5 mb-2">{{ __('1-Click Default Restore') }}</h4>
                         <p class="text-muted small mb-0" style="line-height: 1.65;">
-                            Testing changes or running public client sandboxes? Reset any website module 100% back to its original default layout, text, and artwork in one click.
+                            {{ __('Testing changes or running public client sandboxes? Reset any website module 100% back to its original default layout, text, and artwork in one click.') }}
                         </p>
                     </div>
                 </div>
@@ -1141,9 +1203,9 @@
                         <div class="bento-icon-box" style="background: #E0F2FE; color: #0284C7;">
                             <i class="bi bi-translate"></i>
                         </div>
-                        <h4 class="fw-bold fs-5 mb-2">Multilingual &amp; Portals</h4>
+                        <h4 class="fw-bold fs-5 mb-2">{{ __('Multilingual & Portals') }}</h4>
                         <p class="text-muted small mb-0" style="line-height: 1.65;">
-                            Built-in support for English, Bengali (বাংলা), and Arabic (RTL) along with interactive Member Portals, QR Check-in passes, and Story Readers.
+                            {{ __('Built-in support for English, Bengali (বাংলা), and Arabic (RTL) along with interactive Member Portals, QR Check-in passes, and Story Readers.') }}
                         </p>
                     </div>
                 </div>
@@ -1153,9 +1215,9 @@
                         <div class="bento-icon-box" style="background: #F3E8FF; color: #9333EA;">
                             <i class="bi bi-terminal-fill"></i>
                         </div>
-                        <h4 class="fw-bold fs-5 mb-2">Instant Client Handover CLI</h4>
+                        <h4 class="fw-bold fs-5 mb-2">{{ __('Instant Client Handover CLI') }}</h4>
                         <p class="text-muted small mb-0" style="line-height: 1.65;">
-                            Delivering a standalone website to a client? Run <code>php artisan demo:handover {Module} --force</code> to package only their chosen module cleanly.
+                            {!! __('Delivering a standalone website to a client? Run :command to package only their chosen module cleanly.', ['command' => '<code>php artisan demo:handover {Module} --force</code>']) !!}
                         </p>
                     </div>
                 </div>
@@ -1172,11 +1234,11 @@
             <div class="text-center mb-5">
                 <div class="section-eyebrow">
                     <i class="bi bi-lightning-fill"></i>
-                    <span>Simple 3-Step Workflow</span>
+                    <span>{{ __('Simple 3-Step Workflow') }}</span>
                 </div>
-                <h2 class="section-heading">From Idea to Live Website in 3 Steps</h2>
+                <h2 class="section-heading">{{ __('From Idea to Live Website in 3 Steps') }}</h2>
                 <p class="section-subheading">
-                    No coding required. Pick your industry template, customize your content, and publish immediately.
+                    {{ __('No coding required. Pick your industry template, customize your content, and publish immediately.') }}
                 </p>
             </div>
 
@@ -1184,27 +1246,27 @@
                 <div class="col-md-4">
                     <div class="step-card">
                         <div class="step-number-badge">01</div>
-                        <h4 class="fw-bold fs-5 mb-2">Select Your Industry Module</h4>
+                        <h4 class="fw-bold fs-5 mb-2">{{ __('Select Your Industry Module') }}</h4>
                         <p class="text-muted small mb-0" style="line-height: 1.65;">
-                            Choose from our growing catalog of specialized business verticals—Real Estate, Interior Design, Pharmacy, Fertility Clinic, Gym, Hajj &amp; Umrah, or Kids Learning.
+                            {{ __('Choose from our growing catalog of specialized business verticals—Real Estate, Interior Design, Pharmacy, Fertility Clinic, Gym, Hajj & Umrah, or Kids Learning.') }}
                         </p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="step-card">
                         <div class="step-number-badge" style="background: var(--saas-primary);">02</div>
-                        <h4 class="fw-bold fs-5 mb-2">Customize via Admin CMS</h4>
+                        <h4 class="fw-bold fs-5 mb-2">{{ __('Customize via Admin CMS') }}</h4>
                         <p class="text-muted small mb-0" style="line-height: 1.65;">
-                            Update your brand logo, hero banners, pricing packages, team members, and navigation menus in real time from the unified Admin Dashboard.
+                            {{ __('Update your brand logo, hero banners, pricing packages, team members, and navigation menus in real time from the unified Admin Dashboard.') }}
                         </p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="step-card">
                         <div class="step-number-badge" style="background: var(--saas-indigo);">03</div>
-                        <h4 class="fw-bold fs-5 mb-2">Connect Domain &amp; Scale</h4>
+                        <h4 class="fw-bold fs-5 mb-2">{{ __('Connect Domain & Scale') }}</h4>
                         <p class="text-muted small mb-0" style="line-height: 1.65;">
-                            Map your custom domain, accept online bookings &amp; payments, and scale effortlessly with high-speed caching and isolated tenant security.
+                            {{ __('Map your custom domain, accept online bookings & payments, and scale effortlessly with high-speed caching and isolated tenant security.') }}
                         </p>
                     </div>
                 </div>
@@ -1221,20 +1283,20 @@
             <div class="text-center mb-5">
                 <div class="section-eyebrow">
                     <i class="bi bi-tags-fill"></i>
-                    <span>{{ $pricingC['eyebrow'] ?? 'Transparent SaaS Pricing' }}</span>
+                    <span>{{ $t($pricingC['eyebrow'] ?? 'Transparent SaaS Pricing') }}</span>
                 </div>
-                <h2 class="section-heading">{{ $pricingC['heading'] ?? 'Flexible Plans for Every Business' }}</h2>
+                <h2 class="section-heading">{{ $t($pricingC['heading'] ?? 'Flexible Plans for Every Business') }}</h2>
                 <p class="section-subheading mb-4">
-                    {{ $pricingC['subheading'] ?? 'Start free and upgrade as you grow. Switch between monthly and yearly billing anytime.' }}
+                    {{ $t($pricingC['subheading'] ?? 'Start free and upgrade as you grow. Switch between monthly and yearly billing anytime.') }}
                 </p>
 
                 <!-- Monthly / Yearly Billing Toggle -->
                 <div class="d-inline-flex align-items-center gap-2 bg-light border rounded-pill p-1">
                     <button type="button" id="btnMonthly" class="btn btn-sm rounded-pill px-3 py-2 fw-bold bg-dark text-white" onclick="toggleBilling('monthly')">
-                        Monthly Billing
+                        {{ __('Monthly Billing') }}
                     </button>
                     <button type="button" id="btnYearly" class="btn btn-sm rounded-pill px-3 py-2 fw-bold text-secondary" onclick="toggleBilling('yearly')">
-                        Yearly Billing <span class="badge bg-success-subtle text-success rounded-pill ms-1">Save 20%</span>
+                        {{ __('Yearly Billing') }} <span class="badge bg-success-subtle text-success rounded-pill ms-1">{{ __('Save 20%') }}</span>
                     </button>
                 </div>
             </div>
@@ -1244,14 +1306,14 @@
                     <div class="col-lg-4">
                         <div class="pricing-card {{ $pItem->is_featured ? 'featured' : '' }}">
                             @if($pItem->is_featured)
-                                <span class="popular-ribbon"><i class="bi bi-stars me-1"></i> Most Popular</span>
+                                <span class="popular-ribbon"><i class="bi bi-stars me-1"></i> {{ __('Most Popular') }}</span>
                             @endif
                             <div>
                                 <div class="fw-bold text-uppercase small {{ $pItem->is_featured ? 'text-info' : 'text-muted' }} mb-1">
-                                    {{ $pItem->trial_days > 0 ? ($pItem->trial_days . '-Day Free Trial') : 'SaaS Package' }}
+                                    {{ $pItem->trial_days > 0 ? __(':days-Day Free Trial', ['days' => $pItem->trial_days]) : __('SaaS Package') }}
                                 </div>
-                                <h4 class="fw-bolder mb-2 {{ $pItem->is_featured ? 'text-white' : '' }}">{{ $pItem->name }}</h4>
-                                <p class="{{ $pItem->is_featured ? 'text-white-50' : 'text-muted' }} small mb-4">{{ $pItem->description }}</p>
+                                <h4 class="fw-bolder mb-2 {{ $pItem->is_featured ? 'text-white' : '' }}">{{ $t($pItem->name) }}</h4>
+                                <p class="{{ $pItem->is_featured ? 'text-white-50' : 'text-muted' }} small mb-4">{{ $t($pItem->description) }}</p>
 
                                 <div class="d-flex align-items-baseline gap-1 mb-2">
                                     <span class="price-amount {{ $pItem->is_featured ? 'text-white' : '' }}"
@@ -1259,23 +1321,23 @@
                                           data-yearly="{{ $pItem->currency }} {{ number_format($pItem->price_yearly, 0) }}">
                                         {{ $pItem->currency }} {{ number_format($pItem->price_monthly, 0) }}
                                     </span>
-                                    <span class="{{ $pItem->is_featured ? 'text-white-50' : 'text-muted' }} fw-semibold small">/ cycle</span>
+                                    <span class="{{ $pItem->is_featured ? 'text-white-50' : 'text-muted' }} fw-semibold small">{{ __('/ cycle') }}</span>
                                 </div>
-                                <small class="{{ $pItem->is_featured ? 'text-info' : 'text-muted' }} d-block mb-3 billing-note">Billed monthly (14-Day Free Trial)</small>
+                                <small class="{{ $pItem->is_featured ? 'text-info' : 'text-muted' }} d-block mb-3 billing-note">{{ __('Billed monthly (14-Day Free Trial)') }}</small>
 
                                 <ul class="pricing-feature-list {{ $pItem->is_featured ? 'text-white-50' : '' }}">
                                     <li class="{{ $pItem->is_featured ? 'text-white' : '' }}">
                                         <i class="bi bi-check-circle-fill {{ $pItem->is_featured ? 'text-danger' : 'text-success' }}"></i>
-                                        <strong>{{ $pItem->site_limit }} Industry Website(s) (Isolated DB)</strong>
+                                        <strong>{{ __(':count Industry Website(s) (Isolated DB)', ['count' => $pItem->site_limit]) }}</strong>
                                     </li>
                                     <li class="{{ $pItem->is_featured ? 'text-white' : '' }}">
                                         <i class="bi bi-check-circle-fill {{ $pItem->is_featured ? 'text-danger' : 'text-success' }}"></i>
-                                        {{ $pItem->custom_domain ? 'Custom Domain + Free Caddy Auto-SSL' : 'Free Platform Subdomain (.yourhub.com)' }}
+                                        {{ $pItem->custom_domain ? __('Custom Domain + Free Caddy Auto-SSL') : __('Free Platform Subdomain (.yourhub.com)') }}
                                     </li>
                                     @foreach($pItem->features ?? [] as $fLine)
                                         <li class="{{ $pItem->is_featured ? 'text-white' : '' }}">
                                             <i class="bi bi-check-circle-fill {{ $pItem->is_featured ? 'text-danger' : 'text-success' }}"></i>
-                                            {{ $fLine }}
+                                            {{ $t($fLine) }}
                                         </li>
                                     @endforeach
                                 </ul>
@@ -1284,13 +1346,13 @@
                             <button type="button"
                                     onclick="selectPlanAndScrollToThemes({{ $pItem->id }}, @js($pItem->name))"
                                     class="{{ $pItem->is_featured ? 'btn-saas-primary w-100 py-3 justify-content-center' : 'btn btn-outline-dark w-100 py-3 rounded-3 fw-bold' }}">
-                                <span>Select Theme &amp; Start Free Trial</span>
+                                <span>{{ __('Select Theme & Start Free Trial') }}</span>
                                 <i class="bi bi-arrow-up-right ms-1"></i>
                             </button>
                         </div>
                     </div>
                 @empty
-                    <div class="col-12 text-center text-muted">Plans are being configured.</div>
+                    <div class="col-12 text-center text-muted">{{ __('Plans are being configured.') }}</div>
                 @endforelse
             </div>
         </div>
@@ -1306,11 +1368,11 @@
             <div class="text-center mb-5">
                 <div class="section-eyebrow">
                     <i class="bi bi-question-circle-fill"></i>
-                    <span>{{ $faqC['eyebrow'] ?? 'Got Questions?' }}</span>
+                    <span>{{ $t($faqC['eyebrow'] ?? 'Got Questions?') }}</span>
                 </div>
-                <h2 class="section-heading">{{ $faqC['heading'] ?? 'Frequently Asked Questions' }}</h2>
+                <h2 class="section-heading">{{ $t($faqC['heading'] ?? 'Frequently Asked Questions') }}</h2>
                 <p class="section-subheading">
-                    {{ $faqC['subheading'] ?? 'Everything you need to know about our modular multi-website SaaS architecture.' }}
+                    {{ $t($faqC['subheading'] ?? 'Everything you need to know about our modular multi-website SaaS architecture.') }}
                 </p>
             </div>
 
@@ -1319,12 +1381,12 @@
                     <div class="accordion-item {{ !$loop->last ? 'border-bottom' : '' }}">
                         <h2 class="accordion-header">
                             <button class="accordion-button {{ $fIdx > 0 ? 'collapsed' : '' }} fw-bold py-3" type="button" data-bs-toggle="collapse" data-bs-target="#faqItem-{{ $fIdx }}">
-                                {{ $fRow['q'] ?? '' }}
+                                {{ $t($fRow['q'] ?? '') }}
                             </button>
                         </h2>
                         <div id="faqItem-{{ $fIdx }}" class="accordion-collapse collapse {{ $fIdx === 0 ? 'show' : '' }}" data-bs-parent="#saasFaqAccordion">
                             <div class="accordion-body text-muted small" style="line-height: 1.7;">
-                                {{ $fRow['a'] ?? '' }}
+                                {{ $t($fRow['a'] ?? '') }}
                             </div>
                         </div>
                     </div>
@@ -1342,21 +1404,21 @@
         <div class="container">
             <div class="saas-cta-banner text-center">
                 <span class="badge bg-white bg-opacity-10 text-white border border-white border-opacity-25 rounded-pill px-3 py-2 mb-3">
-                    <i class="bi bi-stars text-warning me-1"></i> {{ $ctaC['cta_badge'] ?? 'Ready for Instant Deployment' }}
+                    <i class="bi bi-stars text-warning me-1"></i> {{ $t($ctaC['cta_badge'] ?? 'Ready for Instant Deployment') }}
                 </span>
                 <h2 class="fw-bolder font-display mb-3" style="font-size: clamp(28px, 3.5vw, 44px);">
-                    {{ $ctaC['cta_heading'] ?? 'Start Building Your Next Industry Website Today' }}
+                    {{ $t($ctaC['cta_heading'] ?? 'Start Building Your Next Industry Website Today') }}
                 </h2>
                 <p class="text-white-50 mx-auto mb-4" style="max-width: 600px; font-size: 16px;">
-                    {{ $ctaC['cta_subheading'] ?? 'Pick a theme, verify your email, and launch your isolated website in under 30 seconds.' }}
+                    {{ $t($ctaC['cta_subheading'] ?? 'Pick a theme, verify your email, and launch your isolated website in under 30 seconds.') }}
                 </p>
                 <div class="d-flex align-items-center justify-content-center flex-wrap gap-3">
                     <a href="#themes" class="btn-saas-primary btn-hero-lg">
                         <i class="bi bi-rocket-takeoff-fill"></i>
-                        <span>Select a Theme &amp; Start Free Trial</span>
+                        <span>{{ __('Select a Theme & Start Free Trial') }}</span>
                     </a>
                     <a href="#pricing" class="btn-hero-lg btn-hero-secondary">
-                        <span>Compare Pricing Plans</span>
+                        <span>{{ __('Compare Pricing Plans') }}</span>
                     </a>
                 </div>
             </div>
@@ -1378,25 +1440,25 @@
                         <span class="fw-bolder fs-5 text-white font-display">{{ $globalSiteName ?? 'SiteBuilder' }} Cloud</span>
                     </div>
                     <p class="small mb-3" style="max-width: 320px; line-height: 1.6;">
-                        {{ $ctaC['footer_about'] ?? 'Next-generation modular multi-website SaaS hub. Build, manage, and scale standalone industry websites from a single unified codebase.' }}
+                        {{ $t($ctaC['footer_about'] ?? 'Next-generation modular multi-website SaaS hub. Build, manage, and scale standalone industry websites from a single unified codebase.') }}
                     </p>
                     <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill" style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); color: #34D399; font-size: 12px; font-weight: 600;">
-                        <span>●</span> All Cloud Systems Operational
+                        <span>●</span> {{ __('All Cloud Systems Operational') }}
                     </div>
                 </div>
 
                 <div class="col-6 col-lg-2">
-                    <h6>Platform</h6>
+                    <h6>{{ __('Platform') }}</h6>
                     <ul class="saas-footer-links">
-                        <li><a href="#templates">Live Demos</a></li>
-                        <li><a href="#features">Bento Features</a></li>
-                        <li><a href="#how-it-works">How It Works</a></li>
-                        <li><a href="#pricing">Pricing Plans</a></li>
+                        <li><a href="#templates">{{ __('Live Demos') }}</a></li>
+                        <li><a href="#features">{{ __('Bento Features') }}</a></li>
+                        <li><a href="#how-it-works">{{ __('How It Works') }}</a></li>
+                        <li><a href="#pricing">{{ __('Pricing Plans') }}</a></li>
                     </ul>
                 </div>
 
                 <div class="col-6 col-lg-3">
-                    <h6>Active Industry Modules</h6>
+                    <h6>{{ __('Active Industry Modules') }}</h6>
                     <ul class="saas-footer-links">
                         @foreach($activeSites->take(6) as $footSite)
                             <li>
@@ -1409,24 +1471,24 @@
                 </div>
 
                 <div class="col-lg-3">
-                    <h6>Admin &amp; Console</h6>
+                    <h6>{{ __('Admin & Console') }}</h6>
                     <ul class="saas-footer-links">
-                        <li><a href="{{ route('admin.dashboard') }}">Global Dashboard</a></li>
-                        <li><a href="{{ route('admin.websites') }}">Manage Websites</a></li>
-                        <li><a href="{{ route('admin.themes') }}">Visual Theme Presets</a></li>
-                        <li><a href="{{ route('admin.settings') }}">System Configuration</a></li>
+                        <li><a href="{{ route('admin.dashboard') }}">{{ __('Global Dashboard') }}</a></li>
+                        <li><a href="{{ route('admin.websites') }}">{{ __('Manage Websites') }}</a></li>
+                        <li><a href="{{ route('admin.themes') }}">{{ __('Visual Theme Presets') }}</a></li>
+                        <li><a href="{{ route('admin.settings') }}">{{ __('System Configuration') }}</a></li>
                     </ul>
                 </div>
             </div>
 
             <div class="d-flex flex-column flex-sm-row align-items-center justify-content-between pt-4 small">
                 <div>
-                    &copy; {{ date('Y') }} {{ $globalSiteName ?? 'SiteBuilder' }} Cloud SaaS. All rights reserved.
+                    &copy; {{ date('Y') }} {{ $globalSiteName ?? 'SiteBuilder' }} Cloud SaaS. {{ __('All rights reserved.') }}
                 </div>
                 <div class="d-flex gap-3 mt-2 mt-sm-0">
-                    <a href="#faq" class="text-decoration-none text-secondary">Privacy Policy</a>
-                    <a href="#faq" class="text-decoration-none text-secondary">Terms of Service</a>
-                    <a href="{{ route('admin.dashboard') }}" class="text-decoration-none text-secondary">Admin Login</a>
+                    <a href="#faq" class="text-decoration-none text-secondary">{{ __('Privacy Policy') }}</a>
+                    <a href="#faq" class="text-decoration-none text-secondary">{{ __('Terms of Service') }}</a>
+                    <a href="{{ route('admin.dashboard') }}" class="text-decoration-none text-secondary">{{ __('Admin Login') }}</a>
                 </div>
             </div>
         </div>
@@ -1546,8 +1608,8 @@
                 <!-- Modal Header -->
                 <div class="modal-header border-0 text-white p-4" style="background: linear-gradient(135deg, #090D16 0%, #1E1B4B 100%);">
                     <div>
-                        <span class="badge bg-danger rounded-pill mb-1" id="deployModalModule">Step 1 of 3: Choose Package</span>
-                        <h5 class="modal-title fw-bolder font-display mb-0" id="deployModalTitle">Install Theme</h5>
+                        <span class="badge bg-danger rounded-pill mb-1" id="deployModalModule">{{ __('Step 1 of 3: Choose Package') }}</span>
+                        <h5 class="modal-title fw-bolder font-display mb-0" id="deployModalTitle">{{ __('Install Theme') }}</h5>
                     </div>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
@@ -1558,12 +1620,12 @@
                         <div class="d-flex align-items-center gap-3">
                             <img id="deployModalThumb" src="" alt="" style="width: 72px; height: 50px; object-fit: cover; border-radius: 8px;">
                             <div>
-                                <div class="fw-bold text-dark" id="deployModalName">Template Name</div>
-                                <small class="text-success fw-semibold"><i class="bi bi-database-check me-1"></i> Dedicated Isolated MySQL Database &amp; Visual CMS</small>
+                                <div class="fw-bold text-dark" id="deployModalName">{{ __('Template Name') }}</div>
+                                <small class="text-success fw-semibold"><i class="bi bi-database-check me-1"></i> {{ __('Dedicated Isolated MySQL Database & Visual CMS') }}</small>
                             </div>
                         </div>
                         <a href="#" id="deployModalDemoBtn" target="_blank" class="btn btn-sm btn-outline-dark rounded-pill px-3">
-                            <i class="bi bi-eye me-1"></i> Live Preview
+                            <i class="bi bi-eye me-1"></i> {{ __('Live Preview') }}
                         </a>
                     </div>
 
@@ -1572,15 +1634,15 @@
                         <div class="wiz-stepper-line"></div>
                         <div class="wiz-step-item active" id="wizStepIndicator1" onclick="goToWizardStep(1)">
                             <span class="wiz-step-circle" id="wizStepCircle1">1</span>
-                            <span class="wiz-step-label">1. Package &amp; Billing</span>
+                            <span class="wiz-step-label">{{ __('1. Package & Billing') }}</span>
                         </div>
                         <div class="wiz-step-item" id="wizStepIndicator2" onclick="goToWizardStep(2)">
                             <span class="wiz-step-circle" id="wizStepCircle2">2</span>
-                            <span class="wiz-step-label">2. Website &amp; Subdomain</span>
+                            <span class="wiz-step-label">{{ __('2. Website & Subdomain') }}</span>
                         </div>
                         <div class="wiz-step-item" id="wizStepIndicator3" onclick="goToWizardStep(3)">
                             <span class="wiz-step-circle" id="wizStepCircle3">3</span>
-                            <span class="wiz-step-label">3. Account &amp; Install</span>
+                            <span class="wiz-step-label">{{ __('3. Account & Install') }}</span>
                         </div>
                     </div>
 
@@ -1593,28 +1655,28 @@
                     <div id="wizardStepPanel1" class="wizard-step-panel">
                         <div class="mb-3">
                             <label class="form-label small fw-bold text-uppercase text-muted mb-2">
-                                <i class="bi bi-calendar2-check me-1"></i> Choose Billing Cycle
+                                <i class="bi bi-calendar2-check me-1"></i> {{ __('Choose Billing Cycle') }}
                             </label>
                             <div class="d-flex gap-2">
                                 <label class="wiz-cycle-pill selected" id="wizCycleLabelMonthly" onclick="setWizardCycle('monthly')">
                                     <div class="d-flex align-items-center gap-2">
                                         <input type="radio" name="billing_cycle" value="monthly" class="form-check-input m-0" checked>
-                                        <span class="fw-bold small">Monthly Billing</span>
+                                        <span class="fw-bold small">{{ __('Monthly Billing') }}</span>
                                     </div>
-                                    <span class="badge bg-secondary-subtle text-secondary rounded-pill" style="font-size: 10.5px;">Flexible</span>
+                                    <span class="badge bg-secondary-subtle text-secondary rounded-pill" style="font-size: 10.5px;">{{ __('Flexible') }}</span>
                                 </label>
                                 <label class="wiz-cycle-pill" id="wizCycleLabelYearly" onclick="setWizardCycle('yearly')">
                                     <div class="d-flex align-items-center gap-2">
                                         <input type="radio" name="billing_cycle" value="yearly" class="form-check-input m-0">
-                                        <span class="fw-bold small">Yearly Billing</span>
+                                        <span class="fw-bold small">{{ __('Yearly Billing') }}</span>
                                     </div>
-                                    <span class="badge bg-success text-white rounded-pill" style="font-size: 10.5px;">Save 20%</span>
+                                    <span class="badge bg-success text-white rounded-pill" style="font-size: 10.5px;">{{ __('Save 20%') }}</span>
                                 </label>
                             </div>
                         </div>
 
                         <label class="form-label small fw-bold text-uppercase text-muted mb-2">
-                            <i class="bi bi-box-seam me-1"></i> Select Subscription Package (14-Day Free Trial Included)
+                            <i class="bi bi-box-seam me-1"></i> {{ __('Select Subscription Package (14-Day Free Trial Included)') }}
                         </label>
                         <div class="d-flex flex-column gap-2">
                             @foreach($plansForLanding as $wIdx => $wPlan)
@@ -1629,30 +1691,30 @@
                                                    {{ $wIdx === 0 ? 'checked' : '' }}>
                                             <div>
                                                 <div class="d-flex align-items-center gap-2">
-                                                    <span class="fw-bolder text-dark" style="font-size: 14.5px;">{{ $wPlan->name }}</span>
+                                                    <span class="fw-bolder text-dark" style="font-size: 14.5px;">{{ $t($wPlan->name) }}</span>
                                                     @if($wPlan->is_featured)
-                                                        <span class="badge bg-danger rounded-pill" style="font-size: 10px;">MOST POPULAR</span>
+                                                        <span class="badge bg-danger rounded-pill" style="font-size: 10px;">{{ __('MOST POPULAR') }}</span>
                                                     @endif
                                                     @if($wPlan->trial_days > 0)
                                                         <span class="badge bg-success-subtle text-success rounded-pill" style="font-size: 10px;">
-                                                            {{ $wPlan->trial_days }}-Day Free Trial
+                                                            {{ __(':days-Day Free Trial', ['days' => $wPlan->trial_days]) }}
                                                         </span>
                                                     @endif
                                                 </div>
                                                 <div class="text-muted small mt-1" style="font-size: 12px;">
-                                                    <strong>{{ $wPlan->site_limit }}</strong> Website(s) •
-                                                    <strong>{{ number_format($wPlan->storage_mb) }} MB</strong> Storage •
-                                                    {{ $wPlan->custom_domain ? 'Custom Domain + Auto-SSL' : 'Free Subdomain (.yourhub.com)' }}
+                                                    <strong>{{ $wPlan->site_limit }}</strong> {{ __('Website(s)') }} •
+                                                    <strong>{{ number_format($wPlan->storage_mb) }} MB</strong> {{ __('Storage') }} •
+                                                    {{ $wPlan->custom_domain ? __('Custom Domain + Auto-SSL') : __('Free Subdomain (.yourhub.com)') }}
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="text-end">
                                             <div class="fw-bolder text-dark fs-5 wiz-plan-price"
-                                                 data-monthly="{{ $wPlan->currency }} {{ number_format($wPlan->price_monthly, 0) }}/mo"
-                                                 data-yearly="{{ $wPlan->currency }} {{ number_format($wPlan->price_yearly, 0) }}/yr">
-                                                {{ $wPlan->currency }} {{ number_format($wPlan->price_monthly, 0) }}/mo
+                                                 data-monthly="{{ $wPlan->currency }} {{ number_format($wPlan->price_monthly, 0) }}{{ __('/mo') }}"
+                                                 data-yearly="{{ $wPlan->currency }} {{ number_format($wPlan->price_yearly, 0) }}{{ __('/yr') }}">
+                                                {{ $wPlan->currency }} {{ number_format($wPlan->price_monthly, 0) }}{{ __('/mo') }}
                                             </div>
-                                            <small class="text-success fw-semibold" style="font-size: 11px;">৳0 due today (Free Trial)</small>
+                                            <small class="text-success fw-semibold" style="font-size: 11px;">{{ __('৳0 due today (Free Trial)') }}</small>
                                         </div>
                                     </div>
                                 </label>
@@ -1666,22 +1728,22 @@
                     <div id="wizardStepPanel2" class="wizard-step-panel d-none">
                         <div class="p-3 rounded-3 bg-light border mb-3 small text-muted">
                             <i class="bi bi-info-circle-fill text-primary me-1"></i>
-                            Enter your business or website name below. We will automatically suggest a free subdomain and verify its availability in real time.
+                            {{ __('Enter your business or website name below. We will automatically suggest a free subdomain and verify its availability in real time.') }}
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label small fw-bold">Your Business / Website Name <span class="text-danger">*</span></label>
+                            <label class="form-label small fw-bold">{{ __('Your Business / Website Name') }} <span class="text-danger">*</span></label>
                             <input type="text"
                                    name="site_name"
                                    id="wizardSiteNameInput"
                                    class="form-control form-control-lg rounded-3"
-                                   placeholder="e.g. Royal Interior Studio"
+                                   placeholder="{{ __('e.g.') }} Royal Interior Studio"
                                    oninput="autoSuggestSubdomain(this.value)"
                                    required>
                         </div>
 
                         <div class="mb-2">
-                            <label class="form-label small fw-bold">Choose Your Free Subdomain <span class="text-danger">*</span></label>
+                            <label class="form-label small fw-bold">{{ __('Choose Your Free Subdomain') }} <span class="text-danger">*</span></label>
                             <div class="input-group input-group-lg">
                                 <input type="text"
                                        name="subdomain"
@@ -1693,7 +1755,7 @@
                                 <span class="input-group-text bg-light fw-bold small">.{{ $baseCentralDomain }}</span>
                             </div>
                             <div id="subdomainCheckFeedback" class="small mt-2 fw-semibold text-muted" style="font-size: 12.5px;">
-                                Enter at least 3 characters to check availability.
+                                {{ __('Enter at least 3 characters to check availability.') }}
                             </div>
                         </div>
                     </div>
@@ -1704,25 +1766,25 @@
                     <div id="wizardStepPanel3" class="wizard-step-panel d-none">
                         <div class="p-3 rounded-3 bg-light border mb-3 small text-muted">
                             <i class="bi bi-envelope-check-fill text-success me-1"></i>
-                            Almost done! Enter your account details below. After you verify your email, your isolated MySQL database and theme will install automatically.
+                            {{ __('Almost done! Enter your account details below. After you verify your email, your isolated MySQL database and theme will install automatically.') }}
                         </div>
 
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label small fw-bold">Your Full Name <span class="text-danger">*</span></label>
+                                <label class="form-label small fw-bold">{{ __('Your Full Name') }} <span class="text-danger">*</span></label>
                                 <input type="text" name="name" id="wizardOwnerName" value="{{ auth()->user()?->name }}" class="form-control rounded-3" placeholder="John Doe" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small fw-bold">Email Address (Verification Link Sent Here) <span class="text-danger">*</span></label>
+                                <label class="form-label small fw-bold">{{ __('Email Address (Verification Link Sent Here)') }} <span class="text-danger">*</span></label>
                                 <input type="email" name="email" id="wizardOwnerEmail" value="{{ auth()->user()?->email }}" class="form-control rounded-3" placeholder="you@company.com" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small fw-bold">Mobile / WhatsApp Number</label>
+                                <label class="form-label small fw-bold">{{ __('Mobile / WhatsApp Number') }}</label>
                                 <input type="text" name="phone" id="wizardOwnerPhone" value="{{ auth()->user()?->phone }}" class="form-control rounded-3" placeholder="01812-XXXXXX">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small fw-bold">Dashboard Password <span class="text-danger">*</span></label>
-                                <input type="password" name="password" id="wizardOwnerPassword" class="form-control rounded-3" placeholder="Minimum 6 characters" minlength="6" required>
+                                <label class="form-label small fw-bold">{{ __('Dashboard Password') }} <span class="text-danger">*</span></label>
+                                <input type="password" name="password" id="wizardOwnerPassword" class="form-control rounded-3" placeholder="{{ __('Minimum 6 characters') }}" minlength="6" required>
                             </div>
                         </div>
                     </div>
@@ -1732,21 +1794,21 @@
                 <div class="modal-footer border-0 bg-light justify-content-between px-4 py-3">
                     <div>
                         <button type="button" id="wizardPrevBtn" class="btn btn-outline-secondary rounded-3 fw-semibold px-3 d-none" onclick="prevWizardStep()">
-                            <i class="bi bi-arrow-left me-1"></i> Previous Step
+                            <i class="bi bi-arrow-left me-1"></i> {{ __('Previous Step') }}
                         </button>
                         <span id="wizardFooterHint" class="text-muted small">
-                            <i class="bi bi-shield-check text-success me-1"></i> No credit card required for 14-day trial
+                            <i class="bi bi-shield-check text-success me-1"></i> {{ __('No credit card required for 14-day trial') }}
                         </span>
                     </div>
 
                     <div>
                         <button type="button" id="wizardNextBtn" class="btn-saas-primary" onclick="nextWizardStep()">
-                            <span id="wizardNextBtnText">Next: Website &amp; Subdomain</span>
+                            <span id="wizardNextBtnText">{{ __('Next: Website & Subdomain') }}</span>
                             <i class="bi bi-arrow-right"></i>
                         </button>
                         <button type="submit" id="wizardSubmitBtn" class="btn-saas-primary d-none">
                             <i class="bi bi-envelope-check-fill"></i>
-                            <span>Verify Email &amp; Install Theme</span>
+                            <span>{{ __('Verify Email & Install Theme') }}</span>
                         </button>
                     </div>
                 </div>
@@ -1756,6 +1818,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Landing page UI strings in the language chosen in Admin -> Language.
+        const LANDING_I18N = {{ \Illuminate\Support\Js::from(collect(['Step 1 of 3: Choose Package & Billing', 'Step 2 of 3: Website Name & Subdomain', 'Step 3 of 3: Owner Account & Verification', 'Next: Website & Subdomain', 'Next: Owner Account', 'Please enter your Business / Website Name.', 'Please choose a subdomain with at least 3 characters.', 'This subdomain is not available. Please choose another subdomain.', '14-Day Free Trial', 'Install', 'Theme', 'e.g.', 'Subdomain must be at least 3 characters.', 'Checking subdomain availability...', 'Billed annually (Save 20% • 14-Day Free Trial)', 'Billed monthly (14-Day Free Trial)'])->mapWithKeys(fn ($k) => [$k => __($k)])) }};
+        function L(key) { return LANDING_I18N[key] || key; }
+
         let currentWizardStep = 1;
         let isSubdomainAvailable = false;
         let selectedLandingPlanId = null;
@@ -1827,9 +1893,9 @@
 
             const badge = document.getElementById('deployModalModule');
             if (badge) {
-                if (step === 1) badge.textContent = 'Step 1 of 3: Choose Package & Billing';
-                if (step === 2) badge.textContent = 'Step 2 of 3: Website Name & Subdomain';
-                if (step === 3) badge.textContent = 'Step 3 of 3: Owner Account & Verification';
+                if (step === 1) badge.textContent = L('Step 1 of 3: Choose Package & Billing');
+                if (step === 2) badge.textContent = L('Step 2 of 3: Website Name & Subdomain');
+                if (step === 3) badge.textContent = L('Step 3 of 3: Owner Account & Verification');
             }
 
             const prevBtn = document.getElementById('wizardPrevBtn');
@@ -1844,11 +1910,11 @@
             if (step === 1) {
                 nextBtn?.classList.remove('d-none');
                 submitBtn?.classList.add('d-none');
-                if (nextTxt) nextTxt.textContent = 'Next: Website & Subdomain';
+                if (nextTxt) nextTxt.textContent = L('Next: Website & Subdomain');
             } else if (step === 2) {
                 nextBtn?.classList.remove('d-none');
                 submitBtn?.classList.add('d-none');
-                if (nextTxt) nextTxt.textContent = 'Next: Owner Account';
+                if (nextTxt) nextTxt.textContent = L('Next: Owner Account');
                 setTimeout(() => document.getElementById('wizardSiteNameInput')?.focus(), 100);
             } else if (step === 3) {
                 nextBtn?.classList.add('d-none');
@@ -1866,17 +1932,17 @@
                 const siteName = (document.getElementById('wizardSiteNameInput')?.value || '').trim();
                 const sub = (document.getElementById('wizardSubdomainInput')?.value || '').trim().toLowerCase();
                 if (!siteName) {
-                    showWizardAlert('Please enter your Business / Website Name.');
+                    showWizardAlert(L('Please enter your Business / Website Name.'));
                     document.getElementById('wizardSiteNameInput')?.focus();
                     return;
                 }
                 if (sub.length < 3) {
-                    showWizardAlert('Please choose a subdomain with at least 3 characters.');
+                    showWizardAlert(L('Please choose a subdomain with at least 3 characters.'));
                     document.getElementById('wizardSubdomainInput')?.focus();
                     return;
                 }
                 if (isSubdomainAvailable === false) {
-                    showWizardAlert('This subdomain is not available. Please choose another subdomain.');
+                    showWizardAlert(L('This subdomain is not available. Please choose another subdomain.'));
                     document.getElementById('wizardSubdomainInput')?.focus();
                     return;
                 }
@@ -1906,7 +1972,7 @@
             const banner = document.getElementById('selectedPlanBanner');
             const bannerName = document.getElementById('bannerPlanName');
             if (banner && bannerName) {
-                bannerName.textContent = planName + ' (14-Day Free Trial)';
+                bannerName.textContent = planName + ' (' + L('14-Day Free Trial') + ')';
                 banner.classList.remove('d-none');
             }
             const themesEl = document.getElementById('themes');
@@ -1937,20 +2003,20 @@
 
         function openInstallWizard(moduleKey, name, modLabel, thumb, demoUrl) {
             document.getElementById('wizardThemeModuleInput').value = moduleKey;
-            document.getElementById('deployModalTitle').textContent = 'Install ' + name + ' (' + modLabel + ')';
-            document.getElementById('deployModalName').textContent = name + ' (' + modLabel + ' Theme)';
+            document.getElementById('deployModalTitle').textContent = L('Install') + ' ' + name + ' (' + modLabel + ')';
+            document.getElementById('deployModalName').textContent = name + ' (' + modLabel + ' ' + L('Theme') + ')';
             document.getElementById('deployModalThumb').src = thumb;
             document.getElementById('deployModalDemoBtn').href = demoUrl;
 
             // Update Website Name & Subdomain placeholders dynamically based on selected theme
             const ph = THEME_PLACEHOLDERS[moduleKey] || {
-                site: 'e.g. ' + name + ' (' + modLabel + ')',
+                site: L('e.g.') + ' ' + name + ' (' + modLabel + ')',
                 sub: (name || modLabel || 'mysite').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
             };
             const siteInput = document.getElementById('wizardSiteNameInput');
             const subInput = document.getElementById('wizardSubdomainInput');
             if (siteInput) {
-                siteInput.placeholder = ph.site;
+                siteInput.placeholder = ph.site.replace(/^e\.g\. /, L('e.g.') + ' ');
             }
             if (subInput) {
                 subInput.placeholder = ph.sub;
@@ -1985,12 +2051,12 @@
             if (clean.length < 3) {
                 isSubdomainAvailable = false;
                 feedback.className = 'small mt-2 fw-semibold text-muted';
-                feedback.textContent = 'Subdomain must be at least 3 characters.';
+                feedback.textContent = L('Subdomain must be at least 3 characters.');
                 return;
             }
 
             feedback.className = 'small mt-2 fw-semibold text-secondary';
-            feedback.textContent = 'Checking subdomain availability...';
+            feedback.textContent = L('Checking subdomain availability...');
 
             clearTimeout(subdomainDebounceTimer);
             subdomainDebounceTimer = setTimeout(() => {
@@ -2052,7 +2118,7 @@
             });
 
             document.querySelectorAll('.billing-note').forEach(el => {
-                el.textContent = cycle === 'yearly' ? 'Billed annually (Save 20% • 14-Day Free Trial)' : 'Billed monthly (14-Day Free Trial)';
+                el.textContent = cycle === 'yearly' ? L('Billed annually (Save 20% • 14-Day Free Trial)') : L('Billed monthly (14-Day Free Trial)');
             });
         }
     </script>
