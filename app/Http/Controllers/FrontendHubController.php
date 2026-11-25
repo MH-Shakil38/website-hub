@@ -7,6 +7,7 @@ use App\Models\SaasSection;
 use App\Models\Tenant;
 use App\Models\Website;
 use App\Services\TenantDatabaseManager;
+use App\Support\LandingLocale;
 use Illuminate\Support\Facades\Schema;
 
 class FrontendHubController extends Controller
@@ -65,6 +66,10 @@ class FrontendHubController extends Controller
 
     protected function buildHubLandingData($activeSites): array
     {
+        // Landing page language: set by the Super Admin (Admin -> Language), Bangla by default.
+        $landingLocale = LandingLocale::resolve(request());
+        app()->setLocale($landingLocale);
+
         $saasSections = SaasSection::getLandingMap();
         $clientPlans = collect();
 
@@ -83,6 +88,10 @@ class FrontendHubController extends Controller
             'activeSites' => $activeSites,
             'saasSections' => $saasSections,
             'clientPlans' => $clientPlans,
+            'landingLocale' => $landingLocale,
+            'landingDir' => LandingLocale::direction($landingLocale),
+            'landingLanguages' => LandingLocale::supported(),
+            'landingSwitcher' => LandingLocale::switcherEnabled(),
         ];
     }
 

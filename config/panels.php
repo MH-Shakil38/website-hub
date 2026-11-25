@@ -39,6 +39,12 @@ return [
                     'active' => 'admin.saas.homepage*',
                 ],
                 [
+                    'title' => 'Language',
+                    'icon' => 'bi bi-translate',
+                    'route' => 'admin.saas.language',
+                    'active' => 'admin.saas.language*',
+                ],
+                [
                     'title' => 'Tenants (Client Sites)',
                     'icon' => 'bi bi-hdd-network-fill',
                     'route' => 'admin.tenants.index',

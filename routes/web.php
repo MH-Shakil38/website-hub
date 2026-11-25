@@ -206,6 +206,10 @@ Route::prefix('admin')->name('admin.')->middleware([EnsureDashboardAccess::class
 
         // Transactions & Filter Table (Screenshot 8)
         Route::get('/transactions', [GlobalAdminController::class, 'transactions'])->name('transactions');
+
+        // Language of the public SaaS landing page (Bangla default, English, Arabic RTL)
+        Route::get('/saas-language', [\App\Http\Controllers\Admin\SaasLanguageController::class, 'edit'])->name('saas.language');
+        Route::post('/saas-language', [\App\Http\Controllers\Admin\SaasLanguageController::class, 'update'])->name('saas.language.update');
     });
 
     // 7. Standalone Per-Module Settings + Profile & Password Change (int_settings / re_settings / pharma_settings)
