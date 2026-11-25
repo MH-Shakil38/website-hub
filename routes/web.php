@@ -181,17 +181,19 @@ Route::prefix('admin')->name('admin.')->middleware([EnsureDashboardAccess::class
     Route::delete('/themes/{id}', [ModuleCmsController::class, 'deleteTheme'])->name('themes.destroy');
 
     // 6. Standalone Per-Module Users + Roles & Permissions (int_users / re_users / pharma_users)
+    // Per-module users page is part of every tenant's sidebar (clients/resellers), so it stays open to any dashboard user.
+    Route::get('/users', [ModuleCmsController::class, 'users'])->name('users');
+    Route::post('/users', [ModuleCmsController::class, 'storeModuleUser'])->name('users.store');
+    Route::put('/users/{id}', [ModuleCmsController::class, 'updateModuleUser'])->name('users.update');
+    Route::delete('/users/{id}', [ModuleCmsController::class, 'deleteModuleUser'])->name('users.destroy');
+
+    // Platform-wide roles/permissions and the transactions ledger are Super Admin only.
     Route::middleware([EnsureDashboardAccess::class . ':super_admin'])->group(function () {
-        Route::get('/users', [ModuleCmsController::class, 'users'])->name('users');
-        Route::post('/users', [ModuleCmsController::class, 'storeModuleUser'])->name('users.store');
-        Route::put('/users/{id}', [ModuleCmsController::class, 'updateModuleUser'])->name('users.update');
-        Route::delete('/users/{id}', [ModuleCmsController::class, 'deleteModuleUser'])->name('users.destroy');
         Route::post('/roles', [GlobalAdminController::class, 'storeRole'])->name('roles.store');
         Route::put('/roles/{role}/permissions', [GlobalAdminController::class, 'updateRolePermissions'])->name('roles.permissions');
 
         // Transactions & Filter Table (Screenshot 8)
         Route::get('/transactions', [GlobalAdminController::class, 'transactions'])->name('transactions');
-
     });
 
     // 7. Standalone Per-Module Settings + Profile & Password Change (int_settings / re_settings / pharma_settings)
