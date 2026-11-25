@@ -305,8 +305,49 @@ Artisan::command('saas:deploy {--sync-demos}', function () {
     $this->line('4. Clearing application caches...');
     Artisan::call('optimize:clear');
 
+    // 5. Production readiness report (warnings only, never blocks the deploy)
+    $this->line('5. Production readiness checks...');
+    Artisan::call('saas:doctor');
+    $this->line(trim(Artisan::output()));
+
     $this->info('SaaS Deployment Completed Successfully!');
 })->purpose('Deploy SaaS changes on VPS after git pull (central migrate, theme links, tenant DB migrate)');
+
+Artisan::command('saas:doctor', function () {
+    $issues = [];
+    $isProd = app()->environment('production');
+    $check = function (bool $ok, string $message) use (&$issues) {
+        if (! $ok) {
+            $issues[] = $message;
+        }
+    };
+
+    $check($isProd, 'APP_ENV is "'.app()->environment().'" (use production on the live server).');
+    $check(! config('app.debug'), 'APP_DEBUG is true (must be false in production: it leaks stack traces and secrets).');
+    $check(filled(config('app.key')), 'APP_KEY is empty (run php artisan key:generate).');
+    $check(str_starts_with((string) config('app.url'), 'https://'), 'APP_URL is not https.');
+    $check(! config('app.admin_auto_login_local'), 'ADMIN_AUTO_LOGIN_LOCAL is on (turn it off).');
+    $check(config('database.default') !== 'sqlite', 'DB_CONNECTION is sqlite (SaaS tenancy needs MySQL).');
+    $check(! in_array(config('mail.default'), ['log', 'array'], true), 'MAIL_MAILER is "'.config('mail.default').'" (signup, verification and invoice emails will not be delivered).');
+    $check(config('queue.default') !== 'sync', 'QUEUE_CONNECTION is sync (use database or redis and run a queue worker).');
+    $check(\App\Services\Billing\SslCommerzPaymentDriver::isLive(), 'SSLCommerz store credentials are missing (online payment is disabled in production).');
+    $check(! config('services.sslcommerz.sandbox', true), 'SSLCOMMERZ_SANDBOX is true (no real money will be collected).');
+    $check((bool) config('session.secure'), 'SESSION_SECURE_COOKIE is not true (session cookie can travel over plain http).');
+
+    if ($issues === []) {
+        $this->info('All production checks passed.');
+
+        return 0;
+    }
+
+    $this->warn('Production readiness issues:');
+    foreach ($issues as $issue) {
+        $this->line('  - '.$issue);
+    }
+    $this->line('Also make sure cron runs `php artisan schedule:run` every minute (billing expiry, commissions, backups).');
+
+    return $isProd ? 1 : 0;
+})->purpose('Check .env / config for SaaS production readiness');
 
 Artisan::command('billing:check-expirations', function () {
     $billing = app(\App\Services\Billing\BillingService::class);

@@ -20,6 +20,9 @@ return [
     // Prefix for per-tenant MySQL databases (hub_t_0001 ...). Tests override it so they never collide with real tenant DBs.
     'tenant_db_prefix' => env('TENANT_DB_PREFIX', 'hub_t_'),
 
+    // Local-only convenience: auto sign in the first Super Admin on /admin. Ignored unless APP_ENV=local.
+    'admin_auto_login_local' => (bool) env('ADMIN_AUTO_LOGIN_LOCAL', false),
+
     'central_domains' => array_filter(array_map('trim', explode(',', env('CENTRAL_DOMAINS', 'localhost,127.0.0.1,multi-website-hub.test')))),
 
     'dashboard_domain' => env('DASHBOARD_DOMAIN', 'app.multi-website-hub.test'),
